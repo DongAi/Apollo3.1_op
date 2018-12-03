@@ -48,6 +48,7 @@ bool SequenceTypeFuser::Init() {
   }
   ADEBUG << "transition matrix\n" << transition_matrix_;
   for (std::size_t i = 0; i < VALID_OBJECT_TYPE; ++i) {
+    #pragma omp parallel for
     for (std::size_t j = 0; j < VALID_OBJECT_TYPE; ++j) {
       transition_matrix_(i, j) = log(transition_matrix_(i, j));
     }

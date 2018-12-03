@@ -34,6 +34,7 @@ void TransformPointCloud(pcl_util::PointCloudPtr cloud,
   if (trans_cloud->size() != indices.size()) {
     trans_cloud->resize(indices.size());
   }
+  #pragma omp parallel for
   for (size_t i = 0; i < indices.size(); ++i) {
     const Point& p = cloud->at(indices[i]);
     Eigen::Vector3d v(p.x, p.y, p.z);
@@ -53,6 +54,7 @@ void TransformPointCloud(pcl_util::PointCloudPtr cloud,
   if (trans_cloud->size() != cloud->size()) {
     trans_cloud->resize(cloud->size());
   }
+  #pragma omp parallel for
   for (size_t i = 0; i < cloud->points.size(); ++i) {
     const Point& p = cloud->at(i);
     Eigen::Vector4d v(p.x, p.y, p.z, 1);

@@ -134,6 +134,7 @@ class ConvexHull2DXY : public pcl::ConvexHull<PointInT> {
 
     // Build input data, using appropriate projection
     int j = 0;
+    #pragma omp parallel for
     for (size_t i = 0; i < indices_->size(); ++i, j += dimension) {
       points[j + 0] = static_cast<coordT>(input_->points[(*indices_)[i]].x);
       points[j + 1] = static_cast<coordT>(input_->points[(*indices_)[i]].y);
@@ -198,6 +199,7 @@ class ConvexHull2DXY : public pcl::ConvexHull<PointInT> {
     // Sort
     Eigen::Vector4f centroid;
     pcl::compute3DCentroid(*hull, centroid);
+    #pragma omp parallel for
     for (size_t j = 0; j < hull->points.size(); j++) {
       idx_points[j].second[0] = hull->points[j].x - centroid[0];
       idx_points[j].second[1] = hull->points[j].y - centroid[1];
@@ -208,6 +210,7 @@ class ConvexHull2DXY : public pcl::ConvexHull<PointInT> {
     polygons->resize(1);
     (*polygons)[0].vertices.resize(hull->points.size());
 
+    #pragma omp parallel for
     for (int j = 0; j < static_cast<int>(hull->points.size()); j++) {
       hull->points[j] = input_->points[(*indices_)[idx_points[j].first]];
       (*polygons)[0].vertices[j] = static_cast<unsigned int>(j);

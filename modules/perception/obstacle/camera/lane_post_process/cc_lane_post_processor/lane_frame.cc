@@ -397,6 +397,7 @@ bool LaneFrame::Init(const vector<ConnectedComponentPtr>& input_cc,
       }
 
       int m = static_cast<int>(markers_.size());
+      #pragma omp parallel for
       for (int j = 0; j < n; ++j) {
         markers_[m - 1 - j].cc_edge_descend_id = j;
       }

@@ -74,6 +74,7 @@ TEST(AABoxKDTree2dNode, OverallTests) {
       objects.emplace_back(cx - dx, cy - dy, cx + dx, cy + dy, i);
     }
     std::unique_ptr<AABoxKDTree2d<Object>> kdtrees[kNumTrees];
+    #pragma omp parallel for
     for (int i = 0; i < kNumTrees; ++i) {
       kdtrees[i].reset(new AABoxKDTree2d<Object>(objects, kdtree_params[i]));
     }

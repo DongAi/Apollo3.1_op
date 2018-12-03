@@ -33,6 +33,7 @@ namespace perception {
 template <typename PointT>
 void TransformPointCloud(const Eigen::Matrix4d& trans_mat,
                          pcl::PointCloud<PointT>* cloud_in_out) {
+  #pragma omp parallel for
   for (std::size_t i = 0; i < cloud_in_out->size(); ++i) {
     PointT& p = cloud_in_out->at(i);
     Eigen::Vector4d v(p.x, p.y, p.z, 1);
@@ -68,6 +69,7 @@ void TransformPointCloud(const pcl::PointCloud<PointType>& cloud_in,
   if (cloud_out->points.size() < cloud_in.points.size()) {
     cloud_out->points.resize(cloud_in.points.size());
   }
+  #pragma omp parallel for
   for (std::size_t i = 0; i < cloud_in.size(); ++i) {
     const PointType& p = cloud_in.at(i);
     Eigen::Vector4d v(p.x, p.y, p.z, 1);
@@ -141,6 +143,7 @@ void ComputeBboxSizeCenter(typename pcl::PointCloud<PointT>::Ptr cloud,
     loc_pt[0] = pt.dot(dir);
     loc_pt[1] = pt.dot(ortho_dir);
     loc_pt[2] = pt.dot(z_dir);
+    #pragma omp parallel for
     for (int j = 0; j < 3; j++) {
       min_pt[j] = std::min(min_pt[j], loc_pt[j]);
       max_pt[j] = std::max(max_pt[j], loc_pt[j]);

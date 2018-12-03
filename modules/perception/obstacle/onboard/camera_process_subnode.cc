@@ -142,6 +142,7 @@ void CameraProcessSubnode::ImgCallback(const sensor_msgs::Image &message) {
     detector_->Lanetask(img, &masks);
     mask_color.setTo(cv::Scalar(0));
     ln_msk_threshold_ = 0.9;
+    #pragma omp parallel for
     for (int c = 0; c < num_lines; ++c) {
       for (int h = 0; h < masks[c].rows; ++h) {
         for (int w = 0; w < masks[c].cols; ++w) {
@@ -154,6 +155,7 @@ void CameraProcessSubnode::ImgCallback(const sensor_msgs::Image &message) {
   } else {
     mask.copyTo(mask_color);
     ln_msk_threshold_ = 0.5;
+    #pragma omp parallel for
     for (int h = 0; h < mask_color.rows; ++h) {
       for (int w = 0; w < mask_color.cols; ++w) {
         if (mask_color.at<float>(h, w) >= ln_msk_threshold_) {

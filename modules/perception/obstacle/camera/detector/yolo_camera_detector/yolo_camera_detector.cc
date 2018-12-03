@@ -442,7 +442,7 @@ bool YoloCameraDetector::Detect(
   }
 
   ADEBUG << "object size = " << temp_objects.size();
-  for (int i = 0; i < static_cast<int>(temp_objects.size()); ++i) {
+/*  for (int i = 0; i < static_cast<int>(temp_objects.size()); ++i) {
     std::shared_ptr<VisualObject> obj = (temp_objects)[i];
     ADEBUG << "type prob size for object" << i << " is "
            << sizeof(obj->type_probs) << " (" << obj << ")";
@@ -451,7 +451,7 @@ bool YoloCameraDetector::Detect(
            << obj->object_feature.size();
     ADEBUG << "internal type probs size for object" << i << " is "
            << sizeof(obj->internal_type_probs);
-  }
+  }*/
 
   const auto ori_blob = cnnadapter_->get_blob_by_name(
       yolo_param_.net_param().ori_blob());
@@ -471,6 +471,7 @@ bool YoloCameraDetector::Detect(
     }
     ADEBUG << valid_obj_idx << " of " << total_obj_idx << " obstacles kept";
   }
+  
   for (size_t i = 0; i < temp_objects.size(); ++i) {
     temp_objects[i].reset();
   }
@@ -594,6 +595,7 @@ bool YoloCameraDetector::get_objects_cpu(
       obj->type = static_cast<ObjectType>(label);
       obj->type_probs.assign(static_cast<int>(ObjectType::MAX_OBJECT_TYPE),
                              0.0f);
+      #pragma omp parallel for
       for (int k = 0; k < num_classes; ++k) {
         int type_k = static_cast<int>(types_[k]);
         obj->type_probs[type_k] = conf_scores[type_k][idx];
@@ -725,6 +727,7 @@ bool YoloCameraDetector::get_objects_gpu(
       obj->type = static_cast<ObjectType>(label);
       obj->type_probs.assign(static_cast<int>(ObjectType::MAX_OBJECT_TYPE),
                              0.0f);
+      #pragma omp parallel for
       for (int k = 0; k < num_classes; ++k) {
         int type_k = static_cast<int>(types_[k]);
         obj->type_probs[type_k] = conf_scores[type_k][idx];
@@ -797,6 +800,7 @@ void YoloCameraDetector::get_object_helper(
   float hh = std::exp(loc_data[offset_loc + 3]) * anchor_data[2 * c + 1] /
              height * 0.5;
 
+  #pragma omp parallel for
   for (int k = 0; k < num_classes; ++k) {
     float prob = (cls_data[offset_cls + k] * scale > confidence_threshold_
                       ? cls_data[offset_cls + k] * scale

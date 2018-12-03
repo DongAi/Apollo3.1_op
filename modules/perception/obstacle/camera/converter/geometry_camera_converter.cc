@@ -111,6 +111,7 @@ bool GeometryCameraConverter::LoadCameraIntrinsics(
 
   Eigen::Matrix3f intrinsic_k;
   for (int i = 0; i < 3; ++i) {
+    #pragma omp parallel for
     for (int j = 0; j < 3; ++j) {
       int index = i * 3 + j;
       intrinsic_k(i, j) = node["K"][index].as<float>();
@@ -118,6 +119,7 @@ bool GeometryCameraConverter::LoadCameraIntrinsics(
   }
 
   Eigen::Matrix<float, 5, 1> intrinsic_d;
+  #pragma omp parallel for
   for (int i = 0; i < 5; i++) {
     intrinsic_d(i, 0) = node["D"][i].as<float>();
   }
@@ -425,6 +427,7 @@ void GeometryCameraConverter::SetBoxProjection(
     std::shared_ptr<VisualObject> obj) const {
   obj->pts8.resize(16);
   if (obj->trunc_width < 0.25f && obj->trunc_height < 0.25f) {  // No truncation
+    #pragma omp parallel for
     for (int i = 0; i < 8; i++) {
       obj->pts8[i * 2] = pixel_corners_[i].x();
       obj->pts8[i * 2 + 1] = pixel_corners_[i].y();

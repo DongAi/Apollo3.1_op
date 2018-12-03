@@ -107,6 +107,7 @@ void PlaneMotion::update_motion_buffer(const VehicleStatus &vehicledata,
                                        const double pre_image_timestamp,
                                        const double image_timestamp) {
   MutexLock lock(&mutex_);
+  #pragma omp parallel for
   for (size_t k = 0; k < mot_buffer_->size(); ++k) {
     mot_buffer_->at(k).motion *= mat_motion_sensor_;
   }

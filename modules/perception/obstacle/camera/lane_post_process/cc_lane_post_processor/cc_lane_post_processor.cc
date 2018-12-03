@@ -469,7 +469,9 @@ bool CCLanePostProcessor::GenerateLaneInstances(const cv::Mat &lane_map) {
            << "(" << lane_map.cols << ", " << lane_map.rows << ")";
     lane_mask.create(lane_map.rows, lane_map.cols, CV_8UC1);
     lane_mask.setTo(cv::Scalar(0));
+    
     for (int h = 0; h < lane_mask.rows; ++h) {
+      #pragma omp parallel for
       for (int w = 0; w < lane_mask.cols; ++w) {
         if (lane_map.at<float>(h, w) >= options_.lane_map_conf_thresh) {
           lane_mask.at<unsigned char>(h, w) = 1;
@@ -1337,6 +1339,7 @@ void CCLanePostProcessor::FilterWithLaneHistory(LaneObjectsPtr lane_objects) {
     for (size_t j = 0; j < lane_history_.size(); j++) {
       // iter to find corresponding lane
       size_t k;
+      #pragma omp parallel for
       for (k = 0; k < lane_history_[j].size(); k++) {
         if (lane_history_[j][k].spatial == lane_objects->at(i).spatial) {
           break;
