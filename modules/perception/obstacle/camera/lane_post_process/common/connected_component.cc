@@ -640,11 +640,11 @@ vector<int> ConnectedComponent::GetSplitRanges(int siz, int len_split) {
               << std::endl;
   }
 
-  int num_split = siz * (1.0f / len_split);
+  int num_split = siz / len_split;
   int remainder = siz % len_split;
   vector<int> lens(num_split, len_split);
 
-  if (lens.size() == 0 || remainder > len_split >> 1) {
+  if (lens.size() == 0 || remainder > len_split / 2) {
     lens.push_back(remainder);
     ++num_split;
   } else {

@@ -31,7 +31,7 @@ Cipv::Cipv(void)
       EGO_CAR_LENGTH_METER(vehicle_param_.length()),
       EGO_CAR_MARGIN_METER(0.5f),
       EGO_CAR_VIRTUAL_LANE(EGO_CAR_WIDTH_METER + EGO_CAR_MARGIN_METER),
-      EGO_CAR_HALF_VIRTUAL_LANE(EGO_CAR_VIRTUAL_LANE * 0.5f) {}
+      EGO_CAR_HALF_VIRTUAL_LANE(EGO_CAR_VIRTUAL_LANE / 2.0f) {}
 
 Cipv::~Cipv(void) {}
 
@@ -246,14 +246,13 @@ bool Cipv::FindClosestEdgeOfObjectImage(const std::shared_ptr<Object> &object,
   float center_y = object->center[1];
   float direction_x = object->direction[0];
   float direction_y = object->direction[1];
-  float x1 = size_x * 0.5;
+  float x1 = size_x / 2;
   float x2 = 0 - x1;
-  float y1 = size_y * 0.5;
+  float y1 = size_y / 2;
   float y2 = 0 - y1;
   double len = sqrt(direction_x * direction_x + direction_y * direction_y);
-  float len_m = 1.0f / len;
-  float cos_theta = direction_x * len_m;
-  float sin_theta = -direction_y * len_m;
+  float cos_theta = direction_x / len;
+  float sin_theta = -direction_y / len;
 
   // Check if object direction is less than +-45 degree
   // angle = atan2(y, x)
@@ -344,17 +343,16 @@ bool Cipv::FindClosestEdgeOfObjectGround(const std::shared_ptr<Object> &object,
   float center_y = object->center[1];
   float direction_x = object->direction[0];
   float direction_y = object->direction[1];
-  float x1 = size_x * 0.5;
+  float x1 = size_x / 2;
   float x2 = 0 - x1;
-  float y1 = size_y * 0.5;
+  float y1 = size_y / 2;
   float y2 = 0 - y1;
   double len = sqrt(direction_x * direction_x + direction_y * direction_y);
   if (len < B_FLT_EPSILON) {
     return false;
   }
-  float len_m = 1.0f / len;
-  float cos_theta = direction_x * len_m;
-  float sin_theta = -direction_y * len_m;
+  float cos_theta = direction_x / len;
+  float sin_theta = -direction_y / len;
 
   Point2Df p[4];
 

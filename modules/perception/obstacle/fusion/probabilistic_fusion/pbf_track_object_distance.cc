@@ -142,9 +142,9 @@ float PbfTrackObjectDistance::GetAngle(const Eigen::Vector3d &sensor_center,
 
   if (center[0] == 0) {
     if (center[1] > 0) {
-      return M_PI_2;
+      return M_PI / 2;
     } else {
-      return -M_PI_2;
+      return -M_PI / 2;
     }
   }
 
@@ -221,9 +221,9 @@ float PbfTrackObjectDistance::ComputeDistanceAngleMatchProb(
   float angle_distance_diff = 0.0f;
 
   if (fcenter(0) > epislon && std::abs(fcenter(1)) > epislon) {
-    float x_ratio = std::abs(fcenter(0) - scenter(0)) * (1.0F / fcenter(0));
+    float x_ratio = std::abs(fcenter(0) - scenter(0)) / fcenter(0);
     assert(x_ratio >= 0);
-    float y_ratio = std::abs(fcenter(1) - scenter(1)) * (1.0f / std::abs(fcenter(1)));
+    float y_ratio = std::abs(fcenter(1) - scenter(1)) / std::abs(fcenter(1));
 
     if (x_ratio < FLAGS_pbf_fusion_assoc_distance_percent &&
         y_ratio < FLAGS_pbf_fusion_assoc_distance_percent) {
@@ -231,12 +231,12 @@ float PbfTrackObjectDistance::ComputeDistanceAngleMatchProb(
     }
 
   } else if (fcenter(0) > epislon) {
-    float x_ratio = std::abs(fcenter(0) - scenter(0)) * (1.0f / fcenter(0));
+    float x_ratio = std::abs(fcenter(0) - scenter(0)) / fcenter(0);
     if (x_ratio < FLAGS_pbf_fusion_assoc_distance_percent) {
       range_distance_ratio = x_ratio;
     }
   } else if (std::abs(fcenter(1)) > epislon) {
-    float y_ratio = std::abs(fcenter(1) - scenter(1)) * (1.0f / std::abs(fcenter(1)));
+    float y_ratio = std::abs(fcenter(1) - scenter(1)) / std::abs(fcenter(1));
     if (y_ratio < FLAGS_pbf_fusion_assoc_distance_percent) {
       range_distance_ratio = y_ratio;
     }
@@ -246,13 +246,13 @@ float PbfTrackObjectDistance::ComputeDistanceAngleMatchProb(
   // if (is_radar(sensor_object->sensor_type)) {
   float sangle = GetAngle(scenter, sensor_object->sensor_type);
   float fangle = GetAngle(fcenter, sensor_object->sensor_type);
-  angle_distance_diff = std::abs(sangle - fangle) * M_PI_D_180;
+  angle_distance_diff = (std::abs(sangle - fangle) * 180) / M_PI;
   float fobject_dist = static_cast<float>(fcenter.norm());
   double svelocity = sobj->velocity.norm();
   double fvelocity = fobj->velocity.norm();
   if (svelocity > 0.0 && fvelocity > 0.0) {
     float cos_distance =
-        sobj->velocity.dot(fobj->velocity) * (1.0f / (svelocity * fvelocity));
+        sobj->velocity.dot(fobj->velocity) / (svelocity * fvelocity);
     if (cos_distance < FLAGS_pbf_distance_speed_cos_diff) {
       AWARN << "velocity cosine distance too large" << cos_distance;
       distance = std::numeric_limits<float>::max();

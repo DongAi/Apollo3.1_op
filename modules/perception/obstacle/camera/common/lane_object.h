@@ -22,15 +22,6 @@
 
 #include "Eigen/Eigen"
 
-#define M_PI 3.14159265358979323846
-#define M_PI_2 1.570796327
-#define M_PI_3 1.047197551
-#define M_PI_3_M_2 1.096622711
-#define M_PI_6 0.523598776
-#define M_PI_6_M_2 0.274155678
-#define M_PI_180 0.017453293
-#define M_PI_D_180 57.295779513
-
 namespace apollo {
 namespace perception {
 
@@ -39,7 +30,7 @@ const float LOWEST_FLOAT = -std::numeric_limits<float>::max();
 const float MIN_ANGLE = LOWEST_FLOAT / 180.0f;
 const float B_FLT_EPSILON = 0.000001f;  // should be changed
 
-const float FOURTY_FIVE_DEGREE = 45.0f * M_PI_180;
+const float FOURTY_FIVE_DEGREE = 45.0f * M_PI / 180.0f;
 
 // required number of points for lane line to determine the CIPV
 const uint32_t MIN_LANE_LINE_LENGTH_FOR_CIPV_DETERMINATION = 2;
@@ -49,13 +40,13 @@ const float AVERAGE_LANE_WIDTH_IN_METER = 3.7f;
 const float MAX_VEHICLE_WIDTH_IN_METER = 2.5f;
 // Margin from a virtual car lane to actual lane
 const float MARGIN_VEHICLE_TO_LANE =
-    (AVERAGE_LANE_WIDTH_IN_METER - MAX_VEHICLE_WIDTH_IN_METER) * 0.5f;
+    (AVERAGE_LANE_WIDTH_IN_METER - MAX_VEHICLE_WIDTH_IN_METER) / 2.0f;
 // The width of virtual egolane when there is only one lane line
 const float SINGLE_VIRTUAL_EGOLANE_WIDTH_IN_METER =
     MAX_VEHICLE_WIDTH_IN_METER + MARGIN_VEHICLE_TO_LANE;  // 3.1f
 
 // The width of virtual egolane when there is only one lane line
-const float HALF_VEHICLE_WIDTH_IN_METER = MAX_VEHICLE_WIDTH_IN_METER * 0.5f;
+const float HALF_VEHICLE_WIDTH_IN_METER = MAX_VEHICLE_WIDTH_IN_METER / 2.0f;
 
 typedef Eigen::Vector2i Point2Di;
 typedef Eigen::Vector2f Point2Df;

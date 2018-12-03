@@ -338,8 +338,8 @@ bool ObjectTrack::CheckTrackStaticHypothesis(
 
   // B. evaluate velocity level
   double speed = belief_velocity_.head(2).norm();
-  bool velocity_is_noise = speed < (s_speed_noise_maximum_ >> 1);
-  bool velocity_is_small = speed < (s_speed_noise_maximum_);
+  bool velocity_is_noise = speed < (s_speed_noise_maximum_ / 2);
+  bool velocity_is_small = speed < (s_speed_noise_maximum_ / 1);
   if (velocity_is_noise) {
     return true;
   }
@@ -360,7 +360,7 @@ bool ObjectTrack::CheckTrackStaticHypothesisByVelocityAngleChange(
   Eigen::Vector3f current_velocity = current_object_->velocity;
   double velocity_angle_change =
       VectorTheta2dXy(previous_velocity, current_velocity);
-  if (fabs(velocity_angle_change) > M_PI_4) {
+  if (fabs(velocity_angle_change) > M_PI / 4.0) {
     return true;
   }
   return false;
@@ -411,7 +411,7 @@ int ObjectTrackSet::RemoveLostTracks() {
   for (size_t i = 0; i < tracks_.size(); ++i) {
     // A. remove tracks invisible ratio less than given minimum
     float track_visible_ratio =
-        tracks_[i]->total_visible_count_ * (1.0f / tracks_[i]->age_);
+        tracks_[i]->total_visible_count_ * 1.0f / tracks_[i]->age_;
     if (track_visible_ratio < s_track_visible_ratio_minimum_) continue;
     // B. remove tracks consecutive invisible count greater than given maximum
     int track_consecutive_invisible_count =

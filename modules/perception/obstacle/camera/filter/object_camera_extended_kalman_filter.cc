@@ -141,7 +141,7 @@ ObjectCameraExtendedKalmanFilter::InitObjectFilter(const float x, const float y,
   Eigen::Matrix4f P;
   P.setIdentity();
   P(0, 0) = P(1, 1) = 20.0f;
-  P(2, 2) = M_PI_3_M_2;
+  P(2, 2) = (M_PI / 3) * (M_PI / 3);
   P(3, 3) = 20.0f;
   filter.SetStateEstimate(state, P);
 
@@ -165,7 +165,7 @@ ObjectCameraExtendedKalmanFilter::InitObjectFilter(const float x, const float y,
   Eigen::Matrix<float, 3, 3> R;
   R.setIdentity();
   R(0, 0) = R(1, 1) = 9.0f;
-  R(2, 2) = M_PI_6_M_2;
+  R(2, 2) = (M_PI / 6) * (M_PI / 6);
   filter.SetObservationNoise(R);
 
   return filter;

@@ -25,15 +25,6 @@
 #include "modules/perception/obstacle/camera/lane_post_process/common/type.h"
 #include "modules/perception/obstacle/camera/lane_post_process/common/util.h"
 
-#define M_PI 3.14159265358979323846
-#define M_PI_2 1.570796327
-#define M_PI_3 1.047197551
-#define M_PI_3_M_2 1.096622711
-#define M_PI_6 0.523598776
-#define M_PI_6_M_2 0.274155678
-#define M_PI_180 0.017453293
-#define M_PI_D_180 57.295779513
-
 namespace apollo {
 namespace perception {
 
@@ -73,10 +64,10 @@ struct Group {
         space_type(SpaceType::IMAGECOR),
         start_pos(0.0, 0.0),
         start_orie(0.0, -1.0),
-        start_angle(static_cast<ScalarType>(-M_PI_2)),
+        start_angle(static_cast<ScalarType>(-M_PI / 2.0)),
         end_pos(0.0, 0.0),
         end_orie(0.0, -1.0),
-        end_angle(static_cast<ScalarType>(-M_PI_2)) {
+        end_angle(static_cast<ScalarType>(-M_PI / 2.0)) {
     start_marker_idx.reserve(MAX_GROUP_PREDICTION_MARKER_NUM);
     start_pos_list.reserve(MAX_GROUP_PREDICTION_MARKER_NUM);
     start_orie_list.reserve(MAX_GROUP_PREDICTION_MARKER_NUM);
@@ -244,20 +235,22 @@ inline ScalarType Group::ComputeDistance(const Group& tar_group,
   // (3) compute the deviation angle from reference marker to the target one
   // orientation angle of end markers on reference group
   ScalarType beta = this->end_angle;
-
+  ADEBUG << "beta = " << std::to_string(beta / M_PI * 180.0);
 
   // angle from reference marker to the target one
   ScalarType gamma = std::atan2(displacement(1), displacement(0));
   if (gamma < 0) {
     gamma += 2 * static_cast<ScalarType>(M_PI);
   }
-
+  ADEBUG << "gamma = " << std::to_string(gamma / M_PI * 180.0);
 
   ScalarType deviation_angle_dist = std::abs(beta - gamma);
   if (deviation_angle_dist > static_cast<ScalarType>(M_PI)) {
     deviation_angle_dist =
         2 * static_cast<ScalarType>(M_PI) - deviation_angle_dist;
   }
+  ADEBUG << "(3) deviation_angle_dist = "
+         << std::to_string(deviation_angle_dist / M_PI * 180.0);
   if (deviation_angle_dist > param.max_deviation_angle) {
     return -3;
   }
@@ -271,12 +264,15 @@ inline ScalarType Group::ComputeDistance(const Group& tar_group,
   if (tar_group_start_len > param.min_orientation_estimation_size) {
     // orientation angle of start markers on target group
     ScalarType alpha = tar_group.start_angle;
+    ADEBUG << "alpha = " << std::to_string(alpha / M_PI * 180.0);
 
     orie_dist = std::abs(alpha - beta);
     if (orie_dist > static_cast<ScalarType>(M_PI)) {
       orie_dist = 2 * static_cast<ScalarType>(M_PI) - orie_dist;
     }
-
+    ADEBUG << "(4b) orie_dist = " << std::to_string(orie_dist / M_PI * 180.0)
+           << " (" << std::to_string(param.max_relative_orie / M_PI * 180.0)
+           << ")";
     if (orie_dist > param.max_relative_orie) {
       return -4;
     }
@@ -285,7 +281,7 @@ inline ScalarType Group::ComputeDistance(const Group& tar_group,
   ScalarType r =
       std::max(std::abs(param.min_distance), std::abs(param.max_distance));
   if (r > kEpsilon) {
-    projection_dist = std::abs(projection_dist) * (1.0f / r);
+    projection_dist = std::abs(projection_dist) / r;
   }
   if (param.max_departure_distance > kEpsilon) {
     departure_dist /= param.max_departure_distance;

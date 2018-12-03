@@ -28,23 +28,22 @@ void FeatureDescriptor::ComputeHistogram(const int bin_size,
   int zstep = bin_size;
   int stat_len = xstep + ystep + zstep;
   std::vector<int> stat_feat(stat_len, 0);
-  float xsize = (max_pt_.x - min_pt_.x) * (1.0f / xstep) + 0.000001;
-  float ysize = (max_pt_.y - min_pt_.y) * (1.0f / ystep) + 0.000001;
-  float zsize = (max_pt_.z - min_pt_.z) * (1.0f / zstep) + 0.000001;
+  float xsize = (max_pt_.x - min_pt_.x) / xstep + 0.000001;
+  float ysize = (max_pt_.y - min_pt_.y) / ystep + 0.000001;
+  float zsize = (max_pt_.z - min_pt_.z) / zstep + 0.000001;
 
   int pt_num = cloud_->points.size();
   for (int i = 0; i < pt_num; ++i) {
     pcl_util::Point& pt = cloud_->points[i];
-    stat_feat[floor((pt.x - min_pt_.x) * (1.0f / xsize))]++;
-    stat_feat[xstep + floor((pt.y - min_pt_.y) * (1.0f / ysize))]++;
-    stat_feat[xstep + ystep + floor((pt.z - min_pt_.z) * (1.0f / zsize))]++;
+    stat_feat[floor((pt.x - min_pt_.x) / xsize)]++;
+    stat_feat[xstep + floor((pt.y - min_pt_.y) / ysize)]++;
+    stat_feat[xstep + ystep + floor((pt.z - min_pt_.z) / zsize)]++;
   }
   // update feature
   (*feature).resize(stat_len);
-  float num_m = 1.0f / pt_num;
   for (size_t i = 0; i < stat_feat.size(); ++i) {
     (*feature)[i] =
-        static_cast<float>(stat_feat[i]) * num_m;
+        static_cast<float>(stat_feat[i]) / static_cast<float>(pt_num);
   }
 }
 
@@ -69,10 +68,9 @@ void FeatureDescriptor::GetMinMaxCenter() {
     max_pt_.z = std::max(max_pt_.z, pt.z);
   }
   // center position
-  float num_m = 1.0f / pt_num;
-  center_pt_.x = xsum * num_m;
-  center_pt_.y = ysum * num_m;
-  center_pt_.z = zsum * num_m;
+  center_pt_.x = xsum / pt_num;
+  center_pt_.y = ysum / pt_num;
+  center_pt_.z = zsum / pt_num;
 }
 
 }  // namespace perception

@@ -31,7 +31,7 @@ void PolygonScanConverter::Init(const DirectionMajor major_dir,
 
   polygon_ = polygon;
   min_x_ = valid_x_range.first;
-  scans_size_ = (valid_x_range.second - valid_x_range.first) * (1.0f / step);
+  scans_size_ = (valid_x_range.second - valid_x_range.first) / step;
   step_ = step;
 }
 
@@ -143,7 +143,7 @@ bool PolygonScanConverter::ConvertSegmentToEdge(
   double min_x = segment.first[major_dir_] - min_x_;
   double min_y = segment.first[op_major_dir_];
 
-  int x_id = std::ceil(min_x * (1.0f / step_));
+  int x_id = std::ceil(min_x / step_);
   out_edge->first = x_id;
 
   Edge &edge = out_edge->second;
@@ -186,7 +186,7 @@ void PolygonScanConverter::ConvertPolygonToSegments() {
     double y_diff = next_vertex[op_major_dir_] - cur_vertex[op_major_dir_];
     std::abs(cur_vertex[major_dir_] - next_vertex[major_dir_]) < kEpsilon
         ? slope_.push_back(kInf)
-        : slope_.push_back(y_diff * (1.0f / x_diff));
+        : slope_.push_back(y_diff / x_diff);
   }
 }
 
@@ -196,7 +196,7 @@ void PolygonScanConverter::DisturbPolygon() {
     // If they are too close, disturb the point in case of the point locating on
     // the line.
     double &x = pt[major_dir_];
-    double d_x = (x - min_x_) * (1.0f / step_);
+    double d_x = (x - min_x_) / step_;
     int int_d_x = std::round(d_x);
     double delta_x = d_x - int_d_x;
     if (std::abs(delta_x) < kEpsilon) {

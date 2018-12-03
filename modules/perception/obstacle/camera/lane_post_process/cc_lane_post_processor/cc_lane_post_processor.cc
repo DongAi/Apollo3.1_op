@@ -87,7 +87,7 @@ bool CCLanePostProcessor::Init() {
     AERROR << "the number of point coordinate values should be even.";
     return false;
   }
-  size_t non_mask_polygon_point_num = config_.non_mask_size() >> 1;
+  size_t non_mask_polygon_point_num = config_.non_mask_size() / 2;
 
   non_mask_.reset(new NonMask(non_mask_polygon_point_num));
   for (size_t i = 0; i < non_mask_polygon_point_num; ++i) {
@@ -147,7 +147,7 @@ bool CCLanePostProcessor::Init() {
            : config_.assoc_max_deviation_angle());
   ADEBUG << "assoc_max_deviation_angle = "
          << options_.frame.assoc_param.max_deviation_angle;
-  options_.frame.assoc_param.max_deviation_angle *= (M_PI_180);
+  options_.frame.assoc_param.max_deviation_angle *= (M_PI / 180.0);
 
   options_.frame.assoc_param.deviation_angle_weight =
       config_.assoc_deviation_angle_weight();
@@ -160,7 +160,7 @@ bool CCLanePostProcessor::Init() {
            : config_.assoc_max_relative_orie());
   ADEBUG << "assoc_max_relative_orie = "
          << options_.frame.assoc_param.max_relative_orie;
-  options_.frame.assoc_param.max_relative_orie *= (M_PI_180);
+  options_.frame.assoc_param.max_relative_orie *= (M_PI / 180.0);
 
   options_.frame.assoc_param.relative_orie_weight =
       config_.assoc_relative_orie_weight();
@@ -558,15 +558,13 @@ bool CCLanePostProcessor::ProcessWithoutCC(
 
   // 1. Sample points on lane_map and project them onto world coordinate
   int y = lane_map.rows * 0.9 - 1;
-  int step_y = (y - 40) * (y - 40) * 0.00015625f + 1;
+  int step_y = (y - 40) * (y - 40) / 6400 + 1;
 
   xy_points.clear();
   xy_points.resize(13);
   uv_points.clear();
   uv_points.resize(13);
 
-  float cols_m = 1.0f / lane_map.cols;
-  float rows_m = 1.0f / lane_map.rows;
   while (y > 0) {
     int x = 1;
     while (x < lane_map.cols - 1) {
@@ -576,20 +574,19 @@ bool CCLanePostProcessor::ProcessWithoutCC(
         // right edge (inner) of the lane
         if (value != round(lane_map.at<float>(y, x + 1))) {
           Eigen::Matrix<double, 3, 1> img_point(
-              x * roi_width * cols_m,
-              y * roi_height * rows_m + roi_start, 1.0);
+              x * roi_width / lane_map.cols,
+              y * roi_height / lane_map.rows + roi_start, 1.0);
           Eigen::Matrix<double, 3, 1> xy_p = trans_mat_ * img_point;
           Eigen::Matrix<double, 2, 1> xy_point;
           Eigen::Matrix<double, 2, 1> uv_point;
           if (std::abs(xy_p(2)) < 1e-6) continue;
-          double xy_m = 1.0 / xy_p(2);
-          xy_point << xy_p(0) * xy_m, xy_p(1) * xy_m;
+          xy_point << xy_p(0) / xy_p(2), xy_p(1) / xy_p(2);
           if (xy_point(0) < 0 || xy_point(0) > 300 || abs(xy_point(1)) > 30) {
             ++x;
             continue;
           }
-          uv_point << static_cast<double>(x * roi_width * cols_m),
-              static_cast<double>(y * roi_height * rows_m + roi_start);
+          uv_point << static_cast<double>(x * roi_width / lane_map.cols),
+              static_cast<double>(y * roi_height / lane_map.rows + roi_start);
           if (xy_points[value].size() < 5 || xy_point(0) < 50 ||
               std::abs(xy_point(1) - xy_points[value].back()(1)) < 1) {
             xy_points[value].push_back(xy_point);
@@ -600,19 +597,18 @@ bool CCLanePostProcessor::ProcessWithoutCC(
         // left edge (inner) of the lane
         if (value != round(lane_map.at<float>(y, x - 1))) {
           Eigen::Matrix<double, 3, 1> img_point(
-              x * roi_width * cols_m,
-              y * roi_height * rows_m + roi_start, 1.0);
+              x * roi_width / lane_map.cols,
+              y * roi_height / lane_map.rows + roi_start, 1.0);
           Eigen::Matrix<double, 3, 1> xy_p = trans_mat_ * img_point;
           Eigen::Matrix<double, 2, 1> xy_point;
           Eigen::Matrix<double, 2, 1> uv_point;
-          double xy_m = 1.0 / xy_p(2);
-          xy_point << xy_p(0) * xy_m, xy_p(1) * xy_m;
+          xy_point << xy_p(0) / xy_p(2), xy_p(1) / xy_p(2);
           if (xy_point(0) < 0 || xy_point(0) > 300 || abs(xy_point(1)) > 25) {
             ++x;
             continue;
           }
-          uv_point << static_cast<double>(x * roi_width * cols_m),
-              static_cast<double>(y * roi_height * rows_m + roi_start);
+          uv_point << static_cast<double>(x * roi_width / lane_map.cols),
+              static_cast<double>(y * roi_height / lane_map.rows + roi_start);
           if (xy_points[value].size() < 5 || xy_point(0) < 50 ||
               std::abs(xy_point(1) - xy_points[value].back()(1)) < 1) {
             xy_points[value].push_back(xy_point);
@@ -622,7 +618,7 @@ bool CCLanePostProcessor::ProcessWithoutCC(
       }
       ++x;
     }
-    step_y = (y - 45) * (y - 45) * 0.00015625 + 1;
+    step_y = (y - 45) * (y - 45) / 6400 + 1;
     y -= step_y;
   }
 
@@ -789,6 +785,10 @@ bool CCLanePostProcessor::ProcessWithoutCC(
   time_3 += microseconds - microseconds_2;
   time_num += 1;
 
+  AINFO << "Avg sampling time: " << time_1 / time_num
+        << " Avg ransac time: " << time_2 / time_num
+        << " Avg writing time: " << time_3 / time_num;
+
   return true;
 }
 
@@ -823,7 +823,7 @@ bool CCLanePostProcessor::Process(const cv::Mat &lane_map,
   /// generate lane objects
   if (options_.space_type == SpaceType::IMAGECOR) {
     /// for image space coordinate
-    ScalarType x_center = static_cast<ScalarType>(roi_.x + roi_.width >> 1);
+    ScalarType x_center = static_cast<ScalarType>(roi_.x + roi_.width / 2);
 
     lane_objects->reset(new LaneObjects());
     (*lane_objects)->reserve(2);
@@ -1252,7 +1252,8 @@ bool CCLanePostProcessor::CorrectWithLaneHistory(int l,
           std::abs(pos.y() - PolyEval(pos.x(), lane.order, lane.model));
       count++;
     }
-    if (count > 0 && ave_delta * (1.0 / count) > AVEAGE_LANE_WIDTH_METER * 0.25) {
+    if (count > 0 && ave_delta / count > AVEAGE_LANE_WIDTH_METER / 4.0) {
+      ADEBUG << "ave_delta is: " << ave_delta / count;
       lane_objects->erase(lane_objects->begin() + idx);
     } else {
       (*is_valid)[l] = true;

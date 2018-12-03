@@ -46,16 +46,6 @@
 #include "modules/perception/obstacle/camera/common/visual_object.h"
 #include "modules/perception/obstacle/camera/interface/base_camera_transformer.h"
 
-#define M_PI 3.14159265358979323846
-#define M_PI_M_2 6.283185307
-#define M_PI_2 1.570796327
-#define M_PI_3 1.047197551
-#define M_PI_3_M_2 1.096622711
-#define M_PI_6 0.523598776
-#define M_PI_6_M_2 0.274155678
-#define M_PI_180 0.017453293
-#define M_PI_D_180 57.295779513
-
 namespace apollo {
 namespace perception {
 

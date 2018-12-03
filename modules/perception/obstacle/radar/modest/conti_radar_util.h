@@ -36,8 +36,8 @@ class ContiRadarUtil {
     if (vector_temp1.head(2).norm() > velocity_threshold &&
         vector_temp2.head(2).norm() > velocity_threshold) {
       double theta = VectorTheta2dXy(vector_temp1, vector_temp2);
-      if ((theta > M_PI_4 && theta < 3.0 * M_PI_4) ||
-          (theta > -3.0 * M_PI_4 && theta < -M_PI_4)) {
+      if ((theta > 1.0 / 4.0 * M_PI && theta < 3.0 / 4.0 * M_PI) ||
+          (theta > -3.0 / 4.0 * M_PI && theta < -1.0 / 4.0 * M_PI)) {
         return true;
       }
     }

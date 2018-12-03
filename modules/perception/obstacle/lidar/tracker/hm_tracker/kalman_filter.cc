@@ -319,13 +319,11 @@ Eigen::VectorXf KalmanFilter::ComputeMeasuredBboxCornerVelocity(
       Eigen::Vector3f(100, 100, 0);
   float min_bbox_corner_velocity_on_project_dir_gain_norm =
       min_bbox_corner_velocity_on_project_dir.norm();
-  
-  double diff_m = 1.0 / time_diff;
   for (size_t i = 0; i < 4; ++i) {
     old_bbox_corner = old_bbox_corner_list[i];
     new_bbox_corner = new_bbox_corner_list[i];
     Eigen::Vector3f bbox_corner_velocity =
-        ((new_bbox_corner - old_bbox_corner) * diff_m).cast<float>();
+        ((new_bbox_corner - old_bbox_corner) / time_diff).cast<float>();
     float bbox_corner_velocity_project_dir_inner_product =
         bbox_corner_velocity(0) * project_dir(0) +
         bbox_corner_velocity(1) * project_dir(1);
@@ -407,7 +405,7 @@ void KalmanFilter::UpdateVelocity(const Eigen::VectorXf& measured_anchor_point,
 
   belief_anchor_point_ = measured_anchor_point_d;
   belief_velocity_ = priori_velocity + velocity_gain;
-  belief_acceleration_gain_ = velocity_gain * (1.0f / time_diff);
+  belief_acceleration_gain_ = velocity_gain / time_diff;
 
   // Adaptive
   if (s_use_adaptive_) {

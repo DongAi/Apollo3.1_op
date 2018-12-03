@@ -208,7 +208,7 @@ class FrameContent {
   const double kEpsilon_ = 1e-6;
 
   int64_t DoubleToMapKey(const double d) {
-    return static_cast<int64_t>(d * (1.0f / kEpsilon_));
+    return static_cast<int64_t>(d / kEpsilon_);
   }
 
   double MapKeyToDouble(const int64_t key) { return key * kEpsilon_; }

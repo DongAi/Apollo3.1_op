@@ -67,14 +67,12 @@ void YoloCameraDetector::init_anchor(const string &yolo_root) {
                                               model_param.anchors_file());
   vector<float> anchors;
   yolo::load_anchors(anchors_file, &anchors);
-  int an_size = anchors.size();
-  int an_size_m = an_size >> 1;
-  num_anchors_ = an_size_m;
-  obj_size_ = output_height_ * output_width_ * an_size_m;
-  anchor_.reset(new caffe::SyncedMemory(an_size * sizeof(float)));
+  num_anchors_ = anchors.size() / 2;
+  obj_size_ = output_height_ * output_width_ * anchors.size() / 2;
+  anchor_.reset(new caffe::SyncedMemory(anchors.size() * sizeof(float)));
 
   auto anchor_cpu_data = anchor_->mutable_cpu_data();
-  memcpy(anchor_cpu_data, anchors.data(), an_size * sizeof(float));
+  memcpy(anchor_cpu_data, anchors.data(), anchors.size() * sizeof(float));
 
   // loading types
   const string types_file = GetAbsolutePath(model_root,
@@ -132,20 +130,18 @@ void YoloCameraDetector::load_intrinsic(
   }
 
   offset_y_ = static_cast<int>(offset_ratio * image_height_ + .5);
-  float roi_ratio = cropped_ratio * image_height_ * (1.0f / image_width_);
-
-  int aligned_pixel_m = aligned_pixel * aligned_pixel;
-  int aligned_pixel_m_2 = aligned_pixel >> 1;
-  float aligned_pixel_m_3 = 1.0f / aligned_pixel_m;
-  width_ = static_cast<int>(resized_width + aligned_pixel_m_2) * aligned_pixel_m_3;
-  height_ = static_cast<int>(width_ * roi_ratio + aligned_pixel_m_2) * aligned_pixel_m_3;
+  float roi_ratio = cropped_ratio * image_height_ / image_width_;
+  width_ = static_cast<int>(resized_width + aligned_pixel / 2) / aligned_pixel *
+           aligned_pixel;
+  height_ = static_cast<int>(width_ * roi_ratio + aligned_pixel / 2) /
+            aligned_pixel * aligned_pixel;
   ADEBUG << "image_height=" << image_height_ << ", "
          << "image_width=" << image_width_ << ", "
          << "roi_ratio=" << roi_ratio;
   ADEBUG << "offset_y=" << offset_y_ << ", height=" << height_
          << ", width=" << width_;
 
-  min_2d_height_ *= (1.0f / height_);
+  min_2d_height_ /= height_;
 
   int roi_w = image_width_;
   int roi_h = image_height_ - offset_y_;
@@ -787,19 +783,18 @@ void YoloCameraDetector::get_object_helper(
   int c = idx % num_anchors_;
   idx = idx / num_anchors_;
   int w = idx % width;
-  float width_m = 1.0f / width;
-  idx = idx * width_m;
+  idx = idx / width;
   int h = idx;
   int offset_loc = ((h * width + w) * num_anchors_ + c) * 4;
   int offset_obj = (h * width + w) * num_anchors_ + c;
   int offset_cls = ((h * width + w) * num_anchors_ + c) * num_classes;
   float scale = obj_data[offset_obj];
 
-  float cx = (w + yolo::sigmoid(loc_data[offset_loc + 0])) * width_m;
-  float cy = (h + yolo::sigmoid(loc_data[offset_loc + 1])) * (1.0f / height);
+  float cx = (w + yolo::sigmoid(loc_data[offset_loc + 0])) / width;
+  float cy = (h + yolo::sigmoid(loc_data[offset_loc + 1])) / height;
   float hw =
-      std::exp(loc_data[offset_loc + 2]) * anchor_data[c << 1] * width_m * 0.5;
-  float hh = std::exp(loc_data[offset_loc + 3]) * anchor_data[c << 1 + 1] /
+      std::exp(loc_data[offset_loc + 2]) * anchor_data[2 * c] / width * 0.5;
+  float hh = std::exp(loc_data[offset_loc + 3]) * anchor_data[2 * c + 1] /
              height * 0.5;
 
   for (int k = 0; k < num_classes; ++k) {

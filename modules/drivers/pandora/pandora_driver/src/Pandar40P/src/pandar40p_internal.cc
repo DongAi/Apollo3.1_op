@@ -26,11 +26,6 @@ namespace hesai {
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
-#define M_PI_2 1.570796327
-#define M_PI_3 1.047197551
-#define M_PI_6 0.523598776
-#define M_PI_180 0.017453293
-#define M_PI_D_180 57.295779513
 #endif
 
 double degreeToRadian(double degree) { return degree * M_PI / 180; }

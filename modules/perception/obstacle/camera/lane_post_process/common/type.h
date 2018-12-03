@@ -65,15 +65,6 @@ constexpr ScalarType INVERSE_AVEAGE_LANE_WIDTH_METER =
 #define INF_NON_MASK_POINT_X 10000
 #endif
 
-#define M_PI 3.14159265358979323846
-#define M_PI_2 1.570796327
-#define M_PI_3 1.047197551
-#define M_PI_3_M_2 1.096622711
-#define M_PI_6 0.523598776
-#define M_PI_6_M_2 0.274155678
-#define M_PI_180 0.017453293
-#define M_PI_D_180 57.295779513
-
 constexpr ScalarType kEpsilon = 1e-5;
 
 // define colors for visualization (Blue, Green, Red)
@@ -115,9 +106,9 @@ struct AssociationParam {
   ScalarType min_distance = 0.0;
   ScalarType max_distance = 100.0;
   ScalarType distance_weight = 0.4;
-  ScalarType max_deviation_angle = static_cast<ScalarType>(M_PI_6);
+  ScalarType max_deviation_angle = static_cast<ScalarType>(M_PI / 6.0);
   ScalarType deviation_angle_weight = 0.4;
-  ScalarType max_relative_orie = static_cast<ScalarType>(M_PI_6);
+  ScalarType max_relative_orie = static_cast<ScalarType>(M_PI / 6.0);
   ScalarType relative_orie_weight = 0.2;
   ScalarType max_departure_distance = 50.0;
   ScalarType departure_distance_weight = 0.4;
@@ -133,7 +124,7 @@ struct Marker {
   Vector2D start_pos{0.0, 0.0};
   Vector2D image_start_pos{0.0, 0.0};
   Vector2D orie{0.0, -1.0};
-  ScalarType angle = static_cast<ScalarType>(-M_PI_2);
+  ScalarType angle = static_cast<ScalarType>(-M_PI / 2.0);
   int original_id = -1;
   int cc_id = -1;
   int inner_edge_id = -1;

@@ -89,16 +89,16 @@ class BaseObjectBuilder {
                                Eigen::Vector4f* min_pt,
                                Eigen::Vector4f* max_pt) {
     GetCloudMinMax3D<pcl_util::Point>(cloud, min_pt, max_pt);
-    Eigen::Vector3f center(((*min_pt)[0] + (*max_pt)[0]) >> 1,
-                           ((*min_pt)[1] + (*max_pt)[1]) >> 1,
-                           ((*min_pt)[2] + (*max_pt)[2]) >> 1);
+    Eigen::Vector3f center(((*min_pt)[0] + (*max_pt)[0]) / 2,
+                           ((*min_pt)[1] + (*max_pt)[1]) / 2,
+                           ((*min_pt)[2] + (*max_pt)[2]) / 2);
 
     // handle degeneration case
     float epslin = 1e-3;
     for (int i = 0; i < 3; i++) {
       if ((*max_pt)[i] - (*min_pt)[i] < epslin) {
-        (*max_pt)[i] = center[i] + epslin >> 1;
-        (*min_pt)[i] = center[i] - epslin >> 1;
+        (*max_pt)[i] = center[i] + epslin / 2;
+        (*min_pt)[i] = center[i] - epslin / 2;
       }
     }
 
@@ -117,9 +117,9 @@ class BaseObjectBuilder {
     // height
     obj->height = (*max_pt)[2] - (*min_pt)[2];
     // center
-    obj->center = Eigen::Vector3d(((*max_pt)[0] + (*min_pt)[0]) >> 1,
-                                  ((*max_pt)[1] + (*min_pt)[1]) >> 1,
-                                  ((*max_pt)[2] + (*min_pt)[2]) >> 1);
+    obj->center = Eigen::Vector3d(((*max_pt)[0] + (*min_pt)[0]) / 2,
+                                  ((*max_pt)[1] + (*min_pt)[1]) / 2,
+                                  ((*max_pt)[2] + (*min_pt)[2]) / 2);
     // polygon
     if (cloud->size() < 4) {
       obj->polygon.points.resize(4);

@@ -51,7 +51,7 @@ bool GeometryCameraConverter::Convert(
     CheckTruncation(obj, &trunc_center_pixel);
     CheckSizeSanity(obj);
 
-    float deg_alpha = obj->alpha * M_PI_D_180;
+    float deg_alpha = obj->alpha * 180.0f / M_PI;
 
     Eigen::Vector2f upper_left(obj->upper_left.x(), obj->upper_left.y());
     Eigen::Vector2f lower_right(obj->lower_right.x(), obj->lower_right.y());
@@ -93,6 +93,9 @@ bool GeometryCameraConverter::Convert(
 
     // Set 8 corner pixels
     SetBoxProjection(obj);
+
+    ADEBUG << "object id " << obj->id << " distance " << obj->distance
+           << " theta degree" << (obj->theta * 180.0f / M_PI);
   }
 
   return true;
@@ -139,15 +142,15 @@ bool GeometryCameraConverter::ConvertSingle(
 
   // Target Goals: Box center pixel
   Eigen::Matrix<float, 2, 1> box_center_pixel;
-  box_center_pixel.x() = (lower_right.x() + upper_left.x()) * 0.5f;
-  box_center_pixel.y() = (lower_right.y() + upper_left.y()) * 0.5f;
+  box_center_pixel.x() = (lower_right.x() + upper_left.x()) / 2.0f;
+  box_center_pixel.y() = (lower_right.y() + upper_left.y()) / 2.0f;
 
   // Generate alpha rotated 3D template here. Corners in Camera space:
   // Bottom: FL, FR, RR, RL => Top: FL, FR, RR, RL
   float deg_alpha = alpha_deg;
-  float h_half = h * 0.5f;
-  float w_half = w * 0.5f;
-  float l_half = l * 0.5f;
+  float h_half = h / 2.0f;
+  float w_half = w / 2.0f;
+  float l_half = l / 2.0f;
 
   std::vector<Eigen::Vector3f> corners;
   corners.resize(8);
@@ -179,12 +182,10 @@ bool GeometryCameraConverter::ConvertSingle(
     min_pixel_y = std::min(min_pixel_y, point_2d.y());
     max_pixel_y = std::max(max_pixel_y, point_2d.y());
   }
-  float x_m = 1.0f /  (max_pixel_x - min_pixel_x);
-  float y_m = 1.0f / (max_pixel_y - min_pixel_y);
   float relative_x =
-      (center_pixel.x() - min_pixel_x) * x_m;
+      (center_pixel.x() - min_pixel_x) / (max_pixel_x - min_pixel_x);
   float relative_y =
-      (center_pixel.y() - min_pixel_y) * y_m;
+      (center_pixel.y() - min_pixel_y) / (max_pixel_y - min_pixel_y);
 
   mass_center_pixel->x() =
       (lower_right.x() - upper_left.x()) * relative_x + upper_left.x();
@@ -214,7 +215,7 @@ bool GeometryCameraConverter::ConvertSingle(
 
 void GeometryCameraConverter::Rotate(
     const float alpha_deg, std::vector<Eigen::Vector3f> *corners) const {
-  Eigen::AngleAxisf yaw(alpha_deg * M_PI_180, Eigen::Vector3f::UnitY());
+  Eigen::AngleAxisf yaw(alpha_deg / 180.0f * M_PI, Eigen::Vector3f::UnitY());
   Eigen::AngleAxisf pitch(0.0, Eigen::Vector3f::UnitX());
   Eigen::AngleAxisf roll(0.0, Eigen::Vector3f::UnitZ());
   Eigen::Matrix3f rotation = yaw.toRotationMatrix() * pitch.toRotationMatrix() *
@@ -238,7 +239,7 @@ float GeometryCameraConverter::SearchDistance(
   float curr_d = 0.0f;
   int depth = 0;
   while (close_d <= far_d && depth < kMaxDistanceSearchDepth_) {
-    curr_d = (far_d + close_d) * 0.5f;
+    curr_d = (far_d + close_d) / 2.0f;
     Eigen::Vector3f curr_p = mass_center_v * curr_d;
 
     float min_p = std::numeric_limits<float>::max();
@@ -268,7 +269,7 @@ float GeometryCameraConverter::SearchDistance(
     }
 
     // Early break for 0.1m accuracy
-    float next_d = (far_d + close_d) * 0.5f;
+    float next_d = (far_d + close_d) / 2.0f;
     if (std::abs(next_d - curr_d) < 0.1f) {
       AINFO << "early break for 0.1m accuracy";
       break;
@@ -309,8 +310,8 @@ void GeometryCameraConverter::SearchCenterDirection(
     }
 
     Eigen::Matrix<float, 2, 1> current_box_center_pixel;
-    current_box_center_pixel.x() = (max_pixel_x + min_pixel_x) * 0.5;
-    current_box_center_pixel.y() = (max_pixel_y + min_pixel_y) ( 0.5);
+    current_box_center_pixel.x() = (max_pixel_x + min_pixel_x) / 2.0;
+    current_box_center_pixel.y() = (max_pixel_y + min_pixel_y) / 2.0;
 
     // Update mass center
     *mass_center_pixel += box_center_pixel - current_box_center_pixel;
@@ -379,10 +380,10 @@ void GeometryCameraConverter::CheckTruncation(
   if (obj->upper_left.y() < 30.0f || height - 30.0f < obj->lower_right.y()) {
     obj->trunc_height = 0.5f;
     trunc_center_pixel->x() =
-        (obj->upper_left.x() + obj->lower_right.x()) * 0.5f;
+        (obj->upper_left.x() + obj->lower_right.x()) / 2.0f;
   }
 
-  trunc_center_pixel->y() = (obj->upper_left.y() + obj->lower_right.y()) * 0.5f;
+  trunc_center_pixel->y() = (obj->upper_left.y() + obj->lower_right.y()) / 2.0f;
 }
 
 float GeometryCameraConverter::DecideDistance(
@@ -407,6 +408,7 @@ void GeometryCameraConverter::DecideAngle(
       obj->alpha += 2 * M_PI;
     }
   } else {  // Normal cases
+    ADEBUG << "handle in normal case with beta" << (beta * 180.0f) / M_PI;
     float theta = obj->alpha + beta;
     if (theta > M_PI) {
       theta -= 2 * M_PI;

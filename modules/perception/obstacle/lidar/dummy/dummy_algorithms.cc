@@ -135,9 +135,9 @@ bool DummyTracker::Track(
     TransformPointCloud<pcl_util::PointD>(pose, obj->polygon.makeShared());
     if (fabs(obj->direction[0]) < DBL_MIN) {
       if (obj->direction[1] > 0) {
-        obj->theta = M_PI_2;
+        obj->theta = M_PI / 2;
       } else {
-        obj->theta = -M_PI_2;
+        obj->theta = -M_PI / 2;
       }
     } else {
       obj->theta = atan(obj->direction[1] / obj->direction[0]);

@@ -112,19 +112,17 @@ double VectorCosTheta2dXy(const Eigen::Vector3f& v1,
                           const Eigen::Vector3f& v2) {
   double v1_len = sqrt((v1.head(2).cwiseProduct(v1.head(2))).sum());
   double v2_len = sqrt((v2.head(2).cwiseProduct(v2.head(2))).sum());
-  double len_m = 1.0 / (v1_len * v2_len);
   double cos_theta =
-      (v1.head(2).cwiseProduct(v2.head(2))).sum() * len_m;
+      (v1.head(2).cwiseProduct(v2.head(2))).sum() / (v1_len * v2_len);
   return cos_theta;
 }
 
 double VectorTheta2dXy(const Eigen::Vector3f& v1, const Eigen::Vector3f& v2) {
   double v1_len = sqrt((v1.head(2).cwiseProduct(v1.head(2))).sum());
   double v2_len = sqrt((v2.head(2).cwiseProduct(v2.head(2))).sum());
-  double len_m = 1.0 / (v1_len * v2_len);
   double cos_theta =
-      (v1.head(2).cwiseProduct(v2.head(2))).sum() * len_m;
-  double sin_theta = (v1(0) * v2(1) - v1(1) * v2(0)) * len_m;
+      (v1.head(2).cwiseProduct(v2.head(2))).sum() / (v1_len * v2_len);
+  double sin_theta = (v1(0) * v2(1) - v1(1) * v2(0)) / (v1_len * v2_len);
 
   cos_theta = common::math::Clamp(cos_theta, 1.0, -1.0);
 

@@ -295,6 +295,10 @@ Status FusionSubnode::Process(const EventMeta &event_meta,
     min_processing_time_ = std::min(min_processing_time_, t);
     max_processing_time_ = std::max(max_processing_time_, t);
     tot_processing_time_ += t;
+    ADEBUG << "CollectDrops Runtime: "
+           << "MIN (" << min_processing_time_ << " ms), "
+           << "MAX (" << max_processing_time_ << " ms), "
+           << "AVE (" << tot_processing_time_ / seq_num_ << " ms).";
   }
 
   if (FLAGS_publish_fusion_event && options.fused) {

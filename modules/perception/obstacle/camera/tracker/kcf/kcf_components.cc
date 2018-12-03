@@ -122,10 +122,9 @@ cv::Mat KCFComponents::GaussianCorrelation(const std::vector<cv::Mat> &xf,
   cv::Mat xy(xf[0].size(), CV_32FC1, cv::Scalar(0.0));
   cv::Mat xyf;
   cv::Mat xy_temp;
-  float nn_m 1.0f / nn;
   for (unsigned int i = 0; i < xf.size(); ++i) {
-    xx += cv::norm(xf[i]) * cv::norm(xf[i]) * nn_m;
-    yy += cv::norm(yf[i]) * cv::norm(yf[i]) * nn_m;
+    xx += cv::norm(xf[i]) * cv::norm(xf[i]) / nn;
+    yy += cv::norm(yf[i]) * cv::norm(yf[i]) / nn;
     cv::mulSpectrums(xf[i], yf[i], xyf, 0, true);
     cv::idft(xyf, xy_temp, cv::DFT_SCALE | cv::DFT_REAL_OUTPUT);
     xy += xy_temp;
@@ -134,7 +133,7 @@ cv::Mat KCFComponents::GaussianCorrelation(const std::vector<cv::Mat> &xf,
   cv::Mat k;
   float numel_xf = nn * xf.size();
   cv::exp((-1 / (kKernelSigma_ * kKernelSigma_)) *
-              max(0.0, (xx + yy - 2 * xy) * (1.0f / numel_xf)),
+              max(0.0, (xx + yy - 2 * xy) / numel_xf),
           k);
   k.convertTo(k, CV_32FC1);
 
@@ -170,12 +169,10 @@ cv::Mat KCFComponents::ComplexDivision(const cv::Mat &x1, const cv::Mat &x2) {
   std::vector<cv::Mat> complex(2);
   cv::Mat cc = planes2[0].mul(planes2[0]);
   cv::Mat dd = planes2[1].mul(planes2[1]);
-
-  float ccdd_m = 1.0f / (cc + dd);
   complex[0] =
-      (planes1[0].mul(planes2[0]) + planes1[1].mul(planes2[1])) * ccdd_m;
+      (planes1[0].mul(planes2[0]) + planes1[1].mul(planes2[1])) / (cc + dd);
   complex[1] =
-      (-planes1[0].mul(planes2[1]) + planes1[1].mul(planes2[0])) * ccdd_m;
+      (-planes1[0].mul(planes2[1]) + planes1[1].mul(planes2[0])) / (cc + dd);
 
   cv::Mat result;
   cv::merge(complex, result);
@@ -186,13 +183,13 @@ cv::Mat KCFComponents::ComplexDivision(const cv::Mat &x1, const cv::Mat &x2) {
 cv::Mat KCFComponents::CreateGaussianPeak(const int sizey, const int sizex) {
   cv::Mat_<float> res(sizey, sizex);
 
-  int syh = (sizey) >> 1;
-  int sxh = (sizex) >> 1;
+  int syh = (sizey) / 2;
+  int sxh = (sizex) / 2;
 
   // Assume the tracking padding is still 2.5, which means the center of box is
   // the focus
   float output_sigma =
-      std::sqrt(static_cast<float>(sizex) * static_cast<float>(sizey)) * 0.4f *
+      std::sqrt(static_cast<float>(sizex) * static_cast<float>(sizey)) / 2.5f *
       0.125f;
   float mult = -0.5 / (output_sigma * output_sigma);
 
@@ -222,15 +219,13 @@ cv::Mat KCFComponents::CalculateHann(const cv::Size &sz) {
   cv::Mat temp1(cv::Size(sz.width, 1), CV_32FC1);
   cv::Mat temp2(cv::Size(sz.height, 1), CV_32FC1);
 
-  float width_m = 1.0f / (sz.width - 1);
   for (int i = 0; i < sz.width; ++i) {
-    temp1.at<float>(0, i) = 0.5 * (1 - std::cos(M_PI_M_2 * i * width_m));
+    temp1.at<float>(0, i) = 0.5 * (1 - std::cos(2 * M_PI * i / (sz.width - 1)));
   }
 
-  float height_m = 1.0f / (sz.height - 1);
   for (int i = 0; i < sz.height; ++i) {
     temp2.at<float>(0, i) =
-        0.5 * (1 - std::cos(M_PI_M_2 * i * height_m);
+        0.5 * (1 - std::cos(2 * M_PI * i / (sz.height - 1)));
   }
 
   return temp2.t() * temp1;

@@ -114,7 +114,7 @@ double MinBoxObjectBuilder::ComputeAreaAlongOneEdge(
   }
   Eigen::Vector3d vp1 = v + ns[point_num1] - vn;
   Eigen::Vector3d vp2 = v + ns[point_num2] - vn;
-  (*center) = (vp1 + vp2 + ns[point_num1] + ns[point_num2]) >> 2;
+  (*center) = (vp1 + vp2 + ns[point_num1] + ns[point_num2]) / 4;
   (*center)[2] = obj->polygon.points[0].z;
   if (len > wid) {
     *dir = ns[point_num2] - ns[point_num1];
@@ -236,7 +236,7 @@ void MinBoxObjectBuilder::ReconstructPolygon(const Eigen::Vector3d& ref_ct,
     p_j[2] = obj->polygon.points[j].z;
     double dist = sqrt((p_x[0] - p_j[0]) * (p_x[0] - p_j[0]) +
                        (p_x[1] - p_j[1]) * (p_x[1] - p_j[1]));
-    if (dist < max_dis && (dist * (1.0f / total_len)) < 0.5) {
+    if (dist < max_dis && (dist / total_len) < 0.5) {
       continue;
     }
     if (j != min_point_index && j != max_point_index) {

@@ -424,7 +424,7 @@ void HmObjectTracker::CollectTrackedResults(
     // fill tracked information of object
     obj->direction = result_obj->direction.cast<double>();
     if (fabs(obj->direction[0]) < DBL_MIN) {
-      obj->theta = obj->direction(1) > 0 ? M_PI_2 : -M_PI_2;
+      obj->theta = obj->direction(1) > 0 ? M_PI / 2 : -M_PI / 2;
     } else {
       obj->theta = atan2(obj->direction[1], obj->direction[0]);
     }

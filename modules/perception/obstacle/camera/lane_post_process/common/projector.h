@@ -147,8 +147,8 @@ Projector<T>::Projector() {
   uv_roi_x_step_ = static_cast<T>(1);
   uv_roi_y_step_ = static_cast<T>(1);
 
-  uv_roi_cols_ = static_cast<int>((uv_xmax_ - uv_xmin_) * (1.0f / uv_roi_x_step_)) + 1;
-  uv_roi_rows_ = static_cast<int>((uv_ymax_ - uv_ymin_) * (1.0f / uv_roi_y_step_)) + 1;
+  uv_roi_cols_ = static_cast<int>((uv_xmax_ - uv_xmin_) / uv_roi_x_step_) + 1;
+  uv_roi_rows_ = static_cast<int>((uv_ymax_ - uv_ymin_) / uv_roi_y_step_) + 1;
   uv_roi_count_ = uv_roi_rows_ * uv_roi_cols_;
 
   is_vis_ = false;
@@ -206,8 +206,8 @@ bool Projector<T>::Init(const cv::Rect &roi, const T &max_distance,
         << "y_max=" << uv_ymax_ << ".";
   AINFO << "ROI width = " << roi.width << ", height = " << roi.height;
 
-  uv_roi_cols_ = static_cast<int>((uv_xmax_ - uv_xmin_) * (1.0f / uv_roi_x_step_)) + 1;
-  uv_roi_rows_ = static_cast<int>((uv_ymax_ - uv_ymin_) * (1.0f / uv_roi_y_step_)) + 1;
+  uv_roi_cols_ = static_cast<int>((uv_xmax_ - uv_xmin_) / uv_roi_x_step_) + 1;
+  uv_roi_rows_ = static_cast<int>((uv_ymax_ - uv_ymin_) / uv_roi_y_step_) + 1;
   uv_roi_count_ = uv_roi_rows_ * uv_roi_cols_;
   AINFO << "sampling step_x (u) = " << uv_roi_x_step_ << ", "
         << "sampling step_y (v) = " << uv_roi_y_step_;
@@ -280,15 +280,14 @@ bool Projector<T>::Init(const cv::Rect &roi, const T &max_distance,
     xy_image_ymax_ = std::max(std::ceil(xy_ymax_), static_cast<T>(0));
     xy_image_ymax_ = std::min(xy_image_ymax_, max_distance);
 
-    T t_m = static_cast<T>(1.0f / static_cast<T>(1000));
-    x_step_ = max_distance * t_m;
-    y_step_ = max_distance * t_m;
+    x_step_ = max_distance / static_cast<T>(1000);
+    y_step_ = max_distance / static_cast<T>(1000);
 
     xy_image_cols_ = static_cast<int>(std::ceil(
-                         (xy_image_xmax_ - xy_image_xmin_) * (1.0f / x_step_))) +
+                         (xy_image_xmax_ - xy_image_xmin_) / x_step_)) +
                      1;
     xy_image_rows_ = static_cast<int>(std::ceil(
-                         (xy_image_ymax_ - xy_image_ymin_) * (1.0f / y_step_))) +
+                         (xy_image_ymax_ - xy_image_ymin_) / y_step_)) +
                      1;
     AINFO << "xy_image_xmin = " << xy_image_xmin_
           << ", xy_image_xmax = " << xy_image_xmax_
@@ -344,7 +343,7 @@ bool Projector<T>::XyToXyImagePoint(const T &x, const T &y,
     return false;
   }
 
-  int j = static_cast<int>(std::round((x - xy_image_xmin_) * (1.0f / x_step_)));
+  int j = static_cast<int>(std::round((x - xy_image_xmin_) / x_step_));
   if (j < 0) {
     return false;
   }
@@ -352,7 +351,7 @@ bool Projector<T>::XyToXyImagePoint(const T &x, const T &y,
     return false;
   }
 
-  int i = static_cast<int>(std::round((y - xy_image_ymin_) * (1.0f / y_step_)));
+  int i = static_cast<int>(std::round((y - xy_image_ymin_) / y_step_));
   if (i < 0) {
     return false;
   }
@@ -399,9 +398,9 @@ bool Projector<T>::UvToXy(const T &u, const T &v,
     return false;
   }
 
-  int id = static_cast<int>(std::round((v - uv_ymin_) * (1.0f / uv_roi_y_step_))) *
+  int id = static_cast<int>(std::round((v - uv_ymin_) / uv_roi_y_step_)) *
                uv_roi_cols_ +
-           static_cast<int>(std::round((u - uv_xmin_) * (1.0f / uv_roi_x_step_)));
+           static_cast<int>(std::round((u - uv_xmin_) / uv_roi_x_step_));
   if (id < 0 || id >= uv_roi_count_) {
     AERROR << "pixel id is not valid: " << id;
     return false;
@@ -438,9 +437,9 @@ bool Projector<T>::UvToXyImagePoint(const T &u, const T &v,
     return false;
   }
 
-  int id = static_cast<int>(std::round((v - uv_ymin_) * (1.0f / uv_roi_y_step_))) *
+  int id = static_cast<int>(std::round((v - uv_ymin_) / uv_roi_y_step_)) *
                uv_roi_cols_ +
-           static_cast<int>(std::round((u - uv_xmin_) * (1.0f / uv_roi_x_step_)));
+           static_cast<int>(std::round((u - uv_xmin_) / uv_roi_x_step_));
   if (id < 0 || id >= uv_roi_count_) {
     AERROR << "pixel id is not valid: " << id;
     return false;
@@ -480,8 +479,7 @@ bool Projector<T>::Project(const T &u, const T &v,
     return false;
   }
 
-  T scale_m = static_cast<T>(1.0f / scale);
-  (*xy_point) << xy_p(0) * scale_m, xy_p(1) * scale)_m;
+  (*xy_point) << xy_p(0) / scale, xy_p(1) / scale;
 
   if (!std::isfinite((*xy_point)(0)) || std::isnan((*xy_point)(0)) ||
       !std::isfinite((*xy_point)(1)) || std::isnan((*xy_point)(1))) {

@@ -36,8 +36,8 @@ bool CS2DAffinityTracker::GetAffinityMatrix(
     cv::Rect box = tracked[i].box_;
     float w = static_cast<float>(box.width);
     float h = static_cast<float>(box.height);
-    float c_x = static_cast<float>(box.x) + w * 0.5f;
-    float c_y = static_cast<float>(box.y) + h * 0.5f;
+    float c_x = static_cast<float>(box.x) + w / 2.0f;
+    float c_y = static_cast<float>(box.y) + h / 2.0f;
 
     // 2D center position change limits
     float x_min = c_x - pos_range_ * w;
@@ -54,15 +54,15 @@ bool CS2DAffinityTracker::GetAffinityMatrix(
       cv::Rect box_d = detected[j].box_;
       float w_d = static_cast<float>(box_d.width);
       float h_d = static_cast<float>(box_d.height);
-      float c_x_d = static_cast<float>(box_d.x) + w_d * 0.5f;
-      float c_y_d = static_cast<float>(box_d.y) + h_d * 0.5f;
+      float c_x_d = static_cast<float>(box_d.x) + w_d / 2.0f;
+      float c_y_d = static_cast<float>(box_d.y) + h_d / 2.0f;
 
       // 2D size change limits
-      float ratio_w = w_d * (1.0f / w);
+      float ratio_w = w_d / w;
       if (ratio_w > (1.0f + sz_lim_)) related = false;
       if (ratio_w < (1.0f - sz_lim_)) related = false;
 
-      float ratio_h = h_d * (1.0f / h);
+      float ratio_h = h_d / h;
       if (ratio_h > (1.0f + sz_lim_)) related = false;
       if (ratio_h < (1.0f - sz_lim_)) related = false;
 

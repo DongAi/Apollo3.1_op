@@ -94,30 +94,44 @@ ScalarType LaneFrame::ComputeMarkerPairDistance(const Marker& ref,
   if (alpha < 0) {
     alpha += (2 * static_cast<ScalarType>(M_PI));
   }
+  ADEBUG << "alpha = " << std::to_string(alpha / M_PI * 180.0);
 
   // orientation angle of reference marker
   ScalarType beta = ref.angle;
   if (beta < 0) {
     beta += (2 * static_cast<ScalarType>(M_PI));
   }
+  ADEBUG << "beta = " << std::to_string(beta / M_PI * 180.0);
 
   // deviation angle from reference marker to the target one
   ScalarType gamma = std::atan2(displacement(1), displacement(0));
   if (gamma < 0) {
     gamma += (2 * static_cast<ScalarType>(M_PI));
   }
+  ADEBUG << "gamma = " << std::to_string(gamma / M_PI * 180.0);
 
   ScalarType deviation_angle_dist = std::abs(beta - gamma);
   if (deviation_angle_dist > static_cast<ScalarType>(M_PI)) {
     deviation_angle_dist =
         2 * static_cast<ScalarType>(M_PI) - deviation_angle_dist;
   }
+  ADEBUG << "deviation_angle_dist = "
+         << std::to_string(deviation_angle_dist / M_PI * 180.0);
 
   ScalarType orie_dist = std::abs(alpha - beta);
 
   if (orie_dist > static_cast<ScalarType>(M_PI)) {
     orie_dist = 2 * static_cast<ScalarType>(M_PI) - orie_dist;
   }
+
+  ADEBUG << "orie_dist = " << std::to_string(orie_dist / M_PI * 180.0);
+  ADEBUG << "max_distance = " << std::to_string(opts_.assoc_param.max_distance)
+         << ", "
+         << "max_deviation_angle = "
+         << std::to_string(opts_.assoc_param.max_deviation_angle / M_PI * 180.0)
+         << ", "
+         << "max_relative_orie = "
+         << std::to_string(opts_.assoc_param.max_relative_orie / M_PI * 180.0);
 
   if (pos_dist > opts_.assoc_param.max_distance ||
       deviation_angle_dist > opts_.assoc_param.max_deviation_angle ||
@@ -698,7 +712,7 @@ bool LaneFrame::GreedyGroupConnectAssociation() {
   sort(edges.begin(), edges.end());
   for (auto it_edge = edges.begin(); it_edge != edges.end(); ++it_edge) {
     // select the lowest-cost one from candidate edges
-    int src_group_id = it_edge->second * (1.0f / n);
+    int src_group_id = it_edge->second / n;
     int tar_group_id = it_edge->second % n;
     if (std::abs(dist_mat(src_group_id, tar_group_id) - it_edge->first) >=
         kEpsilon) {

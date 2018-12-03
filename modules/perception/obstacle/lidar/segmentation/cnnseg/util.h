@@ -28,12 +28,12 @@ inline int F2I(float val, float ori, float scale) {
 }
 
 inline int Pc2Pixel(float in_pc, float in_range, float out_size) {
-  float inv_res = 0.5f * out_size * (1.0f / in_range);
+  float inv_res = 0.5 * out_size / in_range;
   return static_cast<int>(std::floor((in_range - in_pc) * inv_res));
 }
 
 inline float Pixel2Pc(int in_pixel, float in_size, float out_range) {
-  float res = 2.0f * out_range * (1.0f / in_size);
+  float res = 2.0 * out_range / in_size;
   return out_range - (static_cast<float>(in_pixel) + 0.5f) * res;
 }
 

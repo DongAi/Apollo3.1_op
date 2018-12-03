@@ -102,7 +102,7 @@ bool ObjectBuilder::Build(const ContiRadar &raw_obstacles,
         radar_pose.topLeftCorner(3, 3).transpose();
 
     double local_theta =
-        raw_obstacles.contiobs(i).oritation_angle() * M_PI_180;
+        raw_obstacles.contiobs(i).oritation_angle() / 180.0 * M_PI;
     Eigen::Vector3f direction =
         Eigen::Vector3f(cos(local_theta), sin(local_theta), 0);
     direction = radar_pose.topLeftCorner(3, 3).cast<float>() * direction;

@@ -124,7 +124,7 @@ void PbfKalmanMotionFusion::UpdateWithObject(
       Eigen::Vector3d old_velocity = history_velocity_[old_velocity_index];
       double old_timediff =
           GetHistoryTimediff(old_velocity_index, new_object->timestamp);
-      measured_acceleration = (belief_velocity_ - old_velocity) * (1.0f old_timediff);
+      measured_acceleration = (belief_velocity_ - old_velocity) / old_timediff;
     }
     if ((GetLidarHistoryLength() >= 3 && GetRadarHistoryLength() >= 3) ||
         history_velocity_.size() > 20) {
@@ -146,7 +146,7 @@ void PbfKalmanMotionFusion::UpdateWithObject(
       Eigen::Vector3d old_velocity = history_velocity_[old_velocity_index];
       double old_timediff =
           GetHistoryTimediff(old_velocity_index, new_object->timestamp);
-      measured_acceleration = (belief_velocity_ - old_velocity) * (1.0f / old_timediff);
+      measured_acceleration = (belief_velocity_ - old_velocity) / old_timediff;
     }
     if ((GetLidarHistoryLength() >= 3 && GetRadarHistoryLength() >= 3) ||
         history_velocity_.size() > 20) {

@@ -108,10 +108,9 @@ void CameraProcessSubnode::ImgCallback(const sensor_msgs::Image &message) {
   AINFO << "camera received image : " << GLOG_TIMESTAMP(timestamp)
         << " at time: " << GLOG_TIMESTAMP(TimeUtil::GetCurrentTime());
   double curr_timestamp = timestamp * 1e9;
-  
-  static double hz_m = 1e9 / FLAGS_camera_hz;
+
   if (FLAGS_skip_camera_frame && timestamp_ns_ > 0.0) {
-    if ((curr_timestamp - timestamp_ns_) < hz_m &&
+    if ((curr_timestamp - timestamp_ns_) < (1e9 / FLAGS_camera_hz) &&
         curr_timestamp > timestamp_ns_) {
       ADEBUG << "CameraProcessSubnode Skip frame";
       return;

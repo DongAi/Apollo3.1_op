@@ -114,9 +114,8 @@ void DrawDetection(PointCloudPtr pc_ptr, const PointIndices &valid_idx,
   cv::Mat img(rows, cols, CV_8UC3, cv::Scalar(0.0));
 
   // map points into bird-view grids
-  float range_m = 1.0f / range;
-  float inv_res_x = 0.5 * static_cast<float>(cols) * range_m;
-  float inv_res_y = 0.5 * static_cast<float>(rows) * range_m;
+  float inv_res_x = 0.5 * static_cast<float>(cols) / range;
+  float inv_res_y = 0.5 * static_cast<float>(rows) / range;
   int grids = rows * cols;
   vector<CellStat> view(grids);
 

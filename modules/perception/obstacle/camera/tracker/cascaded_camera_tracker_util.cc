@@ -274,14 +274,14 @@ cv::Rect EnlargeBox(const cv::Size &img_size, const float scale,
   // Scale the detected search window
   float w = static_cast<float>(box.width);
   float h = static_cast<float>(box.height);
-  float c_x = static_cast<float>(box.x) + w * 0.5f;
-  float c_y = static_cast<float>(box.y) + h * 0.5f;
+  float c_x = static_cast<float>(box.x) + w / 2.0f;
+  float c_y = static_cast<float>(box.y) + h / 2.0f;
 
   cv::Rect res;
   res.width = static_cast<int>(w * scale);
   res.height = static_cast<int>(h * scale);
-  res.x = static_cast<int>(c_x) - res.width >> 1;
-  res.y = static_cast<int>(c_y) - res.height >> 1;
+  res.x = static_cast<int>(c_x) - res.width / 2;
+  res.y = static_cast<int>(c_y) - res.height / 2;
 
   // Sanity check
   res.x = std::max(0, res.x);

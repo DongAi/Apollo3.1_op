@@ -32,7 +32,7 @@ Eigen::Vector3d get_quaternion_axis(const Eigen::Quaterniond &quat) {
     res /= sinus;
   }
   Eigen::Vector3d invRes = -res;  // just for avoiding the gcc bug on "? :"
-  return (acos(quat.w()) <= M_PI_2) ? res : invRes;
+  return (acos(quat.w()) <= frame_pi / 2.0) ? res : invRes;
 }
 
 double get_quaternion_angle(const Eigen::Quaterniond &quat) {
@@ -147,11 +147,10 @@ void Frame::set_from_matrix(const double m[4][4]) {
   }
 
   Eigen::Matrix3d rot;
-  float m_m = 1.0f / m[3][3];
   for (int i = 0; i < 3; ++i) {
-    t_[i] = m[3][i] * m_m;
+    t_[i] = m[3][i] / m[3][3];
     for (int j = 0; j < 3; ++j) {
-      rot(i, j) = m[j][i] * m_m;
+      rot(i, j) = m[j][i] / m[3][3];
     }
   }
   q_ = Eigen::Quaterniond(rot);

@@ -1528,8 +1528,8 @@ void GLFWFusionViewer::get_8points(float width, float height, float length,
                                    std::vector<Eigen::Vector3d>* points) {
   const float ground_offset = 0.0f;  // default: 30 cm
   float height_offset = ground_offset - height;
-  float half_width = width * 0.5f;
-  float half_length = length * 0.5f;
+  float half_width = width / 2.0f;
+  float half_length = length / 2.0f;
 
   points->clear();
   points->push_back(Eigen::Vector3d(-half_width, ground_offset, half_length));

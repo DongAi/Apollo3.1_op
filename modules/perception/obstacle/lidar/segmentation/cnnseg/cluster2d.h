@@ -70,10 +70,9 @@ class Cluster2D {
     cols_ = cols;
     grids_ = rows_ * cols_;
     range_ = range;
-    float range_m = 1.0f / range_;
-    scale_ = 0.5 * static_cast<float>(rows_) * range_m;
-    inv_res_x_ = 0.5 * static_cast<float>(cols_) * range_m;
-    inv_res_y_ = scale_;
+    scale_ = 0.5 * static_cast<float>(rows_) / range_;
+    inv_res_x_ = 0.5 * static_cast<float>(cols_) / range_;
+    inv_res_y_ = 0.5 * static_cast<float>(rows_) / range_;
     point2grid_.clear();
     obstacles_.clear();
     id_img_.assign(grids_, -1);
@@ -236,9 +235,8 @@ class Cluster2D {
         score += static_cast<double>(confidence_pt_data[grid]);
         height += static_cast<double>(height_pt_data[grid]);
       }
-      double size_m = 1.0 / obs->grids.size();
-      obs->score = score * size_m;
-      obs->height = height * size_m;
+      obs->score = score / static_cast<double>(obs->grids.size());
+      obs->height = height / static_cast<double>(obs->grids.size());
       obs->cloud.reset(new apollo::perception::pcl_util::PointCloud);
     }
   }

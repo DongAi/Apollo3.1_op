@@ -144,7 +144,7 @@ void ObjectCameraFilter::TransformObject(std::shared_ptr<VisualObject> obj,
   center = (pose * Eigen::Vector4f(center[0], center[1], center[2], 1)).head(3);
 
   if (fabs(obj->direction[0]) < DBL_MIN) {
-    obj->theta = obj->direction(1) > 0 ? M_PI_2 : -M_PI_2;
+    obj->theta = obj->direction(1) > 0 ? M_PI / 2 : -M_PI / 2;
   } else {
     obj->theta = atan2(obj->direction[1], obj->direction[0]);
   }

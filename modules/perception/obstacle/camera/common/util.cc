@@ -239,9 +239,9 @@ void DrawVisualObejcts(
                         obj->center.y() * obj->center.y() +
                         obj->center.z() * obj->center.z());
     stream << " m, alpha:";
-    stream << std::fixed << std::setprecision(2) << obj->alpha * M_PI_D_180;
+    stream << std::fixed << std::setprecision(2) << obj->alpha * 180.0 / M_PI;
     stream << " deg, theta:";
-    stream << std::fixed << std::setprecision(2) << obj->theta * M_PI_D_180;
+    stream << std::fixed << std::setprecision(2) << obj->theta * 180.0 / M_PI;
     stream << " deg, D:";
     stream << obj->id;
     cv::putText(*img, stream.str(), cv::Point(x1, y1 - 5),
@@ -268,9 +268,9 @@ void DrawGTObjectsText(
                         obj->center.y() * obj->center.y() +
                         obj->center.z() * obj->center.z());
     stream << " m, alpha:";
-    stream << std::fixed << std::setprecision(2) << obj->alpha * M_PI_D_180;
+    stream << std::fixed << std::setprecision(2) << obj->alpha * 180.0 / M_PI;
     stream << " deg, theta:";
-    stream << std::fixed << std::setprecision(2) << obj->theta * M_PI_D_180;
+    stream << std::fixed << std::setprecision(2) << obj->theta * 180.0 / M_PI;
     stream << " deg, D:";
     stream << obj->id;
     cv::putText(*img, stream.str(), cv::Point(x1, y2 + 10),

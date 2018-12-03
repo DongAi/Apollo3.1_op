@@ -110,11 +110,10 @@ void FeatureGenerator<Dtype>::Generate(
   caffe::caffe_set(siz, Dtype(0), nonempty_data_);
 
   map_idx_.resize(points.size());
-  float range_m = 1.0f / range_;
   float inv_res_x =
-      width_ >> 1 * range_m;
+      0.5 * static_cast<float>(width_) / static_cast<float>(range_);
   float inv_res_y =
-      height_ >> 1 * range_m;
+      0.5 * static_cast<float>(height_) / static_cast<float>(range_);
 
   for (size_t i = 0; i < points.size(); ++i) {
     if (points[i].z <= min_height_ || points[i].z >= max_height_) {
@@ -133,7 +132,7 @@ void FeatureGenerator<Dtype>::Generate(
 
     int idx = map_idx_[i];
     float pz = points[i].z;
-    float pi = points[i].intensity * 0.003921569;
+    float pi = points[i].intensity / 255.0;
     if (max_height_data_[idx] < pz) {
       max_height_data_[idx] = pz;
       top_intensity_data_[idx] = pi;
@@ -148,9 +147,8 @@ void FeatureGenerator<Dtype>::Generate(
     if (count_data_[i] < EPS) {
       max_height_data_[i] = Dtype(0);
     } else {
-      float data_m = 1.0f / count_data_[i];
-      mean_height_data_[i] *= data_m;
-      mean_intensity_data_[i] *= data_m;
+      mean_height_data_[i] /= count_data_[i];
+      mean_intensity_data_[i] /= count_data_[i];
       nonempty_data_[i] = Dtype(1);
     }
     count_data_[i] = LogCount(static_cast<int>(count_data_[i]));
