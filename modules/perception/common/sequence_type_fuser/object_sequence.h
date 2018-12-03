@@ -69,7 +69,7 @@ class ObjectSequence {
  private:
   const double kEps = 1e-9;
   int64_t DoubleToMapKey(const double d) {
-    return static_cast<int64_t>(d / kEps);
+    return static_cast<int64_t>(d * (1.0f / kEps));
   }
   double MapKeyToDouble(const int64_t key) { return key * kEps; }
 

@@ -76,10 +76,12 @@ NormalizedBBox get_region_box(const std::vector<AnchorBox> anchor_boxes,
                               const Dtype *loc_data, int i, int j, int w, int h,
                               int n, int index) {
   NormalizedBBox bbox;
-  Dtype cx = (i + sigmoid(loc_data[index + 0])) / w;
-  Dtype cy = (j + sigmoid(loc_data[index + 1])) / h;
-  Dtype hw = exp(loc_data[index + 2]) * anchor_boxes[n].w / w * 0.5;
-  Dtype hh = exp(loc_data[index + 3]) * anchor_boxes[n].h / h * 0.5;
+  float w_m = 1.0f / w;
+  float h_m = 1.0f / h;
+  Dtype cx = (i + sigmoid(loc_data[index + 0])) * w_m;
+  Dtype cy = (j + sigmoid(loc_data[index + 1])) * w_h;
+  Dtype hw = exp(loc_data[index + 2]) * anchor_boxes[n].w * w_m * 0.5;
+  Dtype hh = exp(loc_data[index + 3]) * anchor_boxes[n].h * h_m * 0.5;
   bbox.xmin = cx - hw;
   bbox.ymin = cy - hh;
   bbox.xmax = cx + hw;

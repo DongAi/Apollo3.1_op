@@ -72,13 +72,14 @@ int RandomInt(const int s, const int t, unsigned int rand_seed) {
 }
 
 double RandomDouble(const double s, const double t, unsigned int rand_seed) {
-  return s + (t - s) / 16383.0 * (rand_r(&rand_seed) & 16383);
+  return s + (t - s) * (1.0 / 16383) * (rand_r(&rand_seed) & 16383);
 }
 
 // Gaussian
 double Gaussian(const double u, const double std, const double x) {
-  return (1.0 / std::sqrt(2 * M_PI * std * std)) *
-         std::exp(-(x - u) * (x - u) / (2 * std * std));
+  double std_2 = 2 * std * std;
+  return (1.0 / std::sqrt(M_PI * std_2)) *
+         std::exp(-(x - u) * (x - u) * (1.0 / std_2));
 }
 
 // Sigmoid

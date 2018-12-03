@@ -53,7 +53,7 @@ class TimeUtil {
     struct timeval tv;
     gettimeofday(&tv, nullptr);
     const double timestamp = tv.tv_sec * 1000000 + tv.tv_usec;
-    return timestamp / 1000000;
+    return timestamp * 0.000001;
   }
 
  private:

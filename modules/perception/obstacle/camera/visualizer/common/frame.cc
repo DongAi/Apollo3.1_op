@@ -24,6 +24,7 @@ namespace perception {
 namespace lowcostvisualizer {
 
 const double frame_pi = 3.141592653;
+const double fram_pi_2 = 1.5707963265
 
 Eigen::Vector3d get_quaternion_axis(const Eigen::Quaterniond &quat) {
   Eigen::Vector3d res(quat.x(), quat.y(), quat.z());
@@ -32,7 +33,7 @@ Eigen::Vector3d get_quaternion_axis(const Eigen::Quaterniond &quat) {
     res /= sinus;
   }
   Eigen::Vector3d invRes = -res;  // just for avoiding the gcc bug on "? :"
-  return (acos(quat.w()) <= frame_pi / 2.0) ? res : invRes;
+  return (acos(quat.w()) <= fram_pi_2) ? res : invRes;
 }
 
 double get_quaternion_angle(const Eigen::Quaterniond &quat) {
@@ -147,10 +148,11 @@ void Frame::set_from_matrix(const double m[4][4]) {
   }
 
   Eigen::Matrix3d rot;
+  float m33_m = 1.0f / m[3][3];
   for (int i = 0; i < 3; ++i) {
-    t_[i] = m[3][i] / m[3][3];
+    t_[i] = m[3][i] * m33_m;
     for (int j = 0; j < 3; ++j) {
-      rot(i, j) = m[j][i] / m[3][3];
+      rot(i, j) = m[j][i] * m33_m;
     }
   }
   q_ = Eigen::Quaterniond(rot);
@@ -632,12 +634,13 @@ void Frame::project_on_line(const Eigen::Vector3d &origin,
   const Eigen::Vector3d shift = origin - position();
   Eigen::Vector3d proj = shift;
 
-  if (direction.squaredNorm() < 1.0E-10) {
+  Eigen::VectorwiseOp::SquaredNormReturnType squarednorm = direction.squaredNorm();
+  if (squarednorm < 1.0E-10) {
     std::cout << "Vec::projectOnAxis: axis direction is not normalized (norm)."
               << std::endl;
   }
 
-  proj = (proj.dot(direction) / direction.squaredNorm()) * direction;
+  proj = (proj.dot(direction) * (1.0f / squarednorm)) * direction;
   translate(shift - proj);
 }
 

@@ -35,7 +35,7 @@ namespace math {
 template <typename T, std::size_t N>
 class HermiteSpline {
  public:
-  HermiteSpline(std::array<T, (N + 1) / 2> x0, std::array<T, (N + 1) / 2> x1,
+  HermiteSpline(std::array<T, ((N + 1) >> 1)> x0, std::array<T, ((N + 1) >> 1)> x1,
                 const double z0 = 0.0, const double z1 = 1.0);
 
   virtual ~HermiteSpline() = default;
@@ -43,9 +43,9 @@ class HermiteSpline {
   virtual T Evaluate(const std::uint32_t order, const double z) const;
 
  private:
-  std::array<T, (N + 1) / 2> x0_;
+  std::array<T, ((N + 1) >> 1)> x0_;
 
-  std::array<T, (N + 1) / 2> x1_;
+  std::array<T, ((N + 1) >> 1)> x1_;
 
   double z0_ = 0.0;
 
@@ -53,8 +53,8 @@ class HermiteSpline {
 };
 
 template <typename T, std::size_t N>
-inline HermiteSpline<T, N>::HermiteSpline(std::array<T, (N + 1) / 2> x0,
-                                          std::array<T, (N + 1) / 2> x1,
+inline HermiteSpline<T, N>::HermiteSpline(std::array<T, ((N + 1) >> 1)> x0,
+                                          std::array<T, ((N + 1) >> 1)> x1,
                                           const double z0, const double z1)
     : x0_(std::move(x0)), x1_(std::move(x1)), z0_(z0), delta_z_(z1 - z0) {
   CHECK(N == 3 || N == 5)
@@ -75,7 +75,7 @@ inline T HermiteSpline<T, N>::Evaluate(const std::uint32_t order,
     const T& v1 = x1_[1];
     switch (order) {
       case 0: {
-        const double t = (z - z0_) / delta_z_;
+        const double t = (z - z0_) * (1.0 / delta_z_);
         const double t2 = t * t;
         const double t3 = t2 * t;
 
@@ -83,14 +83,14 @@ inline T HermiteSpline<T, N>::Evaluate(const std::uint32_t order,
                (-2.0 * t3 + 3.0 * t2) * p1 + (t3 - t2) * v1;
       }
       case 1: {
-        const double t = (z - z0_) / delta_z_;
+        const double t = (z - z0_) * (1.0 / delta_z_);
         const double t2 = t * t;
 
         return (6.0 * t2 - 6.0 * t) * p0 + (3.0 * t2 - 4 * t + 1.0) * v0 +
                (-6.0 * t2 + 6.0 * t) * p1 + (3.0 * t2 - 2.0 * t) * v1;
       }
       case 2: {
-        const double t = (z - z0_) / delta_z_;
+        const double t = (z - z0_) * (1.0 / delta_z_);
         return (12.0 * t - 6.0) * p0 + (6.0 * t - 4.0) * v0 +
                (-12.0 * t + 6.0) * p1 + (6.0 * t - 2.0) * v1;
       }
@@ -110,7 +110,7 @@ inline T HermiteSpline<T, N>::Evaluate(const std::uint32_t order,
 
     switch (order) {
       case 0: {
-        const double t = (z - z0_) / delta_z_;
+        const double t = (z - z0_) * (1.0 / delta_z_);
         const double t2 = t * t;
         const double t3 = t * t2;
         const double t4 = t2 * t2;
@@ -127,7 +127,7 @@ inline T HermiteSpline<T, N>::Evaluate(const std::uint32_t order,
         return h0 * p0 + h1 * v0 + h2 * a0 + h3 * p1 + h4 * v1 + h5 * a1;
       }
       case 1: {
-        const double t = (z - z0_) / delta_z_;
+        const double t = (z - z0_) * (1.0 / delta_z_);
         const double t2 = t * t;
         const double t3 = t * t2;
         const double t4 = t2 * t2;
@@ -143,7 +143,7 @@ inline T HermiteSpline<T, N>::Evaluate(const std::uint32_t order,
         return dh0 * p0 + dh1 * v0 + dh2 * a0 + dh3 * p1 + dh4 * v1 + dh5 * a1;
       }
       case 2: {
-        const double t = (z - z0_) / delta_z_;
+        const double t = (z - z0_) * (1.0 / delta_z_);
         const double t2 = t * t;
         const double t3 = t * t2;
         const double det0 = t - t2;
@@ -159,7 +159,7 @@ inline T HermiteSpline<T, N>::Evaluate(const std::uint32_t order,
                ddh5 * a1;
       }
       case 3: {
-        const double t = (z - z0_) / delta_z_;
+        const double t = (z - z0_) * (1.0 / delta_z_);
         const double t2 = t * t;
         const double det = t - t2;
         const double dddh0 = -60.0 + 360.0 * det;
@@ -173,7 +173,7 @@ inline T HermiteSpline<T, N>::Evaluate(const std::uint32_t order,
                dddh5 * a1;
       }
       case 4: {
-        const double t = (z - z0_) / delta_z_;
+        const double t = (z - z0_) * (1.0 / delta_z_);
         const double d4h0 = 360.0 - 720.0 * t;
         const double d4h1 = 192.0 - 360.0 * t;
         const double d4h2 = 36.0 - 60.0 * t;

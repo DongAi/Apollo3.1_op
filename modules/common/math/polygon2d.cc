@@ -318,7 +318,7 @@ bool Polygon2d::ClipConvexHull(const LineSegment2d &line_segment,
     }
     const int j = ((i == n - 1) ? 0 : (i + 1));
     if (side[i] * side[j] < 0) {
-      const double ratio = prod[j] / (prod[j] - prod[i]);
+      const double ratio = prod[j] * (1.0 / (prod[j] - prod[i]));
       new_points.emplace_back(
           (*points)[i].x() * ratio + (*points)[j].x() * (1.0 - ratio),
           (*points)[i].y() * ratio + (*points)[j].y() * (1.0 - ratio));
@@ -584,11 +584,11 @@ Polygon2d Polygon2d::ExpandByDistance(const double distance) const {
       points.push_back(points_[i] +
                        Vec2d::CreateUnitVec2d(start_angle) * distance);
     } else {
-      const int count = static_cast<int>(diff / kMinAngle) + 1;
+      const int count = static_cast<int>(diff * (1.0f / kMinAngle)) + 1;
       for (int k = 0; k <= count; ++k) {
         const double angle =
             start_angle +
-            diff * static_cast<double>(k) / static_cast<double>(count);
+            diff * static_cast<double>(k) * (1.0 / count);
         points.push_back(points_[i] + Vec2d::CreateUnitVec2d(angle) * distance);
       }
     }

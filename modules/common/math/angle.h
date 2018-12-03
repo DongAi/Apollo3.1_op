@@ -157,7 +157,7 @@ class Angle {
    */
   template <typename Scalar>
   Angle operator/=(Scalar s) {
-    value_ = std::lround(value_ / s);
+    value_ = std::lround(value_ * (1.0 / s));
     return *this;
   }
 
@@ -238,7 +238,7 @@ Angle<T> operator/(Angle<T> lhs, Scalar rhs) {
  */
 template <typename T>
 double operator/(Angle<T> lhs, Angle<T> rhs) {
-  return static_cast<double>(lhs.raw()) / rhs.raw();
+  return static_cast<double>(lhs.raw()) * (1.0 / rhs.raw());
 }
 
 /**

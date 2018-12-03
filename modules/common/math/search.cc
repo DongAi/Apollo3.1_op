@@ -28,8 +28,8 @@ double GoldenSectionSearch(const std::function<double(double)> &func,
 
   double a = lower_bound;
   double b = upper_bound;
-
-  double t = (b - a) / gr;
+  double gr_m = 1.0 / gr;
+  double t = (b - a) * gr_m;
   double c = b - t;
   double d = a + t;
 
@@ -39,7 +39,7 @@ double GoldenSectionSearch(const std::function<double(double)> &func,
     } else {
       a = c;
     }
-    t = (b - a) / gr;
+    t = (b - a) * gr_m;
     c = b - t;
     d = a + t;
   }

@@ -200,14 +200,17 @@ math::Vec2d VehicleStateProvider::EstimateFuturePosition(const double t) const {
     v = -vehicle_state_.linear_velocity();
   }
   // Predict distance travel vector
-  if (std::fabs(vehicle_state_.angular_velocity()) < 0.0001) {
+  double velocity = vehicle_state_.angular_velocity();
+  double velocity_m = 1.0 / velocity;
+  double v_velocity_m = v * velocity_m;
+  double t_velocity_m = velocity * t;
+  if (std::fabs(velocity) < 0.0001) {
     vec_distance[0] = 0.0;
     vec_distance[1] = v * t;
   } else {
-    vec_distance[0] = -v / vehicle_state_.angular_velocity() *
-                      (1.0 - std::cos(vehicle_state_.angular_velocity() * t));
-    vec_distance[1] = std::sin(vehicle_state_.angular_velocity() * t) * v /
-                      vehicle_state_.angular_velocity();
+    vec_distance[0] = -v_velocity_m *
+                      (1.0 - std::cos(t_velocity_m));
+    vec_distance[1] = std::sin(t_velocity_m) * v_velocity_m;
   }
 
   // If we have rotation information, take it into consideration.

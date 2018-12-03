@@ -40,7 +40,7 @@ double slerp(const double a0, const double t0, const double a1, const double t1,
     d = d + 2 * M_PI;
   }
 
-  const double r = (t - t0) / (t1 - t0);
+  const double r = (t - t0) * (1.0 / (t1 - t0));
   const double a = a0_n + d * r;
   return NormalizeAngle(a);
 }
@@ -63,7 +63,7 @@ PathPoint InterpolateUsingLinearApproximation(const PathPoint &p0,
   CHECK_LE(s0, s1);
 
   PathPoint path_point;
-  double weight = (s - s0) / (s1 - s0);
+  double weight = (s - s0) * (1.0 / (s1 - s0));
   double x = (1 - weight) * p0.x() + weight * p1.x();
   double y = (1 - weight) * p0.y() + weight * p1.y();
   double theta = slerp(p0.theta(), p0.s(), p1.theta(), p1.s(), s);

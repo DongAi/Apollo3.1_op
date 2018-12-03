@@ -24,18 +24,26 @@ namespace math {
 
 float sin(Angle16 a) {
   auto idx = a.raw();
+
+  auto real_idx = idx;
+  while(real_idx >= SIN_TABLE_SIZE)
+    real_idx -= SIN_TABLE_SIZE;
+
   if (idx < -Angle16::RAW_PI_2) {
     idx += Angle16::RAW_PI;
-    return -SIN_TABLE[idx % SIN_TABLE_SIZE];
+    return -SIN_TABLE[real_idx];
   }
   if (idx < 0) {
-    return -SIN_TABLE[(-idx) % SIN_TABLE_SIZE];
+    return -SIN_TABLE[-real_idx];
   }
   if (idx < Angle16::RAW_PI_2) {
-    return SIN_TABLE[idx % SIN_TABLE_SIZE];
+    return SIN_TABLE[real_idx];
   }
+
   idx = Angle16::RAW_PI - idx;
-  return SIN_TABLE[idx % SIN_TABLE_SIZE];
+  while(idx >= SIN_TABLE_SIZE)
+    idx -= SIN_TABLE_SIZE;
+  return SIN_TABLE[idx];
 }
 
 float cos(Angle16 a) {
@@ -43,7 +51,7 @@ float cos(Angle16 a) {
   return sin(b);
 }
 
-float tan(Angle16 a) { return sin(a) / cos(a); }
+float tan(Angle16 a) { return sin(a) * (1.0 / cos(a)); }
 
 float sin(Angle8 a) {
   Angle16 b(a.raw() << 8);

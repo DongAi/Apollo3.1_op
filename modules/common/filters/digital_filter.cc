@@ -72,7 +72,7 @@ double DigitalFilter::Filter(const double x_insert) {
 
   double y_insert = 0.0;
   if (std::abs(denominators_.front()) > kDoubleEpsilon) {
-    y_insert = (xside - yside) / denominators_.front();
+    y_insert = (xside - yside) * (1.0f / denominators_.front());
   }
   y_values_.push_front(y_insert);
 

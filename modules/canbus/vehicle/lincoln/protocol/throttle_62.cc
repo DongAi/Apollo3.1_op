@@ -71,7 +71,7 @@ void Throttle62::set_pedal_p(uint8_t *data, double pedal) {
   // and a rough mapping
   pedal /= 100.0;
   pedal = ProtocolData::BoundedValue(0.0, 1.0, pedal);
-  int32_t x = pedal / 1.52590218966964e-05;
+  int32_t x = pedal * (1.0 / 1.52590218966964e-05);
   std::uint8_t t = 0;
 
   t = x & 0xFF;

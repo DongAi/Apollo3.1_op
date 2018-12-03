@@ -38,8 +38,9 @@ double Vec2d::Angle() const { return std::atan2(y_, x_); }
 void Vec2d::Normalize() {
   const double l = Length();
   if (l > kMathEpsilon) {
-    x_ /= l;
-    y_ /= l;
+    double l_m = 1.0 / l;
+    x_ *= l_m;
+    y_ *= l_m;
   }
 }
 
@@ -80,7 +81,8 @@ Vec2d Vec2d::operator*(const double ratio) const {
 
 Vec2d Vec2d::operator/(const double ratio) const {
   CHECK_GT(std::abs(ratio), kMathEpsilon);
-  return Vec2d(x_ / ratio, y_ / ratio);
+  double ratio_m = 1.0 / ratio;
+  return Vec2d(x_ * ratio_m, y_ * ratio_m);
 }
 
 Vec2d &Vec2d::operator+=(const Vec2d &other) {
@@ -103,8 +105,9 @@ Vec2d &Vec2d::operator*=(const double ratio) {
 
 Vec2d &Vec2d::operator/=(const double ratio) {
   CHECK_GT(std::abs(ratio), kMathEpsilon);
-  x_ /= ratio;
-  y_ /= ratio;
+  double ratio_m = 1.0 / ratio;
+  x_ *= ratio_m;
+  y_ *= ratio_m;
   return *this;
 }
 

@@ -201,7 +201,7 @@ void HDMapInput::DownSampleBoundary(const hdmap::LineSegment& line,
     if (vector_dist < DBL_EPSILON) {
       continue;
     }
-    double cos_theta = (v1.cwiseProduct(v2)).sum() / vector_dist;
+    double cos_theta = (v1.cwiseProduct(v2)).sum() * (1.0 / vector_dist);
     if (cos_theta > 1.0) {
       cos_theta = 1.0;
     } else if (cos_theta < -1.0) {

@@ -63,10 +63,11 @@ double Interpolation1D::Interpolate(double x) const {
 }
 
 double Interpolation1D::ScaledValue(double x) const {
-  if (std::fabs(x_max_ - x_min_) < kDoubleEpsilon) {
+  double x_x = x_max_ - x_min_;
+  if (std::fabs(x_x) < kDoubleEpsilon) {
     return x_min_;
   }
-  return (x - x_min_) / (x_max_ - x_min_);
+  return (x - x_min_) * (1.0 / x_x);
 }
 
 Eigen::RowVectorXd Interpolation1D::ScaledValues(

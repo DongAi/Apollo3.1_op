@@ -56,7 +56,7 @@ static bool ConstructPointCloud(std::vector<pcl_util::PointCloudPtr>* clouds) {
     ss << point_buf;
     int point_num = 0;
     ss >> point_num;
-    int exact_point_num = (point_strs.size() - 1) / 4;
+    int exact_point_num = (point_strs.size() - 1) >> 2;
     if (point_num != exact_point_num) {
       continue;
     }

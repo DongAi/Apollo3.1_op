@@ -31,7 +31,8 @@ bool FlatCameraTransformer::Transform(
   for (auto obj_ptr : *objects) {
     // Get flat 2D distance in meter
     float d = obj_ptr->distance;
-    float d_v = std::abs(camera2car_(2, 3) - obj_ptr->height / 2.0f);
+    float height_2 = obj_ptr->height * 0.5f;
+    float d_v = std::abs(camera2car_(2, 3) - height_2);
     float d_flat = sqrt(d * d - d_v * d_v);
 
     // Get 2D vector of top down view
@@ -57,7 +58,7 @@ bool FlatCameraTransformer::Transform(
 
     if (HaveHighConfidence(obj_ptr)) {
       Eigen::Vector3f center_ego =
-          pos_ground + Eigen::Vector3f(0.0f, 0.0f, obj_ptr->height / 2.0f);
+          pos_ground + Eigen::Vector3f(0.0f, 0.0f, height_2);
       centers.emplace_back(std::make_pair(center, center_ego));
     }
   }
@@ -108,7 +109,7 @@ bool FlatCameraTransformer::HaveHighConfidence(
   if (obj_ptr->distance < 5.0) return false;
 
   double azimuth =
-      std::atan2(obj_ptr->center[1], obj_ptr->center[0]) * 180.0 / M_PI;
+      std::atan2(obj_ptr->center[1], obj_ptr->center[0]) * (180.0 / M_PI);
   if (!(-30.0 < azimuth && azimuth < 30.0)) return false;
 
   return true;
@@ -133,7 +134,7 @@ void FlatCameraTransformer::GetDynamicExtrinsics(
     // Create adjusted extrinsics
     Eigen::Matrix3f rotate(
         Eigen::AngleAxisf(0.0f, Eigen::Vector3f::UnitZ()) *
-        Eigen::AngleAxisf(p / 180.0f * M_PI, Eigen::Vector3f::UnitY()) *
+        Eigen::AngleAxisf(p * (M_PI / 180.0), Eigen::Vector3f::UnitY()) *
         Eigen::AngleAxisf(0.0f, Eigen::Vector3f::UnitX()));
     rot.block<3, 3>(0, 0) = rotate;
     Eigen::Matrix4f camera2car_r = rot * camera2car_;

@@ -113,7 +113,7 @@ PathPoint PathMatcher::FindProjectionPoint(const PathPoint& p0,
   double v1_norm = std::sqrt(v1x * v1x + v1y * v1y);
   double dot = v0x * v1x + v0y * v1y;
 
-  double delta_s = dot / v1_norm;
+  double delta_s = dot * (1.0 / v1_norm);
   return InterpolateUsingLinearApproximation(p0, p1, p0.s() + delta_s);
 }
 

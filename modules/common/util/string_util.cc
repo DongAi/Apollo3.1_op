@@ -88,7 +88,7 @@ std::string DecodeBase64(const std::string& base64_str) {
 
   std::string bytes;
   // Binary string is generally 3/4 the length of base64 string
-  bytes.reserve(base64_str.length() * 3 / 4 + 3);
+  bytes.reserve(base64_str.length() * 0.75f + 3);
   unsigned int sum = 0, sum_bits = 0;
   for (const char c : base64_str) {
     if (kBase64CodeTable[c] == -1) {
@@ -114,7 +114,9 @@ std::string EncodeBase64(const std::string& in) {
 
   int in_size = in.size();
 
-  out.reserve(((in_size - 1) / 3 + 1) * 4);
+  int in_size_1 = insize - 1;
+  int in_size_reverse = int(in_size_1 * (4 / 3) + 4);
+  out.reserve(in_size_reverse);
 
   int i = 2;
   for (; i < in_size; i += 3) {

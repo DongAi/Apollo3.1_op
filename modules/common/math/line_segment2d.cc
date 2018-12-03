@@ -46,9 +46,10 @@ LineSegment2d::LineSegment2d(const Vec2d &start, const Vec2d &end)
   const double dx = end_.x() - start_.x();
   const double dy = end_.y() - start_.y();
   length_ = hypot(dx, dy);
+  double length_m = 1.0 / length_;
   unit_direction_ =
       (length_ <= kMathEpsilon ? Vec2d(0, 0)
-                               : Vec2d(dx / length_, dy / length_));
+                               : Vec2d(dx * length_m, dy * length_m));
   heading_ = unit_direction_.Angle();
 }
 
@@ -192,7 +193,7 @@ bool LineSegment2d::GetIntersect(const LineSegment2d &other_segment,
   if (cc3 * cc4 >= -kMathEpsilon) {
     return false;
   }
-  const double ratio = cc4 / (cc4 - cc3);
+  const double ratio = cc4 * (1.0 / (cc4 - cc3));
   *point = Vec2d(start_.x() * ratio + end_.x() * (1.0 - ratio),
                  start_.y() * ratio + end_.y() * (1.0 - ratio));
   return true;

@@ -34,15 +34,16 @@ void LpfCoefficients(const double ts, const double cutoff_freq,
   double alpha = wa * ts / 2.0;          // tan(Wd/2), Wd is discrete frequency
   double alpha_sqr = alpha * alpha;
   double tmp_term = std::sqrt(2.0) * alpha + alpha_sqr;
-  double gain = alpha_sqr / (1.0 + tmp_term);
+  double term_m = 1.0 / (1.0 + tmp_term);
+  double gain = alpha_sqr * term_m;
+  double gain2 = 2.0 * gain;
 
   denominators->push_back(1.0);
-  denominators->push_back(2.0 * (alpha_sqr - 1.0) / (1.0 + tmp_term));
-  denominators->push_back((1.0 - std::sqrt(2.0) * alpha + alpha_sqr) /
-                          (1.0 + tmp_term));
+  denominators->push_back(gain2 - 2.0 * term_m);
+  denominators->push_back((1.0 - std::sqrt(2.0) * alpha + alpha_sqr) * term_m);
 
   numerators->push_back(gain);
-  numerators->push_back(2.0 * gain);
+  numerators->push_back(gain2);
   numerators->push_back(gain);
 
   return;

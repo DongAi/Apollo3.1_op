@@ -334,8 +334,8 @@ class AABoxKDTree2dNode {
       min_y_ = std::fmin(min_y_, object->aabox().min_y());
       max_y_ = std::fmax(max_y_, object->aabox().max_y());
     }
-    mid_x_ = (min_x_ + max_x_) / 2.0;
-    mid_y_ = (min_y_ + max_y_) / 2.0;
+    mid_x_ = (min_x_ + max_x_) * 0.5;
+    mid_y_ = (min_y_ + max_y_) * 0.5;
     CHECK(!std::isinf(max_x_) && !std::isinf(max_y_) && !std::isinf(min_x_) &&
           !std::isinf(min_y_))
         << "the provided object box size is infinity";
@@ -344,10 +344,10 @@ class AABoxKDTree2dNode {
   void ComputePartition() {
     if (max_x_ - min_x_ >= max_y_ - min_y_) {
       partition_ = PARTITION_X;
-      partition_position_ = (min_x_ + max_x_) / 2.0;
+      partition_position_ = (min_x_ + max_x_) * 0.5;
     } else {
       partition_ = PARTITION_Y;
-      partition_position_ = (min_y_ + max_y_) / 2.0;
+      partition_position_ = (min_y_ + max_y_) * 0.5;
     }
   }
 

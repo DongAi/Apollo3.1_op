@@ -378,7 +378,7 @@ bool LidarProcess::GetVelodyneTrans(const double query_time, Matrix4d* trans) {
   ros::Time query_stamp(query_time);
   const auto& tf2_buffer = AdapterManager::Tf2Buffer();
 
-  const double kTf2BuffSize = FLAGS_tf2_buff_in_ms / 1000.0;
+  const double kTf2BuffSize = FLAGS_tf2_buff_in_ms * 0.001;
   std::string err_msg;
   if (!tf2_buffer.canTransform(FLAGS_lidar_tf2_frame_id,
                                FLAGS_lidar_tf2_child_frame_id, query_stamp,

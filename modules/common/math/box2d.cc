@@ -45,7 +45,7 @@ double PtSegDistance(double query_x, double query_y, double start_x,
   if (proj >= length * length) {
     return hypot(x0 - dx, y0 - dy);
   }
-  return std::abs(x0 * dy - y0 * dx) / length;
+  return std::abs(x0 * dy - y0 * dx) * (1.0 / length);
 }
 
 }  // namespace
@@ -335,13 +335,13 @@ void Box2d::Shift(const Vec2d &shift_vec) {
 
 void Box2d::LongitudinalExtend(const double extension_length) {
   length_ += extension_length;
-  half_length_ += extension_length / 2.0;
+  half_length_ += extension_length * 0.5;
   InitCorners();
 }
 
 void Box2d::LateralExtend(const double extension_length) {
   width_ += extension_length;
-  half_width_ += extension_length / 2.0;
+  half_width_ += extension_length * 0.5;
   InitCorners();
 }
 

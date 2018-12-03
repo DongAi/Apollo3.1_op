@@ -27,7 +27,7 @@ using MF = MeanFilter;
 using uint8 = std::uint_fast8_t;
 using TimedValue = std::pair<uint8, double>;
 
-const uint8 kMaxWindowSize = std::numeric_limits<uint8>::max() / 2;
+const uint8 kMaxWindowSize = std::numeric_limits<uint8>::max() >> 1;
 
 MF::MeanFilter(const uint8 window_size) : window_size_(window_size) {
   CHECK_GT(window_size_, 0);
@@ -57,15 +57,15 @@ double MF::Update(const double measurement) {
   CHECK_LE(min_candidates_.size(), window_size_);
   CHECK_LE(max_candidates_.size(), window_size_);
   ++time_;
-  time_ %= 2 * window_size_;
+  time_ %= window_size_ << 1;
   if (values_.size() == window_size_) {
     RemoveEarliest();
   }
   Insert(measurement);
   if (values_.size() > 2) {
-    return (sum_ - GetMin() - GetMax()) / (values_.size() - 2);
+    return (sum_ - GetMin() - GetMax()) * (1.0f / (values_.size() - 2));
   } else {
-    return sum_ / values_.size();
+    return sum_ * (1.0f / values_.size());
   }
 }
 

@@ -235,22 +235,19 @@ inline ScalarType Group::ComputeDistance(const Group& tar_group,
   // (3) compute the deviation angle from reference marker to the target one
   // orientation angle of end markers on reference group
   ScalarType beta = this->end_angle;
-  ADEBUG << "beta = " << std::to_string(beta / M_PI * 180.0);
 
   // angle from reference marker to the target one
   ScalarType gamma = std::atan2(displacement(1), displacement(0));
   if (gamma < 0) {
     gamma += 2 * static_cast<ScalarType>(M_PI);
   }
-  ADEBUG << "gamma = " << std::to_string(gamma / M_PI * 180.0);
 
   ScalarType deviation_angle_dist = std::abs(beta - gamma);
   if (deviation_angle_dist > static_cast<ScalarType>(M_PI)) {
     deviation_angle_dist =
         2 * static_cast<ScalarType>(M_PI) - deviation_angle_dist;
   }
-  ADEBUG << "(3) deviation_angle_dist = "
-         << std::to_string(deviation_angle_dist / M_PI * 180.0);
+
   if (deviation_angle_dist > param.max_deviation_angle) {
     return -3;
   }
@@ -264,15 +261,12 @@ inline ScalarType Group::ComputeDistance(const Group& tar_group,
   if (tar_group_start_len > param.min_orientation_estimation_size) {
     // orientation angle of start markers on target group
     ScalarType alpha = tar_group.start_angle;
-    ADEBUG << "alpha = " << std::to_string(alpha / M_PI * 180.0);
 
     orie_dist = std::abs(alpha - beta);
     if (orie_dist > static_cast<ScalarType>(M_PI)) {
       orie_dist = 2 * static_cast<ScalarType>(M_PI) - orie_dist;
     }
-    ADEBUG << "(4b) orie_dist = " << std::to_string(orie_dist / M_PI * 180.0)
-           << " (" << std::to_string(param.max_relative_orie / M_PI * 180.0)
-           << ")";
+
     if (orie_dist > param.max_relative_orie) {
       return -4;
     }
@@ -281,7 +275,7 @@ inline ScalarType Group::ComputeDistance(const Group& tar_group,
   ScalarType r =
       std::max(std::abs(param.min_distance), std::abs(param.max_distance));
   if (r > kEpsilon) {
-    projection_dist = std::abs(projection_dist) / r;
+    projection_dist = std::abs(projection_dist) * (1.0 / r);
   }
   if (param.max_departure_distance > kEpsilon) {
     departure_dist /= param.max_departure_distance;

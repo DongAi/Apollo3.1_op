@@ -148,7 +148,7 @@ void uniform_slice(const T start, const T end, uint32_t num,
   if (!sliced || num == 0) {
     return;
   }
-  const T delta = (end - start) / num;
+  const T delta = (end - start) * (1.0f / num);
   sliced->resize(num + 1);
   T s = start;
   for (uint32_t i = 0; i < num; ++i, s += delta) {

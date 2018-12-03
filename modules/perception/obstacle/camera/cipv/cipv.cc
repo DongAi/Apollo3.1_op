@@ -246,13 +246,14 @@ bool Cipv::FindClosestEdgeOfObjectImage(const std::shared_ptr<Object> &object,
   float center_y = object->center[1];
   float direction_x = object->direction[0];
   float direction_y = object->direction[1];
-  float x1 = size_x / 2;
+  float x1 = size_x * 0.5f;
   float x2 = 0 - x1;
-  float y1 = size_y / 2;
+  float y1 = size_y * 0.5f;
   float y2 = 0 - y1;
   double len = sqrt(direction_x * direction_x + direction_y * direction_y);
-  float cos_theta = direction_x / len;
-  float sin_theta = -direction_y / len;
+  double len_m = 1.0f / len;
+  float cos_theta = direction_x * len_m;
+  float sin_theta = -direction_y * len_m;
 
   // Check if object direction is less than +-45 degree
   // angle = atan2(y, x)
@@ -351,8 +352,9 @@ bool Cipv::FindClosestEdgeOfObjectGround(const std::shared_ptr<Object> &object,
   if (len < B_FLT_EPSILON) {
     return false;
   }
-  float cos_theta = direction_x / len;
-  float sin_theta = -direction_y / len;
+  double len_m = 1.0f / len;
+  float cos_theta = direction_x * len_m;
+  float sin_theta = -direction_y * len_m;
 
   Point2Df p[4];
 

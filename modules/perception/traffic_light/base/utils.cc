@@ -65,7 +65,7 @@ cv::Rect RefinedBox(const cv::Rect inbox, const cv::Size &size) {
 }
 
 cv::Point2f GetCenter(const cv::Rect &box) {
-  return cv::Point2f(box.x + box.width / 2, box.y + box.height / 2);
+  return cv::Point2f(box.x + (box.width >> 1), box.y + (box.height >> 1));
 }
 float GetDistance(const cv::Point2f &p1, const cv::Point2f &p2) {
   return std::sqrt((p1.x - p2.x) * (p1.x - p2.x) +
@@ -74,14 +74,17 @@ float GetDistance(const cv::Point2f &p1, const cv::Point2f &p2) {
 
 float Get2dGaussianScore(const cv::Point2f &p1, const cv::Point2f &p2,
                          float sigma1, float sigma2) {
+  float sigma1_m = 1.0f / (sigma1 * sigma1);
+  float sigma2_m = 1.0f / (sigma2 * sigma2);
   return static_cast<float>(
-      std::exp(-0.5 * (((p1.x - p2.x) * (p1.x - p2.x)) / (sigma1 * sigma1) +
-                       ((p1.y - p2.y) * (p1.y - p2.y)) / (sigma2 * sigma2))));
+      std::exp(-0.5 * (((p1.x - p2.x) * (p1.x - p2.x)) * sigma1_m +
+                       ((p1.y - p2.y) * (p1.y - p2.y)) * sigma2_m));
 }
 
 float Get1dGaussianScore(float x1, float x2, float sigma) {
+  float sigma_m = 1.0f / (sigma * sigma);
   return static_cast<float>(
-      std::exp(-0.5 * (x1 - x2) * (x1 - x2) / (sigma * sigma)));
+      std::exp(-0.5 * (x1 - x2) * (x1 - x2) * sigma_m));
 }
 
 }  // namespace traffic_light

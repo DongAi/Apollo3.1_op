@@ -88,9 +88,9 @@ class CameraModel {
   virtual Eigen::Matrix<T, 2, 1> project(
       const Eigen::Matrix<T, 3, 1>& pt3d) const {
     Eigen::Matrix<T, 2, 1> pt2d;
-
-    pt2d[0] = pt3d[0] / pt3d[2];
-    pt2d[1] = pt3d[1] / pt3d[2];
+    T pt3d_m = static_cast<T>(1.0f / pt3d[2]);
+    pt2d[0] = pt3d[0] * pt3d_m;
+    pt2d[1] = pt3d[1] * pt3d_m;
 
     return pixel_denormalize(pt2d);
   }
@@ -174,8 +174,8 @@ class CameraModel {
   virtual Eigen::Matrix<T, 2, 1> pixel_normalize(
       const Eigen::Matrix<T, 2, 1>& pt2d) const {
     Eigen::Matrix<T, 2, 1> p;
-    p[0] = (pt2d[0] - center_x_) / focal_length_x_;
-    p[1] = (pt2d[1] - center_y_) / focal_length_y_;
+    p[0] = (pt2d[0] - center_x_) * (1.0 / focal_length_x_);
+    p[1] = (pt2d[1] - center_y_) * (1.0f / focal_length_y_);
 
     return p;
   }
@@ -226,8 +226,9 @@ class CameraDistort : public CameraModel<T> {
   virtual Eigen::Matrix<T, 2, 1> project(
       const Eigen::Matrix<T, 3, 1>& pt3d) const {
     Eigen::Matrix<T, 2, 1> pt2d;
-    pt2d[0] = pt3d[0] / pt3d[2];
-    pt2d[1] = pt3d[1] / pt3d[2];
+    T pt3d_m = static_cast<T>(1.0f / pt3d[2]);
+    pt2d[0] = pt3d[0] * pt3d_m;
+    pt2d[1] = pt3d[1] * pt3d_m;
     return pixel_denormalize(pt2d);
   }
 
@@ -297,21 +298,26 @@ class CameraDistort : public CameraModel<T> {
 
     Eigen::Matrix<T, 2, 1> pt2d_undistort = pt2d_distort;  // Initial guess
     for (unsigned int i = 0; i < 20; ++i) {
-      T r_sq = pt2d_undistort[0] * pt2d_undistort[0] +
-               pt2d_undistort[1] * pt2d_undistort[1];
+      T pt2d_undistort_00 = pt2d_undistort[0] * pt2d_undistort[0];
+      T pt2d_undistort_11 = pt2d_undistort[1] * pt2d_undistort[1]
+      T pt2d_undistort_01 = pt2d_undistort[0] * pt2d_undistort[1];
+      T pt2d_undistort_01_2 = 2 * pt2d_undistort_01;
+      T r_sq = pt2d_undistort_00 + pt2d_undistort_11;
+      T r_sq_m = r_sq * r_sq;
       T k_radial = 1.0 + distort_params_[0] * r_sq +
-                   distort_params_[1] * r_sq * r_sq +
-                   distort_params_[4] * r_sq * r_sq * r_sq;
+                   distort_params_[1] * r_sq_m +
+                   distort_params_[4] * r_sq_m * r_sq;
       T delta_x_0 =
-          2 * distort_params_[2] * pt2d_undistort[0] * pt2d_undistort[1] +
+          distort_params_[2] * pt2d_undistort_01_2 +
           distort_params_[3] *
-              (r_sq + 2 * pt2d_undistort[0] * pt2d_undistort[0]);
+              (r_sq + 2 * pt2d_undistort_00);
       T delta_x_1 =
           distort_params_[2] *
-              (r_sq + 2 * pt2d_undistort[1] * pt2d_undistort[1]) +
-          2 * distort_params_[3] * pt2d_undistort[0] * pt2d_undistort[1];
-      pt2d_undistort[0] = (pt2d_distort[0] - delta_x_0) / k_radial;
-      pt2d_undistort[1] = (pt2d_distort[1] - delta_x_1) / k_radial;
+              (r_sq + 2 * pt2d_undistort_11) +
+          distort_params_[3] * pt2d_undistort_01_2;
+      T radial_m = static_cast<T>(1.0 / k_radial);
+      pt2d_undistort[0] = (pt2d_distort[0] - delta_x_0) * radial_m;
+      pt2d_undistort[1] = (pt2d_distort[1] - delta_x_1) * radial_m;
     }
     return pt2d_undistort;
   }

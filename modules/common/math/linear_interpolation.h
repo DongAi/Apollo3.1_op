@@ -52,7 +52,7 @@ T lerp(const T &x0, const double t0, const T &x1, const double t1,
     AERROR << "input time difference is too small";
     return x0;
   }
-  const double r = (t - t0) / (t1 - t0);
+  const double r = (t - t0) * (1.0 / (t1 - t0));
   const T x = x0 + r * (x1 - x0);
   return x;
 }

@@ -70,7 +70,8 @@ float get_jaccard_overlap(const NormalizedBBox &bbox1,
     float intersect_size = intersect_width * intersect_height;
     float bbox1_size = get_bbox_size(bbox1);
     float bbox2_size = get_bbox_size(bbox2);
-    return intersect_size / (bbox1_size + bbox2_size - intersect_size);
+    float size_m = 1.0f / (bbox1_size + bbox2_size - intersect_size);
+    return intersect_size * size_m;
   } else {
     return 0.;
   }

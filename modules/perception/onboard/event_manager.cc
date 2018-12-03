@@ -164,7 +164,7 @@ int EventManager::AvgLenOfEventQueues() const {
   for (const auto &event : event_queue_map_) {
     total_length += event.second->size();
   }
-  return total_length / event_queue_map_.size();
+  return total_length * (1.0f / event_queue_map_.size());
 }
 
 int EventManager::MaxLenOfEventQueues() const {

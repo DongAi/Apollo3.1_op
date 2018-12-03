@@ -42,7 +42,9 @@ bool ReorgFeatureExtractor::init(
   ref_height = ref_height == 0 ? feat_height : ref_height;
   ref_width = ref_width == 0 ? feat_width : ref_width;
 
-  CHECK_EQ(feat_height / ref_height, feat_width / ref_width)
+  float height_m = 1.0f / ref_height_;
+  float width_m = 1.0f / ref_width_;
+  CHECK_EQ(feat_height * height_m, feat_width * width_m)
       << "Invalid aspect ratio: " << feat_height << "x" << feat_width
       << ", fb_height=" << feat_blob->height()
       << ", fb_width=" << feat_blob->width() << ", ref_height=" << ref_height
@@ -63,7 +65,7 @@ bool ReorgFeatureExtractor::init(
   caffe::LayerParameter layer_param;
   layer_param.set_type("Reorg");
   auto *reorg_param = layer_param.mutable_reorg_param();
-  int reorg_stride = feat_height / ref_height;
+  int reorg_stride = feat_height * height_m;
   reorg_param->set_stride(reorg_stride);
   ADEBUG << "Use Reorg: stride=" << reorg_param->stride();
   reorg_layer_ = caffe::LayerRegistry<float>::CreateLayer(layer_param);
@@ -116,7 +118,7 @@ bool ROIPoolingFeatureExtractor::init(
   input_height_ = input_height == 0 ? feat_height : input_height;
   input_width_ = input_width == 0 ? feat_width : input_width;
 
-  CHECK_EQ(input_height_ / feat_height, input_width_ / feat_width)
+  CHECK_EQ(input_height_ * (1.0f / feat_height), input_width_ * (1.0f / feat_width))
       << "Invalid aspect ratio: " << feat_height << "x" << feat_width;
 
   bottom_vec_.push_back(feat_blob.get());
@@ -130,7 +132,7 @@ bool ROIPoolingFeatureExtractor::init(
   rp_param->set_pooled_h(param.roi_pooling_param().pooled_h());
   rp_param->set_pooled_w(param.roi_pooling_param().pooled_w());
   rp_param->set_use_floor(param.roi_pooling_param().use_floor());
-  rp_param->set_spatial_scale(static_cast<float>(feat_height) / input_height_);
+  rp_param->set_spatial_scale(static_cast<float>(feat_height) * (1.0f / input_height_));
 
   ADEBUG << "Use ROIPooling: pooled_h=" << rp_param->pooled_h()
          << ", pooled_w=" << rp_param->pooled_w()
@@ -160,7 +162,7 @@ bool ROIPoolingFeatureExtractor::extract(
     rois_data += rois_blob_.offset(1);
   }
   roi_pooling_layer_->Forward(bottom_vec_, top_vec_);
-  int feat_dim = roi_feat_blob_.count() / objects->size();
+  int feat_dim = roi_feat_blob_.count() * (1.0f / objects->size());
   const float *feat_data = roi_feat_blob_.cpu_data();
   for (const auto &obj : *objects) {
     obj->object_feature.resize(feat_dim);

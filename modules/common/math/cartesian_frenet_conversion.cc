@@ -51,22 +51,29 @@ void CartesianFrenetConverter::cartesian_to_frenet(
   const double kappa_r_d_prime =
       rdkappa * ptr_d_condition->at(0) + rkappa * ptr_d_condition->at(1);
 
+  double cos_delta_theta_m = 1.0 / cos_delta_theta;
+  double one_minus_delta_theta_m = one_minus_kappa_r_d * 
+                                   cos_delta_theta_m;
+  double kappa_one_minus_delta_theta_m = kappa * 
+                                        one_minus_kappa_r_d * 
+                                        cos_delta_theta_m;
+  const double delta_theta_prime =
+      kappa_one_minus_delta_theta_m - rkappa;
   ptr_d_condition->at(2) =
       -kappa_r_d_prime * tan_delta_theta +
-      one_minus_kappa_r_d / cos_delta_theta / cos_delta_theta *
-          (kappa * one_minus_kappa_r_d / cos_delta_theta - rkappa);
+      one_minus_delta_theta_m * cos_delta_theta_m * delta_theta_prime;
 
   ptr_s_condition->at(0) = rs;
 
-  ptr_s_condition->at(1) = v * cos_delta_theta / one_minus_kappa_r_d;
+  double one_minus_kappa_r_d_m = 1.0 / one_minus_kappa_r_d;
+  ptr_s_condition->at(1) = v * cos_delta_theta * one_minus_kappa_r_d_m;
 
-  const double delta_theta_prime =
-      one_minus_kappa_r_d / cos_delta_theta * kappa - rkappa;
+  
   ptr_s_condition->at(2) =
       (a * cos_delta_theta -
        ptr_s_condition->at(1) * ptr_s_condition->at(1) *
-           (ptr_d_condition->at(1) * delta_theta_prime - kappa_r_d_prime)) /
-      one_minus_kappa_r_d;
+           (ptr_d_condition->at(1) * delta_theta_prime - kappa_r_d_prime)) *
+      one_minus_kappa_r_d_m;
   return;
 }
 
@@ -109,24 +116,26 @@ void CartesianFrenetConverter::frenet_to_cartesian(
 
   *ptr_theta = NormalizeAngle(delta_theta + rtheta);
 
+  double one_minus_kappa_r_d_m = 1.0 / one_minus_kappa_r_d;
   const double kappa_r_d_prime =
       rdkappa * d_condition[0] + rkappa * d_condition[1];
   *ptr_kappa = (((d_condition[2] + kappa_r_d_prime * tan_delta_theta) *
-                 cos_delta_theta * cos_delta_theta) /
-                    (one_minus_kappa_r_d) +
+                 cos_delta_theta * cos_delta_theta) *
+                    one_minus_kappa_r_d_m +
                 rkappa) *
-               cos_delta_theta / (one_minus_kappa_r_d);
+               cos_delta_theta * one_minus_kappa_r_d_m;
 
   const double d_dot = d_condition[1] * s_condition[1];
   *ptr_v = std::sqrt(one_minus_kappa_r_d * one_minus_kappa_r_d *
                          s_condition[1] * s_condition[1] +
                      d_dot * d_dot);
 
+  double cos_delta_theta_m = 1.0 / cos_delta_theta;
   const double delta_theta_prime =
-      one_minus_kappa_r_d / cos_delta_theta * (*ptr_kappa) - rkappa;
+      one_minus_kappa_r_d * cos_delta_theta_m * (*ptr_kappa) - rkappa;
 
-  *ptr_a = s_condition[2] * one_minus_kappa_r_d / cos_delta_theta +
-           s_condition[1] * s_condition[1] / cos_delta_theta *
+  *ptr_a = s_condition[2] * one_minus_kappa_r_d * cos_delta_theta_m +
+           s_condition[1] * s_condition[1] * cos_delta_theta_m *
                (d_condition[1] * delta_theta_prime - kappa_r_d_prime);
 }
 
@@ -149,7 +158,7 @@ double CartesianFrenetConverter::CalculateKappa(const double rkappa,
   const double numerator = rkappa + ddl - 2 * l * rkappa * rkappa -
                            l * ddl * rkappa + l * l * rkappa * rkappa * rkappa +
                            l * dl * rdkappa + 2 * dl * dl * rkappa;
-  return numerator / denominator;
+  return numerator * (1.0 / denominator);
 }
 
 Vec2d CartesianFrenetConverter::CalculateCartesianPoint(const double rtheta,
