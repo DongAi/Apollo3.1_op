@@ -114,7 +114,7 @@ std::string EncodeBase64(const std::string& in) {
 
   int in_size = in.size();
 
-  int in_size_1 = insize - 1;
+  int in_size_1 = in_size - 1;
   int in_size_reverse = int(in_size_1 * (4 / 3) + 4);
   out.reserve(in_size_reverse);
 

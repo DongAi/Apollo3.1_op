@@ -634,13 +634,12 @@ void Frame::project_on_line(const Eigen::Vector3d &origin,
   const Eigen::Vector3d shift = origin - position();
   Eigen::Vector3d proj = shift;
 
-  Eigen::VectorwiseOp::SquaredNormReturnType squarednorm = direction.squaredNorm();
-  if (squarednorm < 1.0E-10) {
+  if (direction.squaredNorm() < 1.0E-10) {
     std::cout << "Vec::projectOnAxis: axis direction is not normalized (norm)."
               << std::endl;
   }
 
-  proj = (proj.dot(direction) * (1.0f / squarednorm)) * direction;
+  proj = (proj.dot(direction) / direction.squaredNorm()) * direction;
   translate(shift - proj);
 }
 

@@ -63,9 +63,9 @@ TEST(AABoxKDTree2dNode, OverallTests) {
   kdtree_params[2].max_leaf_dimension = kSize / 4.0;
   kdtree_params[3].max_leaf_size = 20;
 
+  double size_m = kSize / 10.0;
   for (int num_boxes : kNumBoxes) {
     std::vector<Object> objects;
-    doulbe size_m = kSize / 10.0;
     for (int i = 0; i < num_boxes; ++i) {
       const double cx = RandomDouble(-kSize, kSize);
       const double cy = RandomDouble(-kSize, kSize);

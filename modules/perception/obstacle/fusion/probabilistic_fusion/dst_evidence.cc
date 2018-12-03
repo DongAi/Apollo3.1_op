@@ -304,7 +304,7 @@ void BBA::compute_probability() const {
       size_t a_ind = combination_pair.first;
       size_t b_ind = combination_pair.second;
       _probability_vec[a_ind] +=
-          intersection_card * (1.0 / od_subset_cardinalities[b_ind]) * _bba_vec[b_ind];
+          intersection_card * (1.0 / fod_subset_cardinalities[b_ind]) * _bba_vec[b_ind];
     }
   }
 }

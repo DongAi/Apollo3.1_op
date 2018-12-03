@@ -299,7 +299,7 @@ class CameraDistort : public CameraModel<T> {
     Eigen::Matrix<T, 2, 1> pt2d_undistort = pt2d_distort;  // Initial guess
     for (unsigned int i = 0; i < 20; ++i) {
       T pt2d_undistort_00 = pt2d_undistort[0] * pt2d_undistort[0];
-      T pt2d_undistort_11 = pt2d_undistort[1] * pt2d_undistort[1]
+      T pt2d_undistort_11 = pt2d_undistort[1] * pt2d_undistort[1];
       T pt2d_undistort_01 = pt2d_undistort[0] * pt2d_undistort[1];
       T pt2d_undistort_01_2 = 2 * pt2d_undistort_01;
       T r_sq = pt2d_undistort_00 + pt2d_undistort_11;
