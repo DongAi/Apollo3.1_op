@@ -61,10 +61,17 @@ bool PiecewiseLinearGenerator::Solve() {
   const Eigen::MatrixXd& equality_constraint_boundary =
       constraint_.equality_constraint_boundary();
 
+static int new_c = 0;
+static int index = 20;
   qp_solver_.reset(new apollo::common::math::ActiveSetQpSolver(
       kernel_matrix, offset, inequality_constraint_matrix,
       inequality_constraint_boundary, equality_constraint_matrix,
       equality_constraint_boundary));
+            new_c++;
+    if (new_c > index) {
+      AINFO << "new_c11" << new_c;
+      index += 100;
+    }
 
   qp_solver_->EnableCholeskyRefactorisation(1);
   qp_solver_->set_pos_definite_hessian();

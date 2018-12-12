@@ -28,6 +28,8 @@ namespace apollo {
 namespace planning {
 
 void PlannerDispatcher::RegisterPlanners() {
+    static int new_c = 0;
+    static int index = 20;
   planner_factory_.Register(
       RTK, []() -> Planner* { return new RTKReplayPlanner(); });
   planner_factory_.Register(ONROAD,
@@ -36,6 +38,11 @@ void PlannerDispatcher::RegisterPlanners() {
       OPENSPACE, []() -> Planner* { return new OpenSpacePlanner(); });
   planner_factory_.Register(NAVI,
                             []() -> Planner* { return new NaviPlanner(); });
+          new_c++;
+    if (new_c > index) {
+      AINFO << "new_c21" << new_c;
+      index += 100;
+    }
 }
 
 }  // namespace planning

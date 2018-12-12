@@ -29,6 +29,13 @@ bool ScenarioManager::Init() {
 
 void ScenarioManager::RegisterScenarios() {
   scenario_factory_.Register(ScenarioConfig::LANE_FOLLOW, []() -> Scenario* {
+    static int new_c = 0;
+    static int index = 20;
+    new_c++;
+    if (new_c > index) {
+      AINFO << "new_c31" << new_c;
+      index += 100;
+    }
     return new LaneFollowScenario();
   });
 }

@@ -39,8 +39,15 @@ namespace planning {
 QpSplineReferenceLineSmoother::QpSplineReferenceLineSmoother(
     const ReferenceLineSmootherConfig& config)
     : ReferenceLineSmoother(config) {
+  static int new_c = 0;
+  static int index = 20;
   spline_solver_.reset(
       new Spline2dSolver(t_knots_, config.qp_spline().spline_order()));
+  new_c++;
+    if (new_c > index) {
+      AINFO << "new_c25" << new_c;
+      index += 100;
+    }
 }
 
 void QpSplineReferenceLineSmoother::Clear() { t_knots_.clear(); }

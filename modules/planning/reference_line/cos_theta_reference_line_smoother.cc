@@ -45,8 +45,15 @@ CosThetaReferenceLineSmoother::CosThetaReferenceLineSmoother(
       << "Failed to load smoother config file "
       << FLAGS_reopt_smoother_config_filename;
 
+  static int new_c = 0;
+  static int index = 20;
   reopt_qp_smoother_.reset(
       new QpSplineReferenceLineSmoother(reopt_smoother_config_));
+  new_c++;
+    if (new_c > index) {
+      AINFO << "new_c23" << new_c;
+      index += 100;
+    }
 
   max_point_deviation_ = config.cos_theta().max_point_deviation();
 
@@ -132,8 +139,15 @@ bool CosThetaReferenceLineSmoother::Smooth(
   std::vector<double> x;
   std::vector<double> y;
 
+  static int new_c = 0;
+  static int index = 20;
   CosThetaProbleminterface* ptop =
       new CosThetaProbleminterface(scaled_point2d, lateral_bounds);
+  new_c++;
+    if (new_c > index) {
+      AINFO << "new_c24" << new_c;
+      index += 100;
+    }
 
   ptop->set_default_max_point_deviation(max_point_deviation_);
   ptop->set_weight_cos_included_angle(weight_cos_included_angle_);

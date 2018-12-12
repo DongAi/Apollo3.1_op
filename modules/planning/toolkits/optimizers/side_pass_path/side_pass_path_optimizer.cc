@@ -56,8 +56,15 @@ Status SidePassPathOptimizer::Process(const SpeedData &speed_data,
   CHECK_NOTNULL(path_data);
   DpRoadGraph dp_road_graph(config_, *reference_line_info_, speed_data);
   dp_road_graph.SetDebugLogger(reference_line_info_->mutable_debug());
+  static int new_c = 0;
+  static int index = 20;
   dp_road_graph.SetWaypointSampler(
       new SidePassWaypointSampler(config_.waypoint_sampler_config()));
+  new_c++;
+    if (new_c > index) {
+      AINFO << "new_c37" << new_c;
+      index += 100;
+    }
 
   if (!dp_road_graph.FindPathTunnel(
           init_point,

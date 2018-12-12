@@ -35,9 +35,16 @@ bool LateralTrajectoryOptimizer::optimize(
     const std::vector<std::pair<double, double>>& lateral_bounds) {
   delta_s_ = delta_s;
 
+static int new_c = 0;
+static int index = 20;
   auto ptr_interface = new LateralTrajectoryOptimizerInterface(
       d_state[0], d_state[1], d_state[2], delta_s,
       FLAGS_lateral_third_order_derivative_max, lateral_bounds);
+        new_c++;
+    if (new_c > index) {
+      AINFO << "new_c8" << new_c;
+      index += 100;
+    }
 
   ptr_interface->set_objective_weights(
       FLAGS_weight_lateral_offset,

@@ -65,6 +65,8 @@ constexpr double kStraightForwardLineCost = 10.0;
 }  // namespace
 
 void LaneFollowScenario::RegisterTasks() {
+  static int new_c = 0;
+  static int index = 20;
   task_factory_.Register(DP_POLY_PATH_OPTIMIZER,
                          []() -> Task* { return new DpPolyPathOptimizer(); });
   task_factory_.Register(PATH_DECIDER,
@@ -78,6 +80,11 @@ void LaneFollowScenario::RegisterTasks() {
   });
   task_factory_.Register(POLY_ST_SPEED_OPTIMIZER,
                          []() -> Task* { return new PolyStSpeedOptimizer(); });
+  new_c++;
+    if (new_c > index) {
+      AINFO << "new_c30" << new_c;
+      index += 100;
+    }
 }
 
 bool LaneFollowScenario::Init() {

@@ -52,8 +52,15 @@ class SpeedLimitDeciderTest : public ::testing::Test {
       hdmap::MapPathPoint map_path_point(points[i], headings[i], waypoint);
       ref_points.emplace_back(map_path_point, 0.0, 0.0);
     }
+    static int new_c = 0;
+    static int index = 20;
     reference_line_.reset(new ReferenceLine(ref_points));
     vehicle_position_ = points[0];
+    new_c++;
+    if (new_c > index) {
+      AINFO << "new_c38" << new_c;
+      index += 100;
+    }
 
     path_data_.SetReferenceLine(reference_line_.get());
 

@@ -97,12 +97,19 @@ inline void Trajectory1dGenerator::GenerateTrajectory1DBundle<4>(
   CHECK_NOTNULL(ptr_trajectory_bundle);
   CHECK(!end_conditions.empty());
 
+static int new_c = 0;
+static int index = 20;
   ptr_trajectory_bundle->reserve(end_conditions.size());
   for (const auto& end_condition : end_conditions) {
     auto ptr_trajectory1d = std::make_shared<LatticeTrajectory1d>(
         std::shared_ptr<Curve1d>(new QuarticPolynomialCurve1d(
             init_state, {end_condition.first[1], end_condition.first[2]},
             end_condition.second)));
+                  new_c++;
+    if (new_c > index) {
+      AINFO << "new_c9" << new_c;
+      index += 100;
+    }
 
     ptr_trajectory1d->set_target_velocity(end_condition.first[1]);
     ptr_trajectory1d->set_target_time(end_condition.second);
@@ -118,11 +125,18 @@ inline void Trajectory1dGenerator::GenerateTrajectory1DBundle<5>(
   CHECK_NOTNULL(ptr_trajectory_bundle);
   CHECK(!end_conditions.empty());
 
+static int new_c = 0;
+static int index = 20;
   ptr_trajectory_bundle->reserve(end_conditions.size());
   for (const auto& end_condition : end_conditions) {
     auto ptr_trajectory1d = std::make_shared<LatticeTrajectory1d>(
         std::shared_ptr<Curve1d>(new QuinticPolynomialCurve1d(
             init_state, end_condition.first, end_condition.second)));
+                  new_c++;
+    if (new_c > index) {
+      AINFO << "new_c10" << new_c;
+      index += 100;
+    }
 
     ptr_trajectory1d->set_target_position(end_condition.first[0]);
     ptr_trajectory1d->set_target_velocity(end_condition.first[1]);
