@@ -122,28 +122,28 @@ class AABox2d {
   *
   * @return x-coordinate
   */
-  double min_x() const { return center_.x() - half_length_; }
+ // double min_x() const { return center_.x() - half_length_; }
 
   /**
   * @brief Returns the maximum x-coordinate of the box
   *
   * @return x-coordinate
   */
-  double max_x() const { return center_.x() + half_length_; }
+//  double max_x() const { return center_.x() + half_length_; }
 
   /**
   * @brief Returns the minimum y-coordinate of the box
   *
   * @return y-coordinate
   */
-  double min_y() const { return center_.y() - half_width_; }
+//  double min_y() const { return center_.y() - half_width_; }
 
   /**
   * @brief Returns the maximum y-coordinate of the box
   *
   * @return y-coordinate
   */
-  double max_y() const { return center_.y() + half_width_; }
+//  double max_y() const { return center_.y() + half_width_; }
 
   /**
   * @brief Gets all corners in counter clockwise order.
@@ -215,12 +215,29 @@ class AABox2d {
   */
   std::string DebugString() const;
 
+  double max_x() const { return max_x_; }
+  double min_x() const { return min_x_; }
+  double max_y() const { return max_y_; }
+  double min_y() const { return min_y_; }
+
+  void update_mm() {
+    min_x_ = center_.x() - half_length_;
+    max_x_ = center_.x() + half_length_;
+    min_y_ = center_.y() - half_width_;
+    max_y_ = center_.y() + half_width_;
+  }
+
  private:
   Vec2d center_;
   double length_ = 0.0;
   double width_ = 0.0;
   double half_length_ = 0.0;
   double half_width_ = 0.0;
+
+  double max_x_ = std::numeric_limits<double>::min();
+  double min_x_ = std::numeric_limits<double>::max();
+  double max_y_ = std::numeric_limits<double>::min();
+  double min_y_ = std::numeric_limits<double>::max();
 };
 
 }  // namespace math

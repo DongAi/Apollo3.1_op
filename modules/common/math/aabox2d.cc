@@ -36,6 +36,8 @@ AABox2d::AABox2d(const Vec2d &center, const double length, const double width)
       half_width_(width / 2.0) {
   CHECK_GT(length_, -kMathEpsilon);
   CHECK_GT(width_, -kMathEpsilon);
+
+  update_mm();
 }
 
 AABox2d::AABox2d(const Vec2d &one_corner, const Vec2d &opposite_corner)
@@ -61,6 +63,8 @@ AABox2d::AABox2d(const std::vector<Vec2d> &points) {
   width_ = max_y - min_y;
   half_length_ = length_ / 2.0;
   half_width_ = width_ / 2.0;
+
+  update_mm();
 }
 
 void AABox2d::GetAllCorners(std::vector<Vec2d> *const corners) const {
@@ -119,7 +123,10 @@ bool AABox2d::HasOverlap(const AABox2d &box) const {
              box.half_width() + half_width_;
 }
 
-void AABox2d::Shift(const Vec2d &shift_vec) { center_ += shift_vec; }
+void AABox2d::Shift(const Vec2d &shift_vec) { 
+  center_ += shift_vec; 
+  update_mm();
+}
 
 void AABox2d::MergeFrom(const AABox2d &other_box) {
   const double x1 = std::min(min_x(), other_box.min_x());
@@ -131,6 +138,8 @@ void AABox2d::MergeFrom(const AABox2d &other_box) {
   width_ = y2 - y1;
   half_length_ = length_ / 2.0;
   half_width_ = width_ / 2.0;
+
+  update_mm();
 }
 
 void AABox2d::MergeFrom(const Vec2d &other_point) {
@@ -143,6 +152,8 @@ void AABox2d::MergeFrom(const Vec2d &other_point) {
   width_ = y2 - y1;
   half_length_ = length_ / 2.0;
   half_width_ = width_ / 2.0;
+
+  update_mm();
 }
 
 std::string AABox2d::DebugString() const {
