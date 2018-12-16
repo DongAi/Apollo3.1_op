@@ -62,16 +62,9 @@ FrameOpenSpace::FrameOpenSpace(
       vehicle_state_(vehicle_state),
       monitor_logger_(common::monitor::MonitorMessageItem::PLANNING) {
   if (FLAGS_enable_lag_prediction) {
-    static int new_c2 = 0;
-    static int index = 0;
     lag_predictor_.reset(
         new LagPrediction(FLAGS_lag_prediction_min_appear_num,
                           FLAGS_lag_prediction_max_disappear_num));
-    new_c2++;
-    if (new_c2 > index) {
-      AINFO << "new_c2" << new_c2;
-      index += 100;
-    }
   }
 }
 

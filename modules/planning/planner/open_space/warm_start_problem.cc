@@ -68,15 +68,8 @@ bool WarmStartProblem::Solve(Eigen::MatrixXd* state_result,
   int num_of_constraints = m1 + m2 + m3 + m4 + m5;
 
   // TODO(QiL) : evaluate whether need to new it everytime
-  static int new_c = 0;
-  static int index = 20;
   WarmStartIPOPTInterface* ptop = new WarmStartIPOPTInterface(
       num_of_variables, num_of_constraints, horizon_, ts_, x0_, xF_, XYbounds_);
-        new_c++;
-    if (new_c > index) {
-      AINFO << "new_c20" << new_c;
-      index += 100;
-    }
 
   Ipopt::SmartPtr<Ipopt::TNLP> problem = ptop;
 

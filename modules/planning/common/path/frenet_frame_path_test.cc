@@ -46,14 +46,7 @@ class FrenetFramePathTest : public ::testing::Test {
       point.set_dl(dl[i]);
       point.set_ddl(ddl[i]);
     }
-    static int new_c = 0;
-    static int index = 20;
     path_.reset(new FrenetFramePath(sl_points));
-          new_c++;
-    if (new_c > index) {
-      AINFO << "new_c7" << new_c;
-      index += 100;
-    }
   }
   void SetUp() { InitFrenetFramePath(); }
 

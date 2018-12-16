@@ -51,14 +51,7 @@ bool QpSplineStSpeedOptimizer::Init(
   qp_st_speed_config_ = config.qp_st_speed_config();
   st_boundary_config_ = qp_st_speed_config_.st_boundary_config();
   std::vector<double> init_knots;
-  static int new_c = 0;
-  static int index = 20;
   spline_generator_.reset(new Spline1dGenerator(init_knots, 5));
-  new_c++;
-    if (new_c > index) {
-      AINFO << "new_c36" << new_c;
-      index += 100;
-    }
   is_init_ = true;
   return true;
 }

@@ -94,15 +94,8 @@ bool Spline1dGenerator::Solve() {
        num_param == last_num_param_ && num_constraint == last_num_constraint_);
 
   if (!use_hotstart) {
-    static int new_c = 0;
-    static int index = 20;
     sqp_solver_.reset(new ::qpOASES::SQProblem(num_param, num_constraint,
                                                ::qpOASES::HST_UNKNOWN));
-          new_c++;
-    if (new_c > index) {
-      AINFO << "new_c12" << new_c;
-      index += 100;
-    }
     ::qpOASES::Options my_options;
     my_options.enableCholeskyRefactorisation = 1;
     my_options.epsNum = FLAGS_default_active_set_eps_num;

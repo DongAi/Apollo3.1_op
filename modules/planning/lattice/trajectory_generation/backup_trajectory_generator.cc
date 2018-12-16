@@ -39,16 +39,9 @@ void BackupTrajectoryGenerator::GenerateTrajectory1dPairs(
     const State& init_s, const State& init_d) {
   std::vector<std::shared_ptr<Curve1d>> lon_trajectories;
   std::array<double, 5> dds_condidates = {-0.1, -1.0, -2.0, -3.0, -4.0};
-  static int new_c = 0;
-  static int index = 20;
   for (const auto dds : dds_condidates) {
     lon_trajectories.emplace_back(
         new ConstantDecelerationTrajectory1d(init_s[0], init_s[1], dds));
-              new_c++;
-    if (new_c > index) {
-      AINFO << "new_c7" << new_c;
-      index += 100;
-    }
   }
 
   std::vector<std::shared_ptr<Curve1d>> lat_trajectories;

@@ -37,8 +37,6 @@ class QpSplineReferenceLineSmootherTest : public ::testing::Test {
  public:
   virtual void SetUp() {
     config_.mutable_qp_spline()->set_spline_order(5);
-    static int new_c = 0;
-    static int index = 20;
     smoother_.reset(new QpSplineReferenceLineSmoother(config_));
     hdmap_.LoadMapFromFile(map_file);
     const std::string lane_id = "1_-1";
@@ -59,11 +57,6 @@ class QpSplineReferenceLineSmootherTest : public ::testing::Test {
     }
     reference_line_.reset(new ReferenceLine(ref_points));
     vehicle_position_ = points[0];
-    new_c += 2;
-    if (new_c > index) {
-      AINFO << "new_c24" << new_c;
-      index += 100;
-    }
   }
 
   const std::string map_file =

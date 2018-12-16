@@ -106,14 +106,7 @@ apollo::common::Status OpenSpacePlanner::Plan(
   Eigen::MatrixXd uWS = Eigen::MatrixXd::Zero(2, horizon);
   Eigen::MatrixXd timeWS = Eigen::MatrixXd::Zero(1, horizon + 1);
 
-  static int new_c = 0;
-  static int index = 20;
   warm_start_.reset(new WarmStartProblem(horizon, ts, x0, xF, XYbounds));
-        new_c++;
-    if (new_c > index) {
-      AINFO << "new_c18" << new_c;
-      index += 100;
-    }
 
   Eigen::MatrixXd state_result;
   Eigen::MatrixXd control_result;
@@ -137,16 +130,9 @@ apollo::common::Status OpenSpacePlanner::Plan(
 
   // TODO(QiL) : update the I/O to make the warm start problem and distance
   // approach problem connect
-  static int new_c2 = 0;
-  static int index2 = 20;
   distance_approach_.reset(new DistanceApproachProblem(
       x0, xF, horizon, ts, ego, xWS, uWS, timeWS, XYbounds, obstacles_num,
       obstacles_vertices_num, obstacles_A, obstacles_b));
-        new_c2++;
-    if (new_c2 > index2) {
-      AINFO << "new_c19" << new_c2;
-      index2 += 100;
-    }
 
   // result for distance approach problem
   Eigen::MatrixXd state_result_ds;

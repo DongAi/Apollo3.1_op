@@ -95,15 +95,8 @@ bool Spline2dSolver::Solve() {
        num_param == last_num_param_ && num_constraint == last_num_constraint_);
 
   if (!use_hotstart) {
-    static int new_c = 0;
-    static int index = 20;
     sqp_solver_.reset(new ::qpOASES::SQProblem(num_param, num_constraint,
                                                ::qpOASES::HST_UNKNOWN));
-          new_c++;
-    if (new_c > index) {
-      AINFO << "new_c13" << new_c;
-      index += 100;
-    }
     ::qpOASES::Options my_options;
     my_options.enableCholeskyRefactorisation = 10;
     my_options.epsNum = FLAGS_default_qp_smoothing_eps_num;
