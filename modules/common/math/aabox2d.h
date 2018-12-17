@@ -24,6 +24,7 @@
 
 #include <string>
 #include <vector>
+#include <limits>
 
 #include "modules/common/math/vec2d.h"
 
