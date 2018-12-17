@@ -44,6 +44,8 @@ class CosThetaReferenceLineSmoother : public ReferenceLineSmoother {
 
   void SetAnchorPoints(const std::vector<AnchorPoint>&) override;
 
+  void Reset(const ReferenceLineSmootherConfig& config);
+
  private:
   bool Smooth(const std::vector<Eigen::Vector2d>& point2d,
               const std::vector<double>& lateral_bounds,

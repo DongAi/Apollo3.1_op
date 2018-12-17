@@ -60,6 +60,8 @@ class SpiralReferenceLineSmoother : public ReferenceLineSmoother {
                                              const std::vector<double>& y,
                                              const double resolution) const;
 
+  void Reset(const ReferenceLineSmootherConfig& config);
+
  private:
   bool Smooth(std::vector<Eigen::Vector2d> point2d,
               std::vector<double>* ptr_theta, std::vector<double>* ptr_kappa,

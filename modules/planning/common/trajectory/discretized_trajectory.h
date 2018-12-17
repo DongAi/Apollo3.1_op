@@ -42,6 +42,9 @@ class DiscretizedTrajectory : public Trajectory {
 
   explicit DiscretizedTrajectory(
       const std::vector<common::TrajectoryPoint>& trajectory_points);
+  
+  void Reset(const ADCTrajectory& trajectory);
+  void Reset(const std::vector<common::TrajectoryPoint>& trajectory_points);
 
   void SetTrajectoryPoints(
       const std::vector<common::TrajectoryPoint>& trajectory_points);

@@ -39,8 +39,15 @@ bool QpSplinePathOptimizer::Init(
   qp_spline_path_config_ = config.qp_spline_path_config();
 
   std::vector<double> init_knots;
+  static int new_c = 0;
+  static int index = 20;
   spline_generator_.reset(
       new Spline1dGenerator(init_knots, qp_spline_path_config_.spline_order()));
+    new_c++;
+    if (new_c > index) {
+      AINFO << "new_c34" << new_c;
+      index += 100;
+    }
   is_init_ = true;
   return true;
 }

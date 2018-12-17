@@ -39,6 +39,16 @@ PublishableTrajectory::PublishableTrajectory(const ADCTrajectory& trajectory_pb)
 
 double PublishableTrajectory::header_time() const { return header_time_; }
 
+void PublishableTrajectory::Reset(const double header_time,
+                        const DiscretizedTrajectory& discretized_trajectory) {
+  header_time_ = header_time;
+  DiscretizedTrajectory::Reset(discretized_trajectory.trajectory_points());
+}
+void PublishableTrajectory::Reset(const ADCTrajectory& trajectory_pb) {
+  header_time_ = trajectory_pb.header().timestamp_sec();
+  DiscretizedTrajectory::Reset(trajectory_pb);
+}
+
 void PublishableTrajectory::PopulateTrajectoryProtobuf(
     ADCTrajectory* trajectory_pb) const {
   CHECK_NOTNULL(trajectory_pb);

@@ -32,8 +32,15 @@ constexpr double kMaxSidePassDistance = 100.0;
 }
 
 common::Status AutotuningSpeedMLPModel::SetParams() {
+  static int new_c = 0;
+  static int index = 20;
   mlp_model_.reset(new AutotuningMLPModel());
   feature_builder_.reset(new AutotuningSpeedFeatureBuilder());
+  new_c++;
+    if (new_c > index) {
+      AINFO << "new_c41" << new_c;
+      index += 100;
+    }
   return common::Status::OK();
 }
 

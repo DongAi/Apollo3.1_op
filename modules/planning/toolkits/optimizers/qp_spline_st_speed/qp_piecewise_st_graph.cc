@@ -73,9 +73,16 @@ Status QpPiecewiseStGraph::Search(
   ADEBUG << "Init point:" << init_point_.DebugString();
 
   // reset piecewise linear generator
+  static int new_c = 0;
+  static int index = 20;
   generator_.reset(new PiecewiseLinearGenerator(
       qp_st_speed_config_.qp_piecewise_config().number_of_evaluated_graph_t(),
       t_evaluated_resolution_));
+  new_c++;
+    if (new_c > index) {
+      AINFO << "new_c35" << new_c;
+      index += 100;
+    }
 
   if (!AddConstraint(st_graph_data.init_point(), st_graph_data.speed_limit(),
                      st_graph_data.st_boundaries(), accel_bound)

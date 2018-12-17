@@ -189,8 +189,15 @@ std::list<std::unique_ptr<Obstacle>> Obstacle::CreateObstacles(
     const auto perception_id =
         std::to_string(prediction_obstacle.perception_obstacle().id());
     if (prediction_obstacle.trajectory().empty()) {
+      static int new_c4 = 0;
+      static int index = 0;
       obstacles.emplace_back(new Obstacle(
           perception_id, prediction_obstacle.perception_obstacle()));
+      new_c4++;
+      if (new_c4 > index) {
+        AINFO << "new_c4" << new_c4;
+        index += 100;
+      }
       continue;
     }
 
@@ -210,11 +217,18 @@ std::list<std::unique_ptr<Obstacle>> Obstacle::CreateObstacles(
         continue;
       }
 
+    static int new_c5 = 0;
+    static int index = 0;
       const std::string obstacle_id =
           apollo::common::util::StrCat(perception_id, "_", trajectory_index);
       obstacles.emplace_back(new Obstacle(
           obstacle_id, prediction_obstacle.perception_obstacle(), trajectory));
       ++trajectory_index;
+      new_c5++;
+    if (new_c5 > index) {
+      AINFO << "new_c5" << new_c5;
+      index += 100;
+    }
     }
   }
   return obstacles;
@@ -259,7 +273,14 @@ std::unique_ptr<Obstacle> Obstacle::CreateStaticVirtualObstacles(
     point->set_x(corner_point.x());
     point->set_y(corner_point.y());
   }
+  static int new_c6 = 0;
+  static int index = 0;
   auto* obstacle = new Obstacle(id, perception_obstacle);
+        new_c6++;
+    if (new_c6 > index) {
+      AINFO << "new_c6" << new_c6;
+      index += 100;
+    }
   obstacle->is_virtual_ = true;
   return std::unique_ptr<Obstacle>(obstacle);
 }

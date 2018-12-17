@@ -188,8 +188,15 @@ common::Status OpenSpacePlanning::InitFrame(
     const uint32_t sequence_num,
     const common::TrajectoryPoint& planning_start_point,
     const double start_time, const common::VehicleState& vehicle_state) {
+  static int new_c = 0;
+  static int index = 20;
   frame_.reset(new FrameOpenSpace(sequence_num, planning_start_point,
                                   start_time, vehicle_state));
+        new_c++;
+    if (new_c > index) {
+      AINFO << "new_c15" << new_c;
+      index += 100;
+    }
   auto status = frame_->Init();
   if (!status.ok()) {
     AERROR << "failed to init frame:" << status.ToString();

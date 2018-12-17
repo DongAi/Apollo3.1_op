@@ -119,8 +119,15 @@ Status StdPlanning::InitFrame(const uint32_t sequence_num,
                               const TrajectoryPoint& planning_start_point,
                               const double start_time,
                               const VehicleState& vehicle_state) {
+  static int new_c = 0;
+  static int index = 20;
   frame_.reset(new Frame(sequence_num, planning_start_point, start_time,
                          vehicle_state, reference_line_provider_.get()));
+  new_c++;
+    if (new_c > index) {
+      AINFO << "new_c31" << new_c;
+      index += 100;
+    }
   auto status = frame_->Init();
   if (!status.ok()) {
     AERROR << "failed to init frame:" << status.ToString();
@@ -421,8 +428,15 @@ Status StdPlanning::Plan(
     }
   }
 
+  static int new_c = 0;
+  static int index = 20;
   last_publishable_trajectory_.reset(new PublishableTrajectory(
       current_time_stamp, best_ref_info->trajectory()));
+      new_c++;
+    if (new_c > index) {
+      AINFO << "new_c32" << new_c;
+      index += 100;
+    }
 
   ADEBUG << "current_time_stamp: " << std::to_string(current_time_stamp);
 

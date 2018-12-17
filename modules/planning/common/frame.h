@@ -119,6 +119,12 @@ class Frame {
   void UpdateReferenceLinePriority(
       const std::map<std::string, uint32_t> &id_to_priority);
 
+  
+  void Reset(uint32_t sequence_num,
+             const common::TrajectoryPoint &planning_start_point,
+             const double start_time, const common::VehicleState &vehicle_state,
+             ReferenceLineProvider *reference_line_provider);
+
  private:
   bool CreateReferenceLineInfo();
 

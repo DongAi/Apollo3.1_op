@@ -45,6 +45,9 @@ class PublishableTrajectory : public DiscretizedTrajectory {
 
   void PopulateTrajectoryProtobuf(ADCTrajectory* trajectory_pb) const;
 
+  void Reset(const double header_time,
+                        const DiscretizedTrajectory& discretized_trajectory);
+  void Reset(const ADCTrajectory& trajectory_pb);
  private:
   double header_time_ = 0.0;
 };

@@ -44,6 +44,8 @@ using apollo::perception::PerceptionObstacle;
 class FrameTest : public ::testing::Test {
  public:
   virtual void SetUp() {
+    static int new_c1 = 0;
+    static int index = 20;
     ASSERT_TRUE(common::util::GetProtoFromFile(
         "modules/planning/common/testdata/sample_prediction.pb.txt",
         &prediction_obstacles_));
@@ -53,6 +55,11 @@ class FrameTest : public ::testing::Test {
     vehicle_state_.set_y(4141269.79);
     test_frame_ = new FrameOpenSpace(sequence_num_, planning_start_point_,
                                      start_time_, vehicle_state_);
+    new_c1++;
+    if (new_c1 > index) {
+      AINFO << "new_c1" << new_c1;
+      index += 100;
+    }
   }
 
  protected:

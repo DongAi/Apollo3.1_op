@@ -41,6 +41,8 @@ class LagPrediction {
     const prediction::PredictionObstacle* obstacle_ptr = nullptr;
   };
 
+  void Reset(uint32_t min_appear_num, uint32_t max_disappear_num);
+
  private:
   void AddObstacleToPrediction(
       double delay_sec, const prediction::PredictionObstacle& obstacle,

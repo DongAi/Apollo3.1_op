@@ -62,6 +62,8 @@ ReferenceLineProvider::~ReferenceLineProvider() {
 }
 
 ReferenceLineProvider::ReferenceLineProvider(const hdmap::HDMap *base_map) {
+  static int new_c = 0;
+  static int index = 20;
   if (!FLAGS_use_navigation_mode) {
     pnc_map_.reset(new hdmap::PncMap(base_map));
   }
@@ -69,16 +71,27 @@ ReferenceLineProvider::ReferenceLineProvider(const hdmap::HDMap *base_map) {
                                        &smoother_config_))
       << "Failed to load smoother config file "
       << FLAGS_smoother_config_filename;
-  if (smoother_config_.has_qp_spline()) {
-    smoother_.reset(new QpSplineReferenceLineSmoother(smoother_config_));
-  } else if (smoother_config_.has_spiral()) {
-    smoother_.reset(new SpiralReferenceLineSmoother(smoother_config_));
-  } else if (smoother_config_.has_cos_theta()) {
-    smoother_.reset(new CosThetaReferenceLineSmoother(smoother_config_));
-  } else {
-    CHECK(false) << "unknown smoother config "
+  if (smoother_ == nullptr) {
+    if (smoother_config_.has_qp_spline()) {
+      smoother_.reset(new QpSplineReferenceLineSmoother(smoother_config_));
+    } else if (smoother_config_.has_spiral()) {
+      smoother_.reset(new SpiralReferenceLineSmoother(smoother_config_));
+    } else if (smoother_config_.has_cos_theta()) {
+      smoother_.reset(new CosThetaReferenceLineSmoother(smoother_config_));
+    } else {
+      CHECK(false) << "unknown smoother config "
                  << smoother_config_.DebugString();
+    }
+    new_c++;
+    if (new_c > index) {
+      AINFO << "new_c26 " << new_c;
+      index += 100;
+    }
   }
+  else {
+    smoother_->Reset();
+  }
+  
   is_initialized_ = true;
 }  // namespace planning
 
@@ -111,8 +124,15 @@ bool ReferenceLineProvider::Start() {
     return false;
   }
   if (FLAGS_enable_reference_line_provider_thread) {
+    static int new_c = 0;
+    static int index = 20;
     thread_.reset(
         new std::thread(&ReferenceLineProvider::GenerateThread, this));
+    new_c++;
+    if (new_c > index) {
+      AINFO << "new_c27" << new_c;
+      index += 100;
+    }
   }
   return true;
 }
@@ -297,7 +317,7 @@ bool ReferenceLineProvider::GetReferenceLinesFromRelativeMap(
     AERROR << "navigation path ids is empty";
     return false;
   }
-  // get curent adc lane info by vehicle state
+  // get current adc lane info by vehicle state
   common::VehicleState vehicle_state =
       common::VehicleStateProvider::instance()->vehicle_state();
   hdmap::LaneWaypoint adc_lane_way_point;

@@ -56,6 +56,7 @@ NaviPlanning::~NaviPlanning() { Stop(); }
 std::string NaviPlanning::Name() const { return "navi_planning"; }
 
 Status NaviPlanning::Init() {
+  common::util::ThreadPool::Init(FLAGS_max_planning_thread_pool_size);
   CHECK(apollo::common::util::GetProtoFromFile(FLAGS_planning_config_file,
                                                &config_))
       << "failed to load planning config file " << FLAGS_planning_config_file;
@@ -104,8 +105,22 @@ Status NaviPlanning::InitFrame(const uint32_t sequence_num,
                                const TrajectoryPoint& planning_start_point,
                                const double start_time,
                                const VehicleState& vehicle_state) {
-  frame_.reset(new Frame(sequence_num, planning_start_point, start_time,
+  if (frame_ == nullptr) {
+    static int new_c = 0;
+    static int index = 20;
+    frame_.reset(new Frame(sequence_num, planning_start_point, start_time,
                          vehicle_state, reference_line_provider_.get()));
+        new_c++;
+    if (new_c > index) {
+      AINFO << "new_c14" << new_c;
+      index += 100;
+    }
+  }
+  else {
+    frame_->Reset(sequence_num, planning_start_point, start_time,
+                         vehicle_state, reference_line_provider_.get());
+  }
+  
   auto status = frame_->Init();
   if (!status.ok()) {
     AERROR << "failed to init frame:" << status.ToString();
@@ -583,8 +598,20 @@ Status NaviPlanning::Plan(
     }
   }
 
-  last_publishable_trajectory_.reset(new PublishableTrajectory(
+  if (last_publishable_trajectory_ == nullptr) {
+    static int new_c = 0;
+    static int index = 20;
+    last_publishable_trajectory_.reset(new PublishableTrajectory(
       current_time_stamp, best_ref_info->trajectory()));
+        new_c++;
+    if (new_c > index) {
+      AINFO << "new_c14 " << new_c;
+      index += 100;
+    }
+  }
+  else {
+    last_publishable_trajectory_->Reset(current_time_stamp, best_ref_info->trajectory());
+  }
 
   ADEBUG << "current_time_stamp: " << std::to_string(current_time_stamp);
 

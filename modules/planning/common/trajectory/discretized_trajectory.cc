@@ -45,6 +45,16 @@ DiscretizedTrajectory::DiscretizedTrajectory(const ADCTrajectory& trajectory) {
                             trajectory.trajectory_point().end());
 }
 
+void DiscretizedTrajectory::Reset(const ADCTrajectory& trajectory) {
+  trajectory_points_.assign(trajectory.trajectory_point().begin(),
+                            trajectory.trajectory_point().end());
+}
+void DiscretizedTrajectory::Reset(const std::vector<common::TrajectoryPoint>& trajectory_points) {
+  CHECK(!trajectory_points.empty())
+      << "trajectory_points should NOT be empty()";
+  trajectory_points_ = trajectory_points;
+}
+
 TrajectoryPoint DiscretizedTrajectory::Evaluate(
     const double relative_time) const {
   auto comp = [](const TrajectoryPoint& p, const double relative_time) {
