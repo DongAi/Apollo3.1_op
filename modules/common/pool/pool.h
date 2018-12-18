@@ -37,7 +37,8 @@ private:
   int alloc_count_;
 };
 
-template <typename ElemType_>
+template <typename ElemType_,
+            int AllocInterval_ = 8>
 class Pool : public Ipool {
 public:
   typedef std::shared_ptr<ElemType_> ElemPtr_;
@@ -54,13 +55,14 @@ public:
   ElemPtr_ New();
 
 private:
-  void Allocate()
+  void Allocate();
   void Recycle();
 
 
 private:
   ElemCont_ elem_cont_;
   ElemRef_ elem_ref_;
+  int alloc_interval_;
 
 };
 
