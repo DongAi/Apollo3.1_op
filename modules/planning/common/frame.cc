@@ -86,10 +86,10 @@ void Frame::Reset(uint32_t sequence_num,
              ReferenceLineProvider *reference_line_provider) {
   sequence_num_ = sequence_num;
   planning_start_point_ = planning_start_point;
-  start_time_ = start_time;
+  //start_time_ = start_time;
   vehicle_state_ = vehicle_state;
   reference_line_provider_ = reference_line_provider;
-  monitor_logger_ = common::monitor::MonitorMessageItem::PLANNING);
+  //monitor_logger_ = common::monitor::MonitorMessageItem::PLANNING);
 
   if (FLAGS_enable_lag_prediction) {
     if (lag_predictor_ == nullptr) {
