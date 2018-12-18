@@ -72,8 +72,8 @@ Frame::Frame(uint32_t sequence_num,
     lag_predictor_.reset(
         new LagPrediction(FLAGS_lag_prediction_min_appear_num,
                           FLAGS_lag_prediction_max_disappear_num));
-    new_c3++;
-    if (new_c3 > index) {
+    new_c2++;
+    if (new_c2 > index) {
       AINFO << "new_c3 " << new_c2;
       index += 100;
     }
@@ -99,9 +99,9 @@ void Frame::Reset(uint32_t sequence_num,
         new LagPrediction(FLAGS_lag_prediction_min_appear_num,
                           FLAGS_lag_prediction_max_disappear_num));
       
-      new_c3++;
-      if (new_c3 > index) {
-        AINFO << "new_c3 " << new_c2;
+      new_c2++;
+      if (new_c2 > index) {
+        AINFO << "new_c3+ " << new_c2;
         index += 100;
       }
     }
