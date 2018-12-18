@@ -89,7 +89,7 @@ ReferenceLineProvider::ReferenceLineProvider(const hdmap::HDMap *base_map) {
     }
   }
   else {
-    smoother_->Reset();
+    smoother_->Reset(smoother_config_);
   }
   
   is_initialized_ = true;

@@ -69,7 +69,8 @@ CosThetaReferenceLineSmoother::CosThetaReferenceLineSmoother(
 }
 
 void CosThetaReferenceLineSmoother::Reset(const ReferenceLineSmootherConfig& config) {
-  reopt_qp_smoother_->Reset(config);
+  //reopt_qp_smoother_->Reset(config);
+  config_ = config;
   max_point_deviation_ = config.cos_theta().max_point_deviation();
 
   num_of_iterations_ = config.cos_theta().num_of_iteration();

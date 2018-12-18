@@ -54,6 +54,8 @@ class ReferenceLineSmoother {
    */
   virtual bool Smooth(const ReferenceLine&, ReferenceLine* const) = 0;
 
+  virtual void Reset(const ReferenceLineSmootherConfig& config) = 0;
+
   virtual ~ReferenceLineSmoother() = default;
 
  protected:
