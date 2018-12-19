@@ -54,7 +54,8 @@ using apollo::prediction::PredictionObstacles;
 constexpr double kMathEpsilon = 1e-8;
 
 #ifdef __aarch64__
-boost::object_pool<Frame> gFramePool_;
+//boost::object_pool<Frame> gFramePool_;
+POOLDEF_IMPL(Frame);
 #endif
 
 FrameHistory::FrameHistory()
