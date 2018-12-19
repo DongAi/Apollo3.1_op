@@ -163,7 +163,9 @@ class Frame {
   apollo::common::monitor::MonitorLogger monitor_logger_;
 };
 
+#ifdef __aarch64__
 extern boost::object_pool<Frame> gFramePool_;
+#endif
 
 class FrameHistory : public IndexedQueue<uint32_t, Frame> {
  private:

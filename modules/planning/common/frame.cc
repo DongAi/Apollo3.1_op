@@ -53,7 +53,9 @@ using apollo::prediction::PredictionObstacles;
 
 constexpr double kMathEpsilon = 1e-8;
 
+#ifdef __aarch64__
 boost::object_pool<Frame> gFramePool_;
+#endif
 
 FrameHistory::FrameHistory()
     : IndexedQueue<uint32_t, Frame>(FLAGS_max_history_frame_num) {}
