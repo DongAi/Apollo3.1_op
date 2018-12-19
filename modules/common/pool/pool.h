@@ -54,6 +54,8 @@ public:
 
   ElemPtr_ New();
 
+  void PreAllocate() {//todo}
+
 private:
   void Allocate();
   void Recycle();
@@ -65,6 +67,16 @@ private:
   int alloc_interval_;
 
 };
+
+#define POOLDEF_INST(POOLTYPE) \
+  g##POOLTYPE##POOL
+#define POOLDEF_DECL(POOLTYPE) \
+  extern Pool<POOLTYPE> POOLDEF_INST(POOLTYPE); 
+  typedef Pool<POOLTYPE>::ElemPtr_ POOLTYPE##Ptr;
+#define POOLDEF_IMPL(POOLTYPE) \
+  Pool<POOLTYPE> POOLDEF_INST(POOLTYPE)()
+#define POOLDEF_NEW(POOLTYPE) \
+  POOLDEF_INST(POOLTYPE).New()
 
 }  // namespace pool
 }  // namespace common
