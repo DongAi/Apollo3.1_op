@@ -27,19 +27,6 @@ Pool<ElemType_, AllocInterval_>::Pool() :
 template <typename ElemType_, int AllocInterval_>
 Pool<ElemType_, AllocInterval_>::~Pool() {}
 
-template <typename ElemType_, int AllocInterval>
-void Pool<ElemType_,AllocInterval>::Recycle() {
-  for (int i = 0; i < size_; ++i) {
-    if (elem_cont_[i].first.unique()) {
-      elem_cont_[i].first->ElemType_::~ElemType_();
-      new(elem_cont_[i].first.get()) ElemType_();
-      
-      elem_ref_.push_back(i);
-      elem_cont_[i].second = true;
-    }
-  }
-}
-
 }  //namespace pool
 }  //namespace common
 }  //namespace pool

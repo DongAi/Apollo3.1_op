@@ -103,12 +103,10 @@ Status NaviPlanning::Init() {
 Status NaviPlanning::InitFrame(const uint32_t sequence_num,
                                const TrajectoryPoint& planning_start_point,
                                const double start_time,
-                               const VehicleState& vehicle_state) {
+                              const VehicleState& vehicle_state) {
 #ifdef __aarch64__
-  //get an object from object pool
-  //the maximum of paramers is 3  
-  frame_.reset(gFramePool_.construct(planning_start_point, 
-                                      start_time, reference_line_provider_.get()));
+  frame_ = POOLDEF_INST(Frame).New(sequence_num, planning_start_point, start_time,
+                         vehicle_state, reference_line_provider_.get());
   if (!frame_) {
     AERROR << "failed to get Frame object from object_pool";
     frame_.reset(new Frame(sequence_num, planning_start_point, start_time,
@@ -439,9 +437,12 @@ void NaviPlanning::RunOnce() {
       PublishPlanningPb(trajectory_pb, start_timestamp);
     }
 
+#ifdef __aarch64__
+    FrameHistory::instance()->Add(frame_);
+#else
     auto seq_num = frame_->SequenceNum();
     FrameHistory::instance()->Add(seq_num, std::move(frame_));
-
+#endif
     return;
   }
 
@@ -496,8 +497,12 @@ void NaviPlanning::RunOnce() {
   PublishPlanningPb(trajectory_pb, start_timestamp);
   ADEBUG << "Planning pb:" << trajectory_pb->header().DebugString();
 
-  auto seq_num = frame_->SequenceNum();
-  FrameHistory::instance()->Add(seq_num, std::move(frame_));
+#ifdef __aarch64__
+    FrameHistory::instance()->Add(frame_);
+#else
+    auto seq_num = frame_->SequenceNum();
+    FrameHistory::instance()->Add(seq_num, std::move(frame_));
+#endif
 }
 
 void NaviPlanning::SetFallbackTrajectory(ADCTrajectory* trajectory_pb) {

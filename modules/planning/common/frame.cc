@@ -78,7 +78,7 @@ Frame::Frame(uint32_t sequence_num,
 }
 
 #ifdef __aarch64__
-Frame::Frame(const common::TrajectoryPoint &planning_start_point,
+/*Frame::Frame(const common::TrajectoryPoint &planning_start_point,
              const double start_time,
              ReferenceLineProvider *reference_line_provider)
     : planning_start_point_(planning_start_point),
@@ -95,7 +95,7 @@ Frame::Frame(const common::TrajectoryPoint &planning_start_point,
 void Frame::PreCreate(uint32_t sequence_num, const common::VehicleState &vehicle_state) {
   sequence_num_ = sequence_num;
   vehicle_state_ = vehicle_state;
-}
+}*/
 
 Frame::~Frame() {
   hdmap_ = nullptr;
