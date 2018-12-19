@@ -65,7 +65,12 @@ class Frame {
                  const double start_time,
                  const common::VehicleState &vehicle_state,
                  ReferenceLineProvider *reference_line_provider);
-
+#ifdef __aarch64__
+  explicit Frame(const common::TrajectoryPoint &planning_start_point,
+                 const common::VehicleState &vehicle_state,
+                 ReferenceLineProvider *reference_line_provider);
+  void PreCreate(uint32_t sequence_num, const double start_time);
+#endif
   const common::TrajectoryPoint &PlanningStartPoint() const;
   common::Status Init();
 

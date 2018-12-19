@@ -106,12 +106,16 @@ Status NaviPlanning::InitFrame(const uint32_t sequence_num,
                                const VehicleState& vehicle_state) {
 #ifdef __aarch64__
   //get an object from object pool
-  frame_.reset(gFramePool_.construct(equence_num, planning_start_point, start_time,
-                         vehicle_state, reference_line_provider_.get()));
+  //the maximum of paramers is 3
+  frame_.reset(gFramePool_.construct(planning_start_point, 
+                                      vehicle_state, reference_line_provider_.get()));
   if (!frame_) {
     AERROR << "failed to get Frame object from object_pool";
     frame_.reset(new Frame(sequence_num, planning_start_point, start_time,
                          vehicle_state, reference_line_provider_.get()));
+  }
+  else {
+    frame_->PreCreate(sequence_num, start_time);
   }
 #else
   frame_.reset(new Frame(sequence_num, planning_start_point, start_time,

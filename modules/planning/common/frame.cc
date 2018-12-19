@@ -77,6 +77,27 @@ Frame::Frame(uint32_t sequence_num,
   }
 }
 
+#ifdef __aarch64__
+Frame::Frame(const common::TrajectoryPoint &planning_start_point,
+             const common::VehicleState &vehicle_state,
+             ReferenceLineProvider *reference_line_provider)
+    : planning_start_point_(planning_start_point),
+      vehicle_state_(vehicle_state),
+      reference_line_provider_(reference_line_provider),
+      monitor_logger_(common::monitor::MonitorMessageItem::PLANNING) {
+  if (FLAGS_enable_lag_prediction) {
+    lag_predictor_.reset(
+        new LagPrediction(FLAGS_lag_prediction_min_appear_num,
+                          FLAGS_lag_prediction_max_disappear_num));
+  }
+}
+
+void Frame::PreCreate(uint32_t sequence_num, const double start_time) {
+  sequence_num_ = sequence_num;
+  start_time_ = start_time;
+}
+#endif
+
 const common::TrajectoryPoint &Frame::PlanningStartPoint() const {
   return planning_start_point_;
 }
