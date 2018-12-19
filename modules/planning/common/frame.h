@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 
-#include "boost/pool/object_pool.hpp"
+//#include "boost/pool/object_pool.hpp"
 
 #include "modules/common/proto/geometry.pb.h"
 #include "modules/common/vehicle_state/proto/vehicle_state.pb.h"
@@ -48,6 +48,8 @@
 #include "modules/planning/common/reference_line_info.h"
 #include "modules/planning/common/trajectory/publishable_trajectory.h"
 #include "modules/planning/reference_line/reference_line_provider.h"
+
+#include "modules/common/pool/pool.h"
 
 namespace apollo {
 namespace planning {
