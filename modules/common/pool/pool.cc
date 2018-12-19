@@ -28,36 +28,6 @@ template <typename ElemType_, int AllocInterval_>
 Pool<ElemType_, AllocInterval_>::~Pool() {}
 
 template <typename ElemType_, int AllocInterval>
-typename Pool<ElemType_, AllocInterval>::ElemPtr_ 
-Pool<ElemType_, AllocInterval>::New() {
-  if (elem_ref_.empty()) {
-    Recycle();
-  }
-
-  if (elem_ref_.empty()) {
-    Allocate();
-  }
-  
-  const int index = elem_ref_.front();
-  elem_ref_.pop_front();
-  elem_cont_[index].second = false;
-
-  ElemPtr_ elem_ptr = elem_cont_[index].first;
-  return elem_ptr;
-}
-
-template <typename ElemType_, int AllocInterval>
-void Pool<ElemType_, AllocInterval>::Allocate() {
-  for (int i = 0; i < alloc_interval_; ++i) {
-    ElemPtr_ elem_ptr(new ElemType_());
-    elem_cont_.push_back(std::make_pair(elem_ptr, true));
-    elem_ref_.push_back((int)elem_cont_.size() - 1); 
-  }
-
-  size_ = (int)elem_cont_.size();
-}
-
-template <typename ElemType_, int AllocInterval>
 void Pool<ElemType_,AllocInterval>::Recycle() {
   for (int i = 0; i < size_; ++i) {
     if (elem_cont_[i].first.unique()) {

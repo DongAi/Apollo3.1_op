@@ -52,15 +52,52 @@ public:
   Pool();
   ~Pool();
 
-  ElemPtr_ New();
+  template <typename T0, typename T1, typename T2, typename T3, typename T4>
+  ElemPtr_ New(T0& t0, T1& t1, T2& t2, T3& t3, T4& t4) {
+    if (elem_ref_.empty()) {
+      Recycle();
+    }
+
+    if (elem_ref_.empty()) {
+      Allocate();
+    }
+  
+    const int index = elem_ref_.front();
+    elem_ref_.pop_front();
+    elem_cont_[index].second = false;
+
+    elem_cont_[index].first->ElemType_::~ElemType_();
+    new(elem_cont_[index].first.get()) ElemType_(t0, t1, t2, t3, t4);
+
+    ElemPtr_ elem_ptr = elem_cont_[index].first;
+    return elem_ptr;
+  }
 
   void PreAllocate() {
     //todo
   }
 
 private:
-  void Allocate();
-  void Recycle();
+  void Allocate() {
+    for (int i = 0; i < alloc_interval_; ++i) {
+      ElemPtr_ elem_ptr(new ElemType_());
+      elem_cont_.push_back(std::make_pair(elem_ptr, true));
+      elem_ref_.push_back((int)elem_cont_.size() - 1); 
+    }
+
+    size_ = (int)elem_cont_.size();
+  }
+  void Recycle() {
+    for (int i = 0; i < size_; ++i) {
+      if (elem_cont_[i].first.unique()) {
+        //elem_cont_[i].first->ElemType_::~ElemType_();
+        //new(elem_cont_[i].first.get()) ElemType_();
+      
+        elem_ref_.push_back(i);
+        elem_cont_[i].second = true;
+      }
+    }
+  }
 
 
 private:
