@@ -69,7 +69,7 @@ class Frame {
   explicit Frame(const common::TrajectoryPoint &planning_start_point,
                  const common::VehicleState &vehicle_state,
                  ReferenceLineProvider *reference_line_provider);
-  void PreCreate(uint32_t sequence_num, const VehicleState& vehicle_state);
+  void PreCreate(uint32_t sequence_num, const common::VehicleState& vehicle_state);
 #endif
   const common::TrajectoryPoint &PlanningStartPoint() const;
   common::Status Init();
