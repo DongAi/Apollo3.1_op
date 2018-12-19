@@ -79,10 +79,10 @@ Frame::Frame(uint32_t sequence_num,
 
 #ifdef __aarch64__
 Frame::Frame(const common::TrajectoryPoint &planning_start_point,
-             const common::VehicleState &vehicle_state,
+             const double start_time,
              ReferenceLineProvider *reference_line_provider)
     : planning_start_point_(planning_start_point),
-      vehicle_state_(vehicle_state),
+      start_time_(start_time),
       reference_line_provider_(reference_line_provider),
       monitor_logger_(common::monitor::MonitorMessageItem::PLANNING) {
   if (FLAGS_enable_lag_prediction) {
@@ -92,9 +92,9 @@ Frame::Frame(const common::TrajectoryPoint &planning_start_point,
   }
 }
 
-void Frame::PreCreate(uint32_t sequence_num, const double start_time) {
+void Frame::PreCreate(uint32_t sequence_num, const common::VehicleState &vehicle_state) {
   sequence_num_ = sequence_num;
-  start_time_ = start_time;
+  vehicle_state_ = vehicle_state;
 }
 #endif
 
