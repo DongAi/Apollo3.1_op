@@ -70,7 +70,11 @@ class Frame {
                  const double start_time,
                  ReferenceLineProvider *reference_line_provider);
   void PreCreate(uint32_t sequence_num, const common::VehicleState& vehicle_state);
+  
+  ~Frame();
 #endif
+
+
   const common::TrajectoryPoint &PlanningStartPoint() const;
   common::Status Init();
 

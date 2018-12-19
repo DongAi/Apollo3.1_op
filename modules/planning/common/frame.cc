@@ -96,6 +96,14 @@ void Frame::PreCreate(uint32_t sequence_num, const common::VehicleState &vehicle
   sequence_num_ = sequence_num;
   vehicle_state_ = vehicle_state;
 }
+
+Frame::~Frame() {
+  hdmap_ = nullptr;
+  reference_line_info_.clear();
+  drive_reference_line_info_ = nullptr;
+  lag_predictor_.reset(nullptr);
+  reference_line_provider_ = nullptr;
+}
 #endif
 
 const common::TrajectoryPoint &Frame::PlanningStartPoint() const {
