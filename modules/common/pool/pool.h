@@ -54,7 +54,9 @@ public:
 
   ElemPtr_ New();
 
-  void PreAllocate() {//todo}
+  void PreAllocate() {
+    //todo
+  }
 
 private:
   void Allocate();
@@ -71,7 +73,7 @@ private:
 #define POOLDEF_INST(POOLTYPE) \
   g##POOLTYPE##POOL
 #define POOLDEF_DECL(POOLTYPE) \
-  extern Pool<POOLTYPE> POOLDEF_INST(POOLTYPE); 
+  extern Pool<POOLTYPE> POOLDEF_INST(POOLTYPE); \
   typedef Pool<POOLTYPE>::ElemPtr_ POOLTYPE##Ptr;
 #define POOLDEF_IMPL(POOLTYPE) \
   Pool<POOLTYPE> POOLDEF_INST(POOLTYPE)()
