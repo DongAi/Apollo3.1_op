@@ -28,6 +28,8 @@
 #include <string>
 #include <vector>
 
+#include "boost/pool/object_pool.hpp"
+
 #include "modules/common/proto/geometry.pb.h"
 #include "modules/common/vehicle_state/proto/vehicle_state.pb.h"
 #include "modules/localization/proto/pose.pb.h"
@@ -119,12 +121,6 @@ class Frame {
   void UpdateReferenceLinePriority(
       const std::map<std::string, uint32_t> &id_to_priority);
 
-  
-  void Reset(uint32_t sequence_num,
-             const common::TrajectoryPoint &planning_start_point,
-             const double start_time, const common::VehicleState &vehicle_state,
-             ReferenceLineProvider *reference_line_provider);
-
  private:
   bool CreateReferenceLineInfo();
 
@@ -166,6 +162,8 @@ class Frame {
   ReferenceLineProvider *reference_line_provider_ = nullptr;
   apollo::common::monitor::MonitorLogger monitor_logger_;
 };
+
+extern boost::object_pool<Frame> gFramePool_;
 
 class FrameHistory : public IndexedQueue<uint32_t, Frame> {
  private:
