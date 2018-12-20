@@ -68,17 +68,10 @@ constexpr double kStraightForwardLineCost = 10.0;
 }  // namespace
 
 void NaviPlanner::RegisterTasks() {
-  static int new_c = 0;
-  static int index = 20;
   task_factory_.Register(NAVI_PATH_DECIDER,
                          []() -> NaviTask* { return new NaviPathDecider(); });
   task_factory_.Register(NAVI_SPEED_DECIDER,
                          []() -> NaviTask* { return new NaviSpeedDecider(); });
-        new_c++;
-    if (new_c > index) {
-      AINFO << "new_c16" << new_c;
-      index += 100;
-    }
 }
 
 Status NaviPlanner::Init(const PlanningConfig& config) {
@@ -290,7 +283,7 @@ std::vector<SpeedPoint> NaviPlanner::GenerateInitSpeedProfile(
     const TrajectoryPoint& planning_init_point,
     const ReferenceLineInfo* reference_line_info) {
   std::vector<SpeedPoint> speed_profile;
-  const auto* last_frame = FrameHistory::instance()->Latest();
+  const FramePtr last_frame = FrameHistory::instance()->Latest();
   if (!last_frame) {
     AWARN << "last frame is empty";
     return speed_profile;

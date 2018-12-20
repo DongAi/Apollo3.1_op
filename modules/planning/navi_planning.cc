@@ -112,9 +112,6 @@ Status NaviPlanning::InitFrame(const uint32_t sequence_num,
     frame_.reset(new Frame(sequence_num, planning_start_point, start_time,
                          vehicle_state, reference_line_provider_.get()));
   }
-  else {
-    frame_->PreCreate(sequence_num, vehicle_state);
-  }
 #else
   frame_.reset(new Frame(sequence_num, planning_start_point, start_time,
                          vehicle_state, reference_line_provider_.get()));
@@ -635,7 +632,7 @@ Status NaviPlanning::Plan(
 void NaviPlanning::Stop() {
   AWARN << "Planning Stop is called";
   last_publishable_trajectory_.reset(nullptr);
-  frame_.reset(nullptr);
+  frame_ = nullptr;
   planner_.reset(nullptr);
   FrameHistory::instance()->Clear();
   GetPlanningStatus()->Clear();

@@ -51,6 +51,8 @@
 
 #include "modules/common/pool/pool.h"
 
+using namespace apollo::common::pool;
+
 namespace apollo {
 namespace planning {
 
@@ -186,18 +188,20 @@ public:
   const FramePtr Latest() {
     return latest_frame_;
   }
+  void Clear() {
+    latest_frame_ = nullptr;
+  }
 private:
   FramePtr latest_frame_;
 private:
   DECLARE_SINGLETON(FrameHistory);
-}
-#endif
-
+};
+#else
 class FrameHistory : public IndexedQueue<uint32_t, Frame> {
  private:
   DECLARE_SINGLETON(FrameHistory);
 };
-
+#endif
 }  // namespace planning
 }  // namespace apollo
 

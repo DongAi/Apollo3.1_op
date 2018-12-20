@@ -58,8 +58,10 @@ constexpr double kMathEpsilon = 1e-8;
 POOLDEF_IMPL(Frame);
 #endif
 
+#ifndef __aarch64__
 FrameHistory::FrameHistory()
     : IndexedQueue<uint32_t, Frame>(FLAGS_max_history_frame_num) {}
+#endif 
 
 Frame::Frame(uint32_t sequence_num,
              const common::TrajectoryPoint &planning_start_point,

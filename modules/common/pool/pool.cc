@@ -27,6 +27,30 @@ Pool<ElemType_, AllocInterval_>::Pool() :
 template <typename ElemType_, int AllocInterval_>
 Pool<ElemType_, AllocInterval_>::~Pool() {}
 
+template <typename ElemType_, int AllocInterval>
+void Pool<ElemType_, AllocInterval>::Allocate() {
+  for (int i = 0; i < alloc_interval_; ++i) {
+    ElemPtr_ elem_ptr(new ElemType_());
+    elem_cont_.push_back(std::make_pair(elem_ptr, true));
+    elem_ref_.push_back((int)elem_cont_.size() - 1); 
+  }
+
+  size_ = (int)elem_cont_.size();
+}
+
+template <typename ElemType_, int AllocInterval>
+void Pool<ElemType_,AllocInterval>::Recycle() {
+  for (int i = 0; i < size_; ++i) {
+    if (elem_cont_[i].first.unique()) {
+      //elem_cont_[i].first->ElemType_::~ElemType_();
+      //new(elem_cont_[i].first.get()) ElemType_();
+      
+      elem_ref_.push_back(i);
+      elem_cont_[i].second = true;
+    }
+  }
+}
+
 }  //namespace pool
 }  //namespace common
 }  //namespace pool

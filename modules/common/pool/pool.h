@@ -53,7 +53,7 @@ public:
   ~Pool();
 
   template <typename T0, typename T1, typename T2, typename T3, typename T4>
-  ElemPtr_ New(T0& t0, T1& t1, T2& t2, T3& t3, T4& t4) {
+  ElemPtr_ New(T0& t0, T1& t1, T2& t2, T3& t3, T4 t4) {
     if (elem_ref_.empty()) {
       Recycle();
     }
@@ -78,26 +78,8 @@ public:
   }
 
 private:
-  void Allocate() {
-    for (int i = 0; i < alloc_interval_; ++i) {
-      ElemPtr_ elem_ptr(new ElemType_());
-      elem_cont_.push_back(std::make_pair(elem_ptr, true));
-      elem_ref_.push_back((int)elem_cont_.size() - 1); 
-    }
-
-    size_ = (int)elem_cont_.size();
-  }
-  void Recycle() {
-    for (int i = 0; i < size_; ++i) {
-      if (elem_cont_[i].first.unique()) {
-        //elem_cont_[i].first->ElemType_::~ElemType_();
-        //new(elem_cont_[i].first.get()) ElemType_();
-      
-        elem_ref_.push_back(i);
-        elem_cont_[i].second = true;
-      }
-    }
-  }
+  void Allocate();
+  void Recycle();
 
 
 private:
@@ -110,10 +92,10 @@ private:
 #define POOLDEF_INST(POOLTYPE) \
   g##POOLTYPE##POOL
 #define POOLDEF_DECL(POOLTYPE) \
-  extern Pool<POOLTYPE> POOLDEF_INST(POOLTYPE); \
-  typedef Pool<POOLTYPE>::ElemPtr_ POOLTYPE##Ptr;
+  extern apollo::common::pool::Pool<POOLTYPE> POOLDEF_INST(POOLTYPE); \
+  typedef apollo::common::pool::Pool<POOLTYPE>::ElemPtr_ POOLTYPE##Ptr;
 #define POOLDEF_IMPL(POOLTYPE) \
-  Pool<POOLTYPE> POOLDEF_INST(POOLTYPE)()
+  apollo::common::pool::Pool<POOLTYPE> POOLDEF_INST(POOLTYPE)()
 #define POOLDEF_NEW(POOLTYPE) \
   POOLDEF_INST(POOLTYPE).New()
 

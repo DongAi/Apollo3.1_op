@@ -463,7 +463,7 @@ void StdPlanning::Stop() {
   common::util::ThreadPool::Stop();
   reference_line_provider_->Stop();
   last_publishable_trajectory_.reset(nullptr);
-  frame_.reset(nullptr);
+  frame_ = nullptr;
   planner_.reset(nullptr);
   FrameHistory::instance()->Clear();
   GetPlanningStatus()->Clear();
