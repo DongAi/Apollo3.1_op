@@ -33,6 +33,11 @@
 #include "modules/planning/reference_line/reference_line_smoother.h"
 #include "modules/planning/reference_line/reference_point.h"
 
+#ifdef __aarch64__
+#include "modules/common/txpool/txpool.h"
+using namespace apollo::common::txpool;
+#endif
+
 namespace apollo {
 namespace planning {
 
@@ -48,7 +53,6 @@ class QpSplineReferenceLineSmoother : public ReferenceLineSmoother {
 
   void SetAnchorPoints(const std::vector<AnchorPoint>& achor_points) override;
 
-  void Reset(const ReferenceLineSmootherConfig& config);
  private:
   void Clear();
 
@@ -76,6 +80,10 @@ class QpSplineReferenceLineSmoother : public ReferenceLineSmoother {
   double ref_x_ = 0.0;
   double ref_y_ = 0.0;
 };
+
+#ifdef __aarch64__
+POOLDEF_DECL(QpSplineReferenceLineSmoother);
+#endif
 
 }  // namespace planning
 }  // namespace apollo

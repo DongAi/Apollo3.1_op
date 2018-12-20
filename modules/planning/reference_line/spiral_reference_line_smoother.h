@@ -31,6 +31,11 @@
 #include "modules/planning/reference_line/reference_line_smoother.h"
 #include "modules/planning/reference_line/reference_point.h"
 
+#ifdef __aarch64__
+#include "modules/common/txpool/txpool.h"
+using namespace apollo::common::txpool; 
+#endif
+
 namespace apollo {
 namespace planning {
 
@@ -59,8 +64,6 @@ class SpiralReferenceLineSmoother : public ReferenceLineSmoother {
                                              const std::vector<double>& x,
                                              const std::vector<double>& y,
                                              const double resolution) const;
-
-  void Reset(const ReferenceLineSmootherConfig& config);
 
  private:
   bool Smooth(std::vector<Eigen::Vector2d> point2d,
@@ -104,6 +107,10 @@ class SpiralReferenceLineSmoother : public ReferenceLineSmoother {
 
   double zero_y_ = 0.0;
 };
+
+#ifdef __aarch64__
+POOLDEF_DECL(SpiralReferenceLineSmoother);
+#endif
 
 }  // namespace planning
 }  // namespace apollo

@@ -29,6 +29,11 @@
 #include "modules/planning/reference_line/reference_line_smoother.h"
 #include "modules/planning/reference_line/reference_point.h"
 
+#ifdef __aarch64__
+#include "modules/common/txpool/txpool.h"
+using namespace apollo::common::txpool;
+#endif
+
 namespace apollo {
 namespace planning {
 
@@ -43,8 +48,6 @@ class CosThetaReferenceLineSmoother : public ReferenceLineSmoother {
               ReferenceLine* const smoothed_reference_line) override;
 
   void SetAnchorPoints(const std::vector<AnchorPoint>&) override;
-
-  void Reset(const ReferenceLineSmootherConfig& config);
 
  private:
   bool Smooth(const std::vector<Eigen::Vector2d>& point2d,
@@ -87,6 +90,10 @@ class CosThetaReferenceLineSmoother : public ReferenceLineSmoother {
 
   double reopt_qp_bound_ = 0.0;
 };
+
+#ifdef __aarch64__
+POOLDEF_DECL(CosThetaReferenceLineSmoother);
+#endif
 
 }  // namespace planning
 }  // namespace apollo

@@ -37,6 +37,10 @@ namespace planning {
 
 using apollo::common::time::Clock;
 
+#ifdef __aarch64__
+POOLDEF_IMPL(CosThetaReferenceLineSmoother);
+#endif
+
 CosThetaReferenceLineSmoother::CosThetaReferenceLineSmoother(
     const ReferenceLineSmootherConfig& config)
     : ReferenceLineSmoother(config) {
@@ -45,32 +49,9 @@ CosThetaReferenceLineSmoother::CosThetaReferenceLineSmoother(
       << "Failed to load smoother config file "
       << FLAGS_reopt_smoother_config_filename;
 
-  static int new_c = 0;
-  static int index = 20;
   reopt_qp_smoother_.reset(
       new QpSplineReferenceLineSmoother(reopt_smoother_config_));
-  new_c++;
-    if (new_c > index) {
-      AINFO << "new_c23" << new_c;
-      index += 100;
-    }
 
-  max_point_deviation_ = config.cos_theta().max_point_deviation();
-
-  num_of_iterations_ = config.cos_theta().num_of_iteration();
-
-  weight_cos_included_angle_ = config.cos_theta().weight_cos_included_angle();
-
-  acceptable_tol_ = config.cos_theta().acceptable_tol();
-
-  relax_ = config.cos_theta().relax();
-
-  reopt_qp_bound_ = config.cos_theta().reopt_qp_bound();
-}
-
-void CosThetaReferenceLineSmoother::Reset(const ReferenceLineSmootherConfig& config) {
-  //reopt_qp_smoother_->Reset(config);
-  config_ = config;
   max_point_deviation_ = config.cos_theta().max_point_deviation();
 
   num_of_iterations_ = config.cos_theta().num_of_iteration();
@@ -155,15 +136,8 @@ bool CosThetaReferenceLineSmoother::Smooth(
   std::vector<double> x;
   std::vector<double> y;
 
-  static int new_c = 0;
-  static int index = 20;
   CosThetaProbleminterface* ptop =
       new CosThetaProbleminterface(scaled_point2d, lateral_bounds);
-  new_c++;
-    if (new_c > index) {
-      AINFO << "new_c24" << new_c;
-      index += 100;
-    }
 
   ptop->set_default_max_point_deviation(max_point_deviation_);
   ptop->set_weight_cos_included_angle(weight_cos_included_angle_);

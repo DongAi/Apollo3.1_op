@@ -38,13 +38,13 @@ namespace planning {
 
 using apollo::common::time::Clock;
 
+#ifdef __aarch64__
+POOLDEF_IMPL(SpiralReferenceLineSmoother);
+#endif
+
 SpiralReferenceLineSmoother::SpiralReferenceLineSmoother(
     const ReferenceLineSmootherConfig& config)
     : ReferenceLineSmoother(config) {
-  default_max_point_deviation_ = config.spiral().max_deviation();
-}
-
-void SpiralReferenceLineSmoother::Reset(const ReferenceLineSmootherConfig& config) {
   default_max_point_deviation_ = config.spiral().max_deviation();
 }
 
@@ -199,14 +199,7 @@ bool SpiralReferenceLineSmoother::SmoothStandAlone(
     std::vector<double>* ptr_y) const {
   CHECK_GT(point2d.size(), 1);
 
-  static int new_c = 0;
-  static int index = 20;
   SpiralProblemInterface* ptop = new SpiralProblemInterface(point2d);
-  new_c++;
-    if (new_c > index) {
-      AINFO << "new_c28" << new_c;
-      index += 100;
-    }
 
   ptop->set_default_max_point_deviation(default_max_point_deviation_);
   ptop->set_element_weight_curve_length(
@@ -265,14 +258,7 @@ bool SpiralReferenceLineSmoother::Smooth(std::vector<Eigen::Vector2d> point2d,
                                          std::vector<double>* ptr_y) const {
   CHECK_GT(point2d.size(), 1);
 
-  static int new_c = 0;
-  static int index = 20;
   SpiralProblemInterface* ptop = new SpiralProblemInterface(point2d);
-  new_c++;
-    if (new_c > index) {
-      AINFO << "new_c29" << new_c;
-      index += 100;
-    }
 
   ptop->set_default_max_point_deviation(default_max_point_deviation_);
   if (fixed_start_point_) {

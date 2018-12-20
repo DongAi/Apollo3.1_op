@@ -60,9 +60,10 @@ POOLDEF_IMPL(ReferenceLineProvider);
 #endif
 
 ReferenceLineProvider::~ReferenceLineProvider() {
-  if (thread_ && thread_->joinable()) {
-    thread_->join();
-  }
+  //if (thread_ && thread_->joinable()) {
+  //  thread_->join();
+  //}
+  Stop();
 }
 
 ReferenceLineProvider::ReferenceLineProvider(const hdmap::HDMap *base_map) {
@@ -73,6 +74,18 @@ ReferenceLineProvider::ReferenceLineProvider(const hdmap::HDMap *base_map) {
                                        &smoother_config_))
       << "Failed to load smoother config file "
       << FLAGS_smoother_config_filename;
+#ifdef __aarch64__
+  if (smoother_config_.has_qp_spline()) {
+    smoother_ = POOLDEF_INST(QpSplineReferenceLineSmoother).Construct(smoother_config_);
+  } else if (smoother_config_.has_spiral()) {
+    smoother_ = POOLDEF_INST(SpiralReferenceLineSmoother).Construct(smoother_config_);
+  } else if (smoother_config_.has_cos_theta()) {
+    smoother_ = POOLDEF_INST(CosThetaReferenceLineSmoother).Construct(smoother_config_);
+  } else {
+    CHECK(false) << "unknown smoother config "
+                 << smoother_config_.DebugString();
+  }
+#else
   if (smoother_config_.has_qp_spline()) {
     smoother_.reset(new QpSplineReferenceLineSmoother(smoother_config_));
   } else if (smoother_config_.has_spiral()) {
@@ -83,6 +96,7 @@ ReferenceLineProvider::ReferenceLineProvider(const hdmap::HDMap *base_map) {
     CHECK(false) << "unknown smoother config "
                  << smoother_config_.DebugString();
   }
+#endif
   is_initialized_ = true;
 
 #ifdef __aarch64__

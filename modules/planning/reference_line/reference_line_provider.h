@@ -50,7 +50,7 @@
 
 #ifdef __aarch64__
 #include "modules/common/txpool/txpool.h"
-using apollo::common::txpool;
+using namespace apollo::common::txpool;
 #endif 
 
 /**
@@ -161,7 +161,7 @@ class ReferenceLineProvider {
   bool is_stop_ = false;
   std::unique_ptr<std::thread> thread_;
 
-  std::unique_ptr<ReferenceLineSmoother> smoother_;
+  std::shared_ptr<ReferenceLineSmoother> smoother_;
   ReferenceLineSmootherConfig smoother_config_;
 
   std::mutex pnc_map_mutex_;
