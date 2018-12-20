@@ -14,6 +14,7 @@ cc_library(
     ],
     deps = [
         "//modules/common:log",
+        "//modules/common/txpool:txpool",
         "//modules/common/math",
         "//modules/common/proto:pnc_point_proto",
         "//modules/common/util:string_util",

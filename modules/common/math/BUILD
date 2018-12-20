@@ -42,6 +42,7 @@ cc_library(
     ],
     deps = [
         "//modules/common:log",
+        "//modules/common/txpool:txpool",
         "//modules/common/util:string_util",
     ],
 )

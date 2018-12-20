@@ -285,6 +285,7 @@ cc_library(
         ":obstacle",
         ":reference_line_info",
         "//modules/common:log",
+        "//modules/common/txpool:txpool",
         "//modules/common/adapters:adapter_manager",
         "//modules/common/configs:vehicle_config_helper",
         "//modules/common/monitor_log",
