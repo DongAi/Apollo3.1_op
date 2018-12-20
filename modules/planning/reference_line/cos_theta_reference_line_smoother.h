@@ -92,7 +92,7 @@ class CosThetaReferenceLineSmoother : public ReferenceLineSmoother {
 };
 
 #ifdef __aarch64__
-POOLDEF_DECL(CosThetaReferenceLineSmoother);
+TXPOOL_DECL(CosThetaReferenceLineSmoother);
 #endif
 
 }  // namespace planning

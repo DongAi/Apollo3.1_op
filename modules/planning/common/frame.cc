@@ -54,7 +54,7 @@ using apollo::prediction::PredictionObstacles;
 constexpr double kMathEpsilon = 1e-8;
 
 #ifdef __aarch64__
-POOLDEF_IMPL(Frame);
+TXPOOL_IMPL(Frame);
 #endif
 
 #ifdef __aarch64__

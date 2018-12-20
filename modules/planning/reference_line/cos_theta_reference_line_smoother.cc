@@ -38,7 +38,7 @@ namespace planning {
 using apollo::common::time::Clock;
 
 #ifdef __aarch64__
-POOLDEF_IMPL(CosThetaReferenceLineSmoother);
+TXPOOL_IMPL(CosThetaReferenceLineSmoother);
 #endif
 
 CosThetaReferenceLineSmoother::CosThetaReferenceLineSmoother(

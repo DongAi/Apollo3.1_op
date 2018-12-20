@@ -56,7 +56,7 @@ using apollo::hdmap::PncMap;
 using apollo::hdmap::RouteSegments;
 
 #ifdef __aarch64__
-POOLDEF_IMPL(ReferenceLineProvider);
+TXPOOL_IMPL(ReferenceLineProvider);
 #endif
 
 ReferenceLineProvider::~ReferenceLineProvider() {
@@ -76,11 +76,11 @@ ReferenceLineProvider::ReferenceLineProvider(const hdmap::HDMap *base_map) {
       << FLAGS_smoother_config_filename;
 #ifdef __aarch64__
   if (smoother_config_.has_qp_spline()) {
-    smoother_ = POOLDEF_INST(QpSplineReferenceLineSmoother).Construct(smoother_config_);
+    smoother_ = TXPOOL_INST(QpSplineReferenceLineSmoother).Construct(smoother_config_);
   } else if (smoother_config_.has_spiral()) {
-    smoother_ = POOLDEF_INST(SpiralReferenceLineSmoother).Construct(smoother_config_);
+    smoother_ = TXPOOL_INST(SpiralReferenceLineSmoother).Construct(smoother_config_);
   } else if (smoother_config_.has_cos_theta()) {
-    smoother_ = POOLDEF_INST(CosThetaReferenceLineSmoother).Construct(smoother_config_);
+    smoother_ = TXPOOL_INST(CosThetaReferenceLineSmoother).Construct(smoother_config_);
   } else {
     CHECK(false) << "unknown smoother config "
                  << smoother_config_.DebugString();

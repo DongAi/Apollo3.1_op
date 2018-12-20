@@ -109,7 +109,7 @@ class SpiralReferenceLineSmoother : public ReferenceLineSmoother {
 };
 
 #ifdef __aarch64__
-POOLDEF_DECL(SpiralReferenceLineSmoother);
+TXPOOL_DECL(SpiralReferenceLineSmoother);
 #endif
 
 }  // namespace planning

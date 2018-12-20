@@ -182,7 +182,7 @@ class Frame {
 };
 
 #ifdef __aarch64__
-POOLDEF_DECL(Frame);
+TXPOOL_DECL(Frame);
 #endif 
 
 #ifdef __aarch64__

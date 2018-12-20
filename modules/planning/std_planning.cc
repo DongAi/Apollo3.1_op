@@ -120,7 +120,7 @@ Status StdPlanning::InitFrame(const uint32_t sequence_num,
                               const double start_time,
                               const VehicleState& vehicle_state) {
 #ifdef __aarch64__
-  frame_ = POOLDEF_INST(Frame).Construct(sequence_num, planning_start_point, start_time,
+  frame_ = TXPOOL_INST(Frame).Construct(sequence_num, planning_start_point, start_time,
                          vehicle_state, reference_line_provider_);
   if (!frame_) {
     AERROR << "failed to get Frame object from object_pool";
@@ -130,11 +130,14 @@ Status StdPlanning::InitFrame(const uint32_t sequence_num,
 #else
   frame_.reset(new Frame(sequence_num, planning_start_point, start_time,
                          vehicle_state, reference_line_provider_.get()));
+#endif 
+
   auto status = frame_->Init();
   if (!status.ok()) {
     AERROR << "failed to init frame:" << status.ToString();
     return status;
   }
+
   return Status::OK();
 }
 

@@ -183,7 +183,7 @@ class ReferenceLineProvider {
   std::queue<std::list<hdmap::RouteSegments>> route_segments_history_;
 };
 #ifdef __aarch64__
-POOLDEF_DECL(ReferenceLineProvider);
+TXPOOL_DECL(ReferenceLineProvider);
 #endif
 
 }  // namespace planning

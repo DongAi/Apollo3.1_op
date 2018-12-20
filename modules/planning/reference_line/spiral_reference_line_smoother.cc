@@ -39,7 +39,7 @@ namespace planning {
 using apollo::common::time::Clock;
 
 #ifdef __aarch64__
-POOLDEF_IMPL(SpiralReferenceLineSmoother);
+TXPOOL_IMPL(SpiralReferenceLineSmoother);
 #endif
 
 SpiralReferenceLineSmoother::SpiralReferenceLineSmoother(

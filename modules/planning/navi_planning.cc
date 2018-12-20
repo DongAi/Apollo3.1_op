@@ -105,7 +105,7 @@ Status NaviPlanning::InitFrame(const uint32_t sequence_num,
                                const double start_time,
                               const VehicleState& vehicle_state) {
 #ifdef __aarch64__
-  frame_ = POOLDEF_INST(Frame).Construct(sequence_num, planning_start_point, start_time,
+  frame_ = TXPOOL_INST(Frame).Construct(sequence_num, planning_start_point, start_time,
                          vehicle_state, reference_line_provider_);
   if (!frame_) {
     AERROR << "failed to get Frame object from object_pool";
@@ -322,7 +322,7 @@ void NaviPlanning::RunOnce() {
   // Prefer "std::make_unique" to direct use of "new".
   // Reference "https://herbsutter.com/gotw/_102/" for details.
 #ifdef __aarch64__
-  reference_line_provider_ = POOLDEF_INST(ReferenceLineProvider).Construct(hdmap_);
+  reference_line_provider_ = TXPOOL_INST(ReferenceLineProvider).Construct(hdmap_);
 #else
   reference_line_provider_ = std::make_unique<ReferenceLineProvider>(hdmap_);
 #endif
