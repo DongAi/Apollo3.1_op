@@ -91,8 +91,13 @@ class StdPlanning : public PlanningBase {
 
  private:
   routing::RoutingResponse last_routing_;
-  std::shared_ptr<Frame> frame_;
+#ifdef __aarch64__
+  FramePtr frame_;
+  ReferenceLineProviderPtr reference_line_provider_;
+#else
+  std::unique_ptr<Frame> frame_;
   std::unique_ptr<ReferenceLineProvider> reference_line_provider_;
+#endif
 };
 
 }  // namespace planning

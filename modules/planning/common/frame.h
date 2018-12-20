@@ -65,20 +65,20 @@ namespace planning {
 
 class Frame {
  public:
+#ifdef __aarch64__
   explicit Frame(uint32_t sequence_num,
                  const common::TrajectoryPoint &planning_start_point,
                  const double start_time,
                  const common::VehicleState &vehicle_state,
                  ReferenceLineProviderPtr& reference_line_provider);
-#ifdef __aarch64__
-  //explicit Frame(const common::TrajectoryPoint &planning_start_point,
-  //               const double start_time,
-  //               ReferenceLineProvider *reference_line_provider);
-  //void PreCreate(uint32_t sequence_num, const common::VehicleState& vehicle_state);
-  
-  ~Frame();
+#else
+  explicit Frame(uint32_t sequence_num,
+                 const common::TrajectoryPoint &planning_start_point,
+                 const double start_time,
+                 const common::VehicleState &vehicle_state,
+                 ReferenceLineProvider *reference_line_provider);
 #endif
-
+  ~Frame();
 
   const common::TrajectoryPoint &PlanningStartPoint() const;
   common::Status Init();
@@ -173,7 +173,11 @@ class Frame {
   ChangeLaneDecider change_lane_decider_;
   ADCTrajectory trajectory_;  // last published trajectory
   std::unique_ptr<LagPrediction> lag_predictor_;
+#ifdef __aarch64__
   ReferenceLineProviderPtr reference_line_provider_ = nullptr;
+#else
+  ReferenceLineProvider *reference_line_provider_ = nullptr;
+ #endif
   apollo::common::monitor::MonitorLogger monitor_logger_;
 };
 
