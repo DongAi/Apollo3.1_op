@@ -37,14 +37,18 @@ namespace apollo {
 namespace planning {
 
 #ifdef __aarch64__
-POOLDEF_IMPL(QpSplineReferenceLineSmoother);
+TXPOOL_IMPL(QpSplineReferenceLineSmoother);
 #endif
 
 QpSplineReferenceLineSmoother::QpSplineReferenceLineSmoother(
     const ReferenceLineSmootherConfig& config)
     : ReferenceLineSmoother(config) {
+#ifdef __aarch64__
+  spline_solver_ = TXPOOL_INST(Spline2dSolver).Construct(t_knots_, config.qp_spline().spline_order());
+#else
   spline_solver_.reset(
       new Spline2dSolver(t_knots_, config.qp_spline().spline_order()));
+#endif
 }
 
 void QpSplineReferenceLineSmoother::Clear() { t_knots_.clear(); }

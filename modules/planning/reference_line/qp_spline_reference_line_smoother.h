@@ -75,14 +75,18 @@ class QpSplineReferenceLineSmoother : public ReferenceLineSmoother {
  private:
   std::vector<double> t_knots_;
   std::vector<AnchorPoint> anchor_points_;
+#ifdef __aarch64__
+  Spline2dSolverPtr spline_solver_;
+#else
   std::unique_ptr<Spline2dSolver> spline_solver_;
+#endif
 
   double ref_x_ = 0.0;
   double ref_y_ = 0.0;
 };
 
 #ifdef __aarch64__
-POOLDEF_DECL(QpSplineReferenceLineSmoother);
+TXPOOL_DECL(QpSplineReferenceLineSmoother);
 #endif
 
 }  // namespace planning

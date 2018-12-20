@@ -31,6 +31,11 @@
 #include "modules/planning/math/smoothing_spline/spline_2d_constraint.h"
 #include "modules/planning/math/smoothing_spline/spline_2d_kernel.h"
 
+#ifdef __aarch64__
+#include "modules/common/txpool/txpool.h"
+using namespace apollo::common::txpool;
+#endif
+
 namespace apollo {
 namespace planning {
 
@@ -61,6 +66,10 @@ class Spline2dSolver {
   int last_num_param_ = 0;
   bool last_problem_success_ = false;
 };
+
+#ifdef __aarch64__
+TXPOOL_DECL(Spline2dSolver);
+#endif
 
 }  // namespace planning
 }  // namespace apollo
