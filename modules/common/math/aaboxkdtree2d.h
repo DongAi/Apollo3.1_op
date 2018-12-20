@@ -19,6 +19,11 @@
  * @brief Defines the templated AABoxKDTree2dNode class.
  */
 
+#ifdef __aarch64__
+#include "modules/common/txpool/txpool.h"
+using namespace apollo::common::txpool;
+#endif
+
 #ifndef MODULES_COMMON_MATH_AABOXKDTREE2D_H_
 #define MODULES_COMMON_MATH_AABOXKDTREE2D_H_
 
@@ -334,8 +339,8 @@ class AABoxKDTree2dNode {
       min_y_ = std::fmin(min_y_, object->aabox().min_y());
       max_y_ = std::fmax(max_y_, object->aabox().max_y());
     }
-    mid_x_ = (min_x_ + max_x_) * 0.5;
-    mid_y_ = (min_y_ + max_y_) * 0.5;
+    mid_x_ = (min_x_ + max_x_) / 2.0;
+    mid_y_ = (min_y_ + max_y_) / 2.0;
     CHECK(!std::isinf(max_x_) && !std::isinf(max_y_) && !std::isinf(min_x_) &&
           !std::isinf(min_y_))
         << "the provided object box size is infinity";
@@ -344,10 +349,10 @@ class AABoxKDTree2dNode {
   void ComputePartition() {
     if (max_x_ - min_x_ >= max_y_ - min_y_) {
       partition_ = PARTITION_X;
-      partition_position_ = (min_x_ + max_x_) * 0.5;
+      partition_position_ = (min_x_ + max_x_) / 2.0;
     } else {
       partition_ = PARTITION_Y;
-      partition_position_ = (min_y_ + max_y_) * 0.5;
+      partition_position_ = (min_y_ + max_y_) / 2.0;
     }
   }
 
@@ -406,6 +411,10 @@ class AABoxKDTree2dNode {
 
   std::unique_ptr<AABoxKDTree2dNode<ObjectType>> left_subnode_ = nullptr;
   std::unique_ptr<AABoxKDTree2dNode<ObjectType>> right_subnode_ = nullptr;
+
+#ifdef __aarch64__
+  static TXPool<AABoxKDTree2dNode<ObjectType>, true, 128> AABoxKDTree2dNodePool;
+#endif 
 };
 
 /**
@@ -428,7 +437,11 @@ class AABoxKDTree2d {
       for (const auto &object : objects) {
         object_ptrs.push_back(&object);
       }
+#ifdef __aarch64__
+      root_ = AABoxKDTree2dNode<ObjectType>::AABoxKDTree2dNodePool.Construct(object_ptrs, params, 0);
+#else
       root_.reset(new AABoxKDTree2dNode<ObjectType>(object_ptrs, params, 0));
+#endif
     }
   }
 
@@ -464,7 +477,7 @@ class AABoxKDTree2d {
   }
 
  private:
-  std::unique_ptr<AABoxKDTree2dNode<ObjectType>> root_ = nullptr;
+  std::shared_ptr<AABoxKDTree2dNode<ObjectType>> root_ = nullptr;
 };
 
 }  // namespace math
