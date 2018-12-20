@@ -44,10 +44,11 @@ QpSplineReferenceLineSmoother::QpSplineReferenceLineSmoother(
     const ReferenceLineSmootherConfig& config)
     : ReferenceLineSmoother(config) {
 #ifdef __aarch64__
-  spline_solver_ = TXPOOL_INST(Spline2dSolver).Construct(t_knots_, config.qp_spline().spline_order());
+  uint32_t = spline_order = config.qp_spline().spline_order();
+  spline_solver_ = TXPOOL_INST(Spline2dSolver).Construct(t_knots_, spline_order);
 #else
   spline_solver_.reset(
-      new Spline2dSolver(t_knots_, config.qp_spline().spline_order()));
+      new Spline2dSolver(t_knots_, (uint)config.qp_spline().spline_order()));
 #endif
 }
 
