@@ -145,9 +145,13 @@ class NaviPlanning : public PlanningBase {
   DrivingAction driving_action_;
   bool is_received_pad_msg_ = false;
 
+#ifdef __aarch64__
   FramePtr frame_;
-
   ReferenceLineProviderPtr reference_line_provider_;
+#else
+  std::unique_ptr<Frame> frame_;
+  std::unique_ptr<ReferenceLineProvider> reference_line_provider_;
+#endif
 
   std::unique_ptr<PlannerDispatcher> planner_dispatcher_;
 };

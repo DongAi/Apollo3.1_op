@@ -39,7 +39,11 @@ std::vector<SpeedPoint> SpeedProfileGenerator::GenerateInitSpeedProfile(
     const TrajectoryPoint& planning_init_point,
     const ReferenceLineInfo* reference_line_info) const {
   std::vector<SpeedPoint> speed_profile;
+#ifdef __aarch64__
   const FramePtr last_frame = FrameHistory::instance()->Latest();
+#else
+  const auto* last_frame = FrameHistory::instance()->Latest();
+#endif
   if (!last_frame) {
     AWARN << "last frame is empty";
     return speed_profile;
