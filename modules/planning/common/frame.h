@@ -49,9 +49,10 @@
 #include "modules/planning/common/trajectory/publishable_trajectory.h"
 #include "modules/planning/reference_line/reference_line_provider.h"
 
-#include "modules/common/pool/pool.h"
-
-using namespace apollo::common::pool;
+#ifdef __aarch64__
+#include "modules/common/txpool/txpool.h"
+using namespace apollo::common::txpool;
+#endif 
 
 namespace apollo {
 namespace planning {
@@ -177,9 +178,10 @@ class Frame {
 };
 
 #ifdef __aarch64__
-//extern boost::object_pool<Frame> gFramePool_;
 POOLDEF_DECL(Frame);
+#endif 
 
+#ifdef __aarch64__
 class FrameHistory {
 public:
   void Add(FramePtr& ptr) {

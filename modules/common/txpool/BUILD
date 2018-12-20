@@ -3,12 +3,12 @@ load("//tools:cpplint.bzl", "cpplint")
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
-    name = "pool",
+    name = "txpool",
     srcs = [
-        "pool.cc",
+        "txpool.cc",
     ],
     hdrs = [
-        "pool.h",
+        "txpool.h",
     ],
     deps = [
     ],

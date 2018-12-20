@@ -54,7 +54,6 @@ using apollo::prediction::PredictionObstacles;
 constexpr double kMathEpsilon = 1e-8;
 
 #ifdef __aarch64__
-//boost::object_pool<Frame> gFramePool_;
 POOLDEF_IMPL(Frame);
 #endif
 
@@ -80,6 +79,10 @@ Frame::Frame(uint32_t sequence_num,
         new LagPrediction(FLAGS_lag_prediction_min_appear_num,
                           FLAGS_lag_prediction_max_disappear_num));
   }
+
+#ifdef __aarch64__
+  AINFO << "Frame address is " << &(*this);
+#endif
 }
 
 #ifdef __aarch64__

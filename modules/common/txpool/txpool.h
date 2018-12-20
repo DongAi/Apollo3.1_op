@@ -14,6 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
+#ifdef __aarch64__
+
 #ifndef MODULES_COMMON_POOL_POOL_H
 #define MODULES_COMMON_POOL_POOL_H
 
@@ -39,7 +41,7 @@ protected:
 
 template <typename ElemType_,
             int AllocInterval_ = 8>
-class Pool : public Ipool {
+class TXPool : public Ipool {
 public:
   typedef std::shared_ptr<ElemType_> ElemPtr_;
   typedef std::pair<ElemPtr_, int> ElemUnit_;
@@ -53,7 +55,7 @@ public:
     UNINITALIZED = -1,
     IDLE = 0,
     USED = 1,
-  }
+  };
 
 public:
   Pool() {
@@ -61,10 +63,9 @@ public:
   }
   ~Pool() {}
 
-  template <typename T0, typename T1, typename T2, typename T3, typename T4>
-  ElemPtr_ New(T0& t0, T1& t1, T2& t2, T3& t3, T4 t4) {  
-    CheckNew();
-    
+  ElemPtr_ Construct() {
+    CheckConstruct();
+
     const int index = elem_ref_.front();
     elem_ref_.pop_front();
   
@@ -78,12 +79,14 @@ public:
     return elem_ptr;
   }
 
+  #include "txpool_construct.h"
+
   void PreAllocate() {
     //todo
   }
 
 private:
-  bool CheckNew() {
+  void CheckConstruct() {
     if (elem_ref_.empty()) {
       Recycle();
     }
@@ -104,7 +107,7 @@ private:
     size_ = (int)elem_cont_.size();
   }
 
-  void Pool<ElemType_,AllocInterval>::Recycle() {
+  void Recycle() {
     for (int i = 0; i < size_; ++i) {
       if (elem_cont_[i].first.unique()) {
         //elem_cont_[i].first->ElemType_::~ElemType_();
@@ -125,15 +128,16 @@ private:
 #define POOLDEF_INST(POOLTYPE) \
   g##POOLTYPE##POOL
 #define POOLDEF_DECL(POOLTYPE) \
-  extern apollo::common::pool::Pool<POOLTYPE> POOLDEF_INST(POOLTYPE); \
-  typedef apollo::common::pool::Pool<POOLTYPE>::ElemPtr_ POOLTYPE##Ptr;
+  extern apollo::common::txpool::TXPool<POOLTYPE> POOLDEF_INST(POOLTYPE); \
+  typedef apollo::common::txpool::TXPool<POOLTYPE>::ElemPtr_ POOLTYPE##Ptr;
 #define POOLDEF_IMPL(POOLTYPE) \
-  apollo::common::pool::Pool<POOLTYPE> POOLDEF_INST(POOLTYPE)()
+  apollo::common::txpool::TXPool<POOLTYPE> POOLDEF_INST(POOLTYPE);
 #define POOLDEF_NEW(POOLTYPE) \
-  POOLDEF_INST(POOLTYPE).New()
+  POOLDEF_INST(POOLTYPE).Construct()
 
 }  // namespace pool
 }  // namespace common
 }  // namespace apollo
 
-#endif
+#endif // MODULES_COMMON_POOL_POOL_H
+#endif // __aarch64__

@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
-#include "pool.h"
+#ifdef __aarch64__
+#include "txpool.h"
 
 namespace apollo {
 namespace common {
@@ -24,3 +24,4 @@ namespace pool {
 }  //namespace pool
 }  //namespace common
 }  //namespace pool
+#endif // __aarch64__
