@@ -58,7 +58,9 @@ constexpr double kMathEpsilon = 1e-8;
 POOLDEF_IMPL(Frame);
 #endif
 
-#ifndef __aarch64__
+#ifdef __aarch64__
+FrameHistory::FrameHistory() {}
+#else
 FrameHistory::FrameHistory()
     : IndexedQueue<uint32_t, Frame>(FLAGS_max_history_frame_num) {}
 #endif 

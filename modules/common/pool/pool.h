@@ -32,7 +32,7 @@ public:
 
   virtual void Recycle() = 0;
 
-private:
+protected:
   int size_;
   int alloc_count_;
 };
@@ -42,32 +42,37 @@ template <typename ElemType_,
 class Pool : public Ipool {
 public:
   typedef std::shared_ptr<ElemType_> ElemPtr_;
-  typedef std::pair<ElemPtr_, bool> ElemUnit_;
+  typedef std::pair<ElemPtr_, int> ElemUnit_;
 
 private:
   typedef std::vector<ElemUnit_> ElemCont_;
   typedef std::list<int> ElemRef_;
 
 public:
-  Pool();
-  ~Pool();
+  enum {
+    UNINITALIZED = -1,
+    IDLE = 0,
+    USED = 1,
+  }
+
+public:
+  Pool() {
+    alloc_count_ = AllocInterval_;
+  }
+  ~Pool() {}
 
   template <typename T0, typename T1, typename T2, typename T3, typename T4>
-  ElemPtr_ New(T0& t0, T1& t1, T2& t2, T3& t3, T4 t4) {
-    if (elem_ref_.empty()) {
-      Recycle();
-    }
-
-    if (elem_ref_.empty()) {
-      Allocate();
-    }
-  
+  ElemPtr_ New(T0& t0, T1& t1, T2& t2, T3& t3, T4 t4) {  
+    CheckNew();
+    
     const int index = elem_ref_.front();
     elem_ref_.pop_front();
-    elem_cont_[index].second = false;
-
-    elem_cont_[index].first->ElemType_::~ElemType_();
+  
+    if (elem_cont_[index].second == IDLE)
+      elem_cont_[index].first->ElemType_::~ElemType_();
+    
     new(elem_cont_[index].first.get()) ElemType_(t0, t1, t2, t3, t4);
+    elem_cont_[index].second = USED;
 
     ElemPtr_ elem_ptr = elem_cont_[index].first;
     return elem_ptr;
@@ -78,15 +83,43 @@ public:
   }
 
 private:
-  void Allocate();
-  void Recycle();
+  bool CheckNew() {
+    if (elem_ref_.empty()) {
+      Recycle();
+    }
+
+    if (elem_ref_.empty()) {
+      Allocate();
+    }
+  }
+
+  void Allocate() {
+    for (int i = 0; i < alloc_count_; ++i) {
+      //ElemPtr_ elem_ptr(new ElemType_());
+      ElemPtr_ elem_ptr((ElemType_*)malloc(sizeof(ElemType_)));
+      elem_cont_.push_back(std::make_pair(elem_ptr, UNINITALIZED));
+      elem_ref_.push_back((int)elem_cont_.size() - 1); 
+    }
+
+    size_ = (int)elem_cont_.size();
+  }
+
+  void Pool<ElemType_,AllocInterval>::Recycle() {
+    for (int i = 0; i < size_; ++i) {
+      if (elem_cont_[i].first.unique()) {
+        //elem_cont_[i].first->ElemType_::~ElemType_();
+        //new(elem_cont_[i].first.get()) ElemType_();
+      
+        elem_ref_.push_back(i);
+        elem_cont_[i].second = IDLE;
+      }
+    }
+  }
 
 
 private:
   ElemCont_ elem_cont_;
   ElemRef_ elem_ref_;
-  int alloc_interval_;
-
 };
 
 #define POOLDEF_INST(POOLTYPE) \
