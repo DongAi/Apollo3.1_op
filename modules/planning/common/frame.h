@@ -69,7 +69,7 @@ class Frame {
                  const common::TrajectoryPoint &planning_start_point,
                  const double start_time,
                  const common::VehicleState &vehicle_state,
-                 ReferenceLineProvider *reference_line_provider);
+                 ReferenceLineProviderPtr& reference_line_provider);
 #ifdef __aarch64__
   //explicit Frame(const common::TrajectoryPoint &planning_start_point,
   //               const double start_time,
@@ -173,7 +173,7 @@ class Frame {
   ChangeLaneDecider change_lane_decider_;
   ADCTrajectory trajectory_;  // last published trajectory
   std::unique_ptr<LagPrediction> lag_predictor_;
-  ReferenceLineProvider *reference_line_provider_ = nullptr;
+  ReferenceLineProviderPtr reference_line_provider_ = nullptr;
   apollo::common::monitor::MonitorLogger monitor_logger_;
 };
 

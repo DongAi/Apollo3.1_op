@@ -9,6 +9,7 @@ cc_library(
     ],
     hdrs = [
         "txpool.h",
+        "txpool_construct.h",
     ],
     deps = [
     ],

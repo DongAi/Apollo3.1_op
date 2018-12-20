@@ -105,12 +105,12 @@ Status NaviPlanning::InitFrame(const uint32_t sequence_num,
                                const double start_time,
                               const VehicleState& vehicle_state) {
 #ifdef __aarch64__
-  frame_ = POOLDEF_INST(Frame).New(sequence_num, planning_start_point, start_time,
-                         vehicle_state, reference_line_provider_.get());
+  frame_ = POOLDEF_INST(Frame).Construct(sequence_num, planning_start_point, start_time,
+                         vehicle_state, reference_line_provider_));
   if (!frame_) {
     AERROR << "failed to get Frame object from object_pool";
     frame_.reset(new Frame(sequence_num, planning_start_point, start_time,
-                         vehicle_state, reference_line_provider_.get()));
+                         vehicle_state, reference_line_provider_));
   }
 #else
   frame_.reset(new Frame(sequence_num, planning_start_point, start_time,
@@ -321,7 +321,11 @@ void NaviPlanning::RunOnce() {
   hdmap_ = HDMapUtil::BaseMapPtr();
   // Prefer "std::make_unique" to direct use of "new".
   // Reference "https://herbsutter.com/gotw/_102/" for details.
+#ifdef __aarch64__
+  reference_line_provider_ = POOLDEF_INST(ReferenceLineProvider).Construct(hdmap_);
+#else
   reference_line_provider_ = std::make_unique<ReferenceLineProvider>(hdmap_);
+#endif
 
   // localization
   const auto& localization =

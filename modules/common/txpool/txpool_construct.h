@@ -69,7 +69,7 @@ ElemPtr_ Construct(T0& t0, T1& t1, T2& t2, T3& t3) {
 }
 
 template <typename T0, typename T1, typename T2, typename T3, typename T4>
-ElemPtr_ Construct(T0& t0, T1& t1, T2& t2, T3& t3, T4 t4) {  
+ElemPtr_ Construct(T0& t0, T1& t1, T2& t2, T3& t3, T4& t4) {  
   CheckConstruct();
 
   const int index = elem_ref_.front();

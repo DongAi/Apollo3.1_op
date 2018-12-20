@@ -25,7 +25,7 @@
 
 namespace apollo {
 namespace common {
-namespace pool {
+namespace txpool {
 
 class Ipool {
 public:
@@ -58,10 +58,10 @@ public:
   };
 
 public:
-  Pool() {
+  TXPool() {
     alloc_count_ = AllocInterval_;
   }
-  ~Pool() {}
+  ~TXPool() {}
 
   ElemPtr_ Construct() {
     CheckConstruct();
@@ -72,7 +72,7 @@ public:
     if (elem_cont_[index].second == IDLE)
       elem_cont_[index].first->ElemType_::~ElemType_();
     
-    new(elem_cont_[index].first.get()) ElemType_(t0, t1, t2, t3, t4);
+    new(elem_cont_[index].first.get()) ElemType_();
     elem_cont_[index].second = USED;
 
     ElemPtr_ elem_ptr = elem_cont_[index].first;

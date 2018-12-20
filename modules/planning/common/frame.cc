@@ -67,7 +67,7 @@ FrameHistory::FrameHistory()
 Frame::Frame(uint32_t sequence_num,
              const common::TrajectoryPoint &planning_start_point,
              const double start_time, const common::VehicleState &vehicle_state,
-             ReferenceLineProvider *reference_line_provider)
+             ReferenceLineProviderPtr& reference_line_provider)
     : sequence_num_(sequence_num),
       planning_start_point_(planning_start_point),
       start_time_(start_time),
@@ -81,7 +81,7 @@ Frame::Frame(uint32_t sequence_num,
   }
 
 #ifdef __aarch64__
-  AINFO << "Frame address is " << &(*this);
+  AINFO << "Frame address is  " << &(*this);
 #endif
 }
 

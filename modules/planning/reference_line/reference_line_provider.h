@@ -48,6 +48,11 @@
 #include "modules/planning/reference_line/reference_line.h"
 #include "modules/planning/reference_line/spiral_reference_line_smoother.h"
 
+#ifdef __aarch64__
+#include "modules/common/txpool/txpool.h"
+using apollo::common::txpool;
+#endif 
+
 /**
  * @namespace apollo::planning
  * @brief apollo::planning
@@ -177,6 +182,9 @@ class ReferenceLineProvider {
   std::queue<std::list<ReferenceLine>> reference_line_history_;
   std::queue<std::list<hdmap::RouteSegments>> route_segments_history_;
 };
+#ifdef __aarch64__
+POOLDEF_DECL(ReferenceLineProvider);
+#endif
 
 }  // namespace planning
 }  // namespace apollo
