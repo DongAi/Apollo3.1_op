@@ -98,6 +98,10 @@ class AABoxKDTree2dNode {
     } else {
       InitObjects(objects);
     }
+
+#ifdef __aarch64__
+    AINFO << "AABoxKDTree2dNode address is " << &(*this);
+#endif
   }
 
   /**
@@ -438,7 +442,8 @@ class AABoxKDTree2d {
         object_ptrs.push_back(&object);
       }
 #ifdef __aarch64__
-      root_ = AABoxKDTree2dNode<ObjectType>::AABoxKDTree2dNodePool.Construct(object_ptrs, params, 0);
+      int param2 = 0;
+      root_ = AABoxKDTree2dNode<ObjectType>::AABoxKDTree2dNodePool.Construct(object_ptrs, params, param2);
 #else
       root_.reset(new AABoxKDTree2dNode<ObjectType>(object_ptrs, params, 0));
 #endif
