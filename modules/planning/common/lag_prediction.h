@@ -26,6 +26,11 @@
 
 #include "modules/prediction/proto/prediction_obstacle.pb.h"
 
+#ifdef __aarch64__
+#include "modules/common/txpool/txpool.h"
+using namespace apollo::common::txpool;
+#endif
+
 namespace apollo {
 namespace planning {
 
@@ -41,8 +46,6 @@ class LagPrediction {
     const prediction::PredictionObstacle* obstacle_ptr = nullptr;
   };
 
-  void Reset(uint32_t min_appear_num, uint32_t max_disappear_num);
-
  private:
   void AddObstacleToPrediction(
       double delay_sec, const prediction::PredictionObstacle& obstacle,
@@ -51,6 +54,10 @@ class LagPrediction {
   uint32_t min_appear_num_ = 0;
   uint32_t max_disappear_num_ = 0;
 };
+
+#ifdef __aarch64__
+TXPOOL_DECL(LagPrediction);
+#endif
 
 }  // namespace planning
 }  // namespace apollo

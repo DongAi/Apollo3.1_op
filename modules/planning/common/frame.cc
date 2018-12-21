@@ -76,9 +76,8 @@ Frame::Frame(uint32_t sequence_num,
       reference_line_provider_(reference_line_provider),
       monitor_logger_(common::monitor::MonitorMessageItem::PLANNING) {
   if (FLAGS_enable_lag_prediction) {
-    lag_predictor_.reset(
-        new LagPrediction(FLAGS_lag_prediction_min_appear_num,
-                          FLAGS_lag_prediction_max_disappear_num));
+    lag_predictor_ = TXPOOL_INST(LagPrediction).Construct(FLAGS_lag_prediction_min_appear_num,
+                          FLAGS_lag_prediction_max_disappear_num);
   }
 
   AINFO << "Frame address is  " << &(*this);

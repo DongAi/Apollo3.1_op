@@ -28,6 +28,10 @@
 namespace apollo {
 namespace planning {
 
+#ifdef __aarch64__
+TXPOOL_IMPL(LagPrediction);
+#endif
+
 using apollo::common::adapter::AdapterManager;
 using apollo::perception::PerceptionObstacle;
 using apollo::prediction::PredictionObstacle;
@@ -36,19 +40,6 @@ using apollo::prediction::PredictionObstacles;
 LagPrediction::LagPrediction(uint32_t min_appear_num,
                              uint32_t max_disappear_num)
     : min_appear_num_(min_appear_num), max_disappear_num_(max_disappear_num) {
-  if (AdapterManager::GetPredictionConfig().message_history_limit() <
-      static_cast<int32_t>(min_appear_num_)) {
-    AWARN << "Prediction adapter history limit is "
-          << AdapterManager::GetPredictionConfig().message_history_limit()
-          << ", but an obstacle need to be observed at least "
-          << min_appear_num_ << " times";
-    return;
-  }
-}
-
-void LagPrediction::Reset(uint32_t min_appear_num, uint32_t max_disappear_num) {
-  min_appear_num_ = min_appear_num;
-  max_disappear_num_ = max_disappear_num;
   if (AdapterManager::GetPredictionConfig().message_history_limit() <
       static_cast<int32_t>(min_appear_num_)) {
     AWARN << "Prediction adapter history limit is "
