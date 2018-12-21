@@ -76,6 +76,14 @@ class AABoxKDTree2dNode {
    * @param params Parameters to build the KD-tree.
    * @param depth Depth of the KD-tree node.
    */
+
+  /**
+   * @brief Constructor which takes a vector of objects,
+   *        parameters and depth of the node.
+   * @param objects Objects to build the KD-tree node.
+   * @param params Parameters to build the KD-tree.
+   * @param depth Depth of the KD-tree node.
+   */
   AABoxKDTree2dNode(const std::vector<ObjectPtr> &objects,
                     const AABoxKDTreeParams &params, int depth)
       : depth_(depth) {
@@ -90,16 +98,6 @@ class AABoxKDTree2dNode {
       PartitionObjects(objects, &left_subnode_objects, &right_subnode_objects);
 
       // Split to sub-nodes.
-#ifdef __aarch64__ 
-      if (!left_subnode_objects.empty()) {
-        left_subnode_ = AABoxKDTree2dPool<ObjectType>::AABoxKDTree2dNodePool.Construct(
-            left_subnode_objects, params, depth + 1);
-      }
-      if (!right_subnode_objects.empty()) {
-        right_subnode_ = AABoxKDTree2dPool<ObjectType>::AABoxKDTree2dNodePool.Construct(
-            right_subnode_objects, params, depth + 1);
-      }
-#else
       if (!left_subnode_objects.empty()) {
         left_subnode_.reset(new AABoxKDTree2dNode<ObjectType>(
             left_subnode_objects, params, depth + 1));
@@ -108,14 +106,68 @@ class AABoxKDTree2dNode {
         right_subnode_.reset(new AABoxKDTree2dNode<ObjectType>(
             right_subnode_objects, params, depth + 1));
       }
-#endif
     } else {
       InitObjects(objects);
     }
+  }
 
 #ifdef __aarch64__
+  AABoxKDTree2dNode(): {
+    num_objects_ = 0;
+    objects_sorted_by_min_.clear();
+    objects_sorted_by_max_.clear();
+    objects_sorted_by_min_bound_.clear();
+    objects_sorted_by_max_bound_.clear();
+    depth_ = 0;
+
+  // Boundary
+    min_x_ = 0.0;
+    max_x_ = 0.0;
+    min_y_ = 0.0;
+    max_y_ = 0.0;
+    mid_x_ = 0.0;
+    mid_y_ = 0.0;
+
+    partition_ = PARTITION_X;
+    partition_position_ = 0.0;
+
+    left_subnode_ = nullptr;
+    right_subnode_ = nullptr;
+
     AINFO << "AABoxKDTree2dNode address is " << &(*this);
+  }
+
+  void Init(const std::vector<ObjectPtr> &objects,
+                    const AABoxKDTreeParams &params, int depth) {
+    CHECK(!objects.empty());
+    depth_ = depth;
+
+    ComputeBoundary(objects);
+    ComputePartition();
+
+    if (SplitToSubNodes(objects, params)) {
+      std::vector<ObjectPtr> left_subnode_objects;
+      std::vector<ObjectPtr> right_subnode_objects;
+      PartitionObjects(objects, &left_subnode_objects, &right_subnode_objects);
+
+      // Split to sub-nodes.
+      if (!left_subnode_objects.empty()) {
+        left_subnode_ = AABoxKDTree2dPool<ObjectType>::AABoxKDTree2dNodePool.Construct();
+        left_subnode_->Init(left_subnode_objects, params, depth + 1);
+      }
+      if (!right_subnode_objects.empty()) {
+        right_subnode_ = AABoxKDTree2dPool<ObjectType>::AABoxKDTree2dNodePool.Construct();
+        right_subnode_->Init(right_subnode_objects, params, depth + 1);
+      }
+    } else {
+      InitObjects(objects);
+    }
+  }
 #endif
+
+  ~AABoxKDTree2dNode() {
+    left_subnode_ = nullptr;
+    right_subnode_ = nullptr;
   }
 
   /**
@@ -427,11 +479,8 @@ class AABoxKDTree2dNode {
   Partition partition_ = PARTITION_X;
   double partition_position_ = 0.0;
 
-  std::unique_ptr<AABoxKDTree2dNode<ObjectType>> left_subnode_ = nullptr;
-  std::unique_ptr<AABoxKDTree2dNode<ObjectType>> right_subnode_ = nullptr;
-#ifdef __aarch64__
-  static TXPool<AABoxKDTree2dNode<ObjectType>, true, 128> AABoxKDTree2dNodePool;
-#endif
+  std::shared_ptr<AABoxKDTree2dNode<ObjectType>> left_subnode_ = nullptr;
+  std::shared_ptr<AABoxKDTree2dNode<ObjectType>> right_subnode_ = nullptr;
 };
 
 #ifdef __aarch64__
@@ -439,7 +488,7 @@ template <class ObjectType>
 class AABoxKDTree2dPool {
 public:
 #ifdef __aarch64__
-  static TXPool<AABoxKDTree2dNode<ObjectType>, true, 128> AABoxKDTree2dNodePool;
+  static TXPool<AABoxKDTree2dNode<ObjectType>, true, 64> AABoxKDTree2dNodePool;
 #endif
 };
 #endif
@@ -465,12 +514,16 @@ class AABoxKDTree2d {
         object_ptrs.push_back(&object);
       }
 #ifdef __aarch64__
-      int param2 = 0;
-      root_ = AABoxKDTree2dPool<ObjectType>::AABoxKDTree2dNodePool.Construct(object_ptrs, params, param2);
+      root_ = AABoxKDTree2dPool<ObjectType>::AABoxKDTree2dNodePool.Construct();
+      root_->Init(object_ptrs, params, 0);
 #else
       root_.reset(new AABoxKDTree2dNode<ObjectType>(object_ptrs, params, 0));
 #endif
     }
+  }
+
+  ~AABoundingBox() {
+    root_ = nullptr;
   }
 
   /**

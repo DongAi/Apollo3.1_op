@@ -461,63 +461,63 @@ template <>
 class AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::LaneInfo, apollo::common::math::LineSegment2d>> {
 public:
 #ifdef __aarch64__
-  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::LaneInfo, apollo::common::math::LineSegment2d>>, true, 128> AABoxKDTree2dNodePool;
+  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::LaneInfo, apollo::common::math::LineSegment2d>>, true, 64> AABoxKDTree2dNodePool;
 #endif
 };
 template <>
 class AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::JunctionInfo, apollo::common::math::Polygon2d>> {
 public:
 #ifdef __aarch64__
-  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::JunctionInfo, apollo::common::math::Polygon2d>>, true, 128> AABoxKDTree2dNodePool;
+  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::JunctionInfo, apollo::common::math::Polygon2d>>, true, 64> AABoxKDTree2dNodePool;
 #endif
 };
 template <>
 class AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::SignalInfo, apollo::common::math::LineSegment2d>> {
 public:
 #ifdef __aarch64__
-  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::SignalInfo, apollo::common::math::LineSegment2d>>, true, 128> AABoxKDTree2dNodePool;
+  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::SignalInfo, apollo::common::math::LineSegment2d>>, true, 64> AABoxKDTree2dNodePool;
 #endif
 };
 template <>
 class AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::CrosswalkInfo, apollo::common::math::Polygon2d>> {
 public:
 #ifdef __aarch64__
-  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::CrosswalkInfo, apollo::common::math::Polygon2d>>, true, 128> AABoxKDTree2dNodePool;
+  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::CrosswalkInfo, apollo::common::math::Polygon2d>>, true, 64> AABoxKDTree2dNodePool;
 #endif
 };
 template <>
 class AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::StopSignInfo, apollo::common::math::LineSegment2d>> {
 public:
 #ifdef __aarch64__
-  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::StopSignInfo, apollo::common::math::LineSegment2d>>, true, 128> AABoxKDTree2dNodePool;
+  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::StopSignInfo, apollo::common::math::LineSegment2d>>, true, 64> AABoxKDTree2dNodePool;
 #endif
 };
 template <>
 class AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::YieldSignInfo, apollo::common::math::LineSegment2d>> {
 public:
 #ifdef __aarch64__
-  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::YieldSignInfo, apollo::common::math::LineSegment2d>>, true, 128> AABoxKDTree2dNodePool;
+  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::YieldSignInfo, apollo::common::math::LineSegment2d>>, true, 64> AABoxKDTree2dNodePool;
 #endif
 };
 template <>
 class AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::ClearAreaInfo, apollo::common::math::Polygon2d>> {
 public:
 #ifdef __aarch64__
-  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::ClearAreaInfo, apollo::common::math::Polygon2d>>, true, 128> AABoxKDTree2dNodePool;
+  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::ClearAreaInfo, apollo::common::math::Polygon2d>>, true, 64> AABoxKDTree2dNodePool;
 #endif
 };
 template <>
 class AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::SpeedBumpInfo, apollo::common::math::LineSegment2d>> {
 public:
 #ifdef __aarch64__
-  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::SpeedBumpInfo, apollo::common::math::LineSegment2d>>, true, 128> AABoxKDTree2dNodePool;
+  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::SpeedBumpInfo, apollo::common::math::LineSegment2d>>, true, 64> AABoxKDTree2dNodePool;
 #endif
 };
 template <>
 class AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::ParkingSpaceInfo, apollo::common::math::Polygon2d>> {
 public:
 #ifdef __aarch64__
-  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::ParkingSpaceInfo, apollo::common::math::Polygon2d>>, true, 128> AABoxKDTree2dNodePool;
+  static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::ParkingSpaceInfo, apollo::common::math::Polygon2d>>, true, 64> AABoxKDTree2dNodePool;
 #endif
 };
 

@@ -1,7 +1,8 @@
 #ifdef __aarch64__
 
 template <typename T0>
-ElemPtr_ Construct(T0& t0) {  
+ElemPtr_ Construct(T0& t0) { 
+  std::lock_guard<std::mutex> lock(mutex_); 
   CheckConstruct();
 
   const int index = elem_idle_cont_.front();
@@ -18,7 +19,8 @@ ElemPtr_ Construct(T0& t0) {
 }
 
 template <typename T0, typename T1>
-ElemPtr_ Construct(T0& t0, T1& t1) {  
+ElemPtr_ Construct(T0& t0, T1& t1) { 
+  std::lock_guard<std::mutex> lock(mutex_); 
   CheckConstruct();
 
   const int index = elem_idle_cont_.front();
@@ -36,6 +38,7 @@ ElemPtr_ Construct(T0& t0, T1& t1) {
 
 template <typename T0, typename T1, typename T2>
 ElemPtr_ Construct(T0& t0, T1& t1, T2& t2) {  
+  std::lock_guard<std::mutex> lock(mutex_);
   CheckConstruct();
 
   const int index = elem_idle_cont_.front();
@@ -53,6 +56,7 @@ ElemPtr_ Construct(T0& t0, T1& t1, T2& t2) {
 
 template <typename T0, typename T1, typename T2, typename T3>
 ElemPtr_ Construct(T0& t0, T1& t1, T2& t2, T3& t3) {  
+  std::lock_guard<std::mutex> lock(mutex_);
   CheckConstruct();
 
   const int index = elem_idle_cont_.front();
@@ -70,6 +74,7 @@ ElemPtr_ Construct(T0& t0, T1& t1, T2& t2, T3& t3) {
 
 template <typename T0, typename T1, typename T2, typename T3, typename T4>
 ElemPtr_ Construct(T0& t0, T1& t1, T2& t2, T3& t3, T4& t4) {  
+  std::lock_guard<std::mutex> lock(mutex_);
   CheckConstruct();
 
   const int index = elem_idle_cont_.front();

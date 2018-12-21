@@ -25,25 +25,26 @@ limitations under the License.
 #include "modules/map/hdmap/hdmap_impl.h"
 #include "modules/map/hdmap/hdmap_util.h"
 
-//apollo::common::txpool::TXPool<apollo::common::math::AABoxKDTree2dNode<LaneSegmentBox>, true, 128> AABoxKDTree2dNodePool;
 using namespace apollo::common::math;
-apollo::common::txpool::TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::LaneInfo, apollo::common::math::LineSegment2d>>, true, 128> AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::LaneInfo, apollo::common::math::LineSegment2d>>::AABoxKDTree2dNodePool;
+using namespace apollo::common::txpool;
+using namespace apollo::hdmap;
+TXPool<AABoxKDTree2dNode<ObjectWithAABox<LaneInfo, LineSegment2d>>, true, 64> AABoxKDTree2dPool<ObjectWithAABox<LaneInfo, LineSegment2d>>::AABoxKDTree2dNodePool;
 
-apollo::common::txpool::TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::JunctionInfo, apollo::common::math::Polygon2d>>, true, 128> AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::JunctionInfo, apollo::common::math::Polygon2d>>::AABoxKDTree2dNodePool;
+TXPool<AABoxKDTree2dNode<ObjectWithAABox<JunctionInfo, Polygon2d>>, true, 64> AABoxKDTree2dPool<ObjectWithAABox<JunctionInfo, Polygon2d>>::AABoxKDTree2dNodePool;
 
-apollo::common::txpool::TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::SignalInfo, apollo::common::math::LineSegment2d>>, true, 128> AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::SignalInfo, apollo::common::math::LineSegment2d>>::AABoxKDTree2dNodePool;
+TXPool<AABoxKDTree2dNode<ObjectWithAABox<SignalInfo, LineSegment2d>>, true, 64> AABoxKDTree2dPool<ObjectWithAABox<SignalInfo, LineSegment2d>>::AABoxKDTree2dNodePool;
 
-apollo::common::txpool::TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::CrosswalkInfo, apollo::common::math::Polygon2d>>, true, 128> AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::CrosswalkInfo, apollo::common::math::Polygon2d>>::AABoxKDTree2dNodePool;
+TXPool<AABoxKDTree2dNode<ObjectWithAABox<CrosswalkInfo, Polygon2d>>, true, 64> AABoxKDTree2dPool<ObjectWithAABox<CrosswalkInfo, Polygon2d>>::AABoxKDTree2dNodePool;
 
-apollo::common::txpool::TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::StopSignInfo, apollo::common::math::LineSegment2d>>, true, 128> AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::StopSignInfo, apollo::common::math::LineSegment2d>>::AABoxKDTree2dNodePool;
+TXPool<AABoxKDTree2dNode<ObjectWithAABox<StopSignInfo, LineSegment2d>>, true, 64> AABoxKDTree2dPool<ObjectWithAABox<StopSignInfo, LineSegment2d>>::AABoxKDTree2dNodePool;
 
-apollo::common::txpool::TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::YieldSignInfo, apollo::common::math::LineSegment2d>>, true, 128> AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::YieldSignInfo, apollo::common::math::LineSegment2d>>::AABoxKDTree2dNodePool;
+TXPool<AABoxKDTree2dNode<ObjectWithAABox<YieldSignInfo, LineSegment2d>>, true, 64> AABoxKDTree2dPool<ObjectWithAABox<YieldSignInfo, LineSegment2d>>::AABoxKDTree2dNodePool;
 
-apollo::common::txpool::TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::ClearAreaInfo, apollo::common::math::Polygon2d>>, true, 128> AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::ClearAreaInfo, apollo::common::math::Polygon2d>>::AABoxKDTree2dNodePool;
+TXPool<AABoxKDTree2dNode<ObjectWithAABox<ClearAreaInfo, Polygon2d>>, true, 64> AABoxKDTree2dPool<ObjectWithAABox<ClearAreaInfo, Polygon2d>>::AABoxKDTree2dNodePool;
 
-apollo::common::txpool::TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::SpeedBumpInfo, apollo::common::math::LineSegment2d>>, true, 128> AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::SpeedBumpInfo, apollo::common::math::LineSegment2d>>::AABoxKDTree2dNodePool;
+TXPool<AABoxKDTree2dNode<ObjectWithAABox<SpeedBumpInfo, LineSegment2d>>, true, 64> AABoxKDTree2dPool<ObjectWithAABox<SpeedBumpInfo, LineSegment2d>>::AABoxKDTree2dNodePool;
 
-apollo::common::txpool::TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::ParkingSpaceInfo, apollo::common::math::Polygon2d>>, true, 128> AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::ParkingSpaceInfo, apollo::common::math::Polygon2d>>::AABoxKDTree2dNodePool;
+TXPool<AABoxKDTree2dNode<ObjectWithAABox<ParkingSpaceInfo, Polygon2d>>, true, 64> AABoxKDTree2dPool<ObjectWithAABox<ParkingSpaceInfo, Polygon2d>>::AABoxKDTree2dNodePool;
 
 namespace apollo {
 namespace hdmap {

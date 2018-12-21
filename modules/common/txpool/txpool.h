@@ -22,6 +22,7 @@
 #include <memory>
 #include <vector>
 #include <list>
+#include <mutex>
 
 namespace apollo {
 namespace common {
@@ -57,6 +58,7 @@ public:
   ~TXPool() {}
 
   ElemPtr_ Construct() {
+    std::lock_guard<std::mutex> lock(mutex_);
     CheckConstruct();
 
     const int index = elem_idle_cont_.front();
@@ -116,6 +118,7 @@ private:
   bool pre_allocate_;
   int size_;
   int alloc_count_;
+  std::mutex mutex_;
 };
 
 #define TXPOOL_INST(TYPE) \
