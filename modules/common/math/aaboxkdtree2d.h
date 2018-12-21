@@ -58,6 +58,9 @@ struct AABoxKDTreeParams {
   double max_leaf_dimension = -1.0;
 };
 
+#ifdef __aarch64__
+template <class ObjectType> class AABoxKDTree2dPool;
+#endif
 /**
  * @class AABoxKDTree2dNode
  * @brief The class of KD-tree node of axis-aligned bounding box.
@@ -87,6 +90,16 @@ class AABoxKDTree2dNode {
       PartitionObjects(objects, &left_subnode_objects, &right_subnode_objects);
 
       // Split to sub-nodes.
+#ifdef __aarch64__ 
+      if (!left_subnode_objects.empty()) {
+        left_subnode_ = AABoxKDTree2dPool<ObjectType>::AABoxKDTree2dNodePool.Construct(
+            left_subnode_objects, params, depth + 1);
+      }
+      if (!right_subnode_objects.empty()) {
+        right_subnode_ = AABoxKDTree2dPool<ObjectType>::AABoxKDTree2dNodePool.Construct(
+            right_subnode_objects, params, depth + 1);
+      }
+#else
       if (!left_subnode_objects.empty()) {
         left_subnode_.reset(new AABoxKDTree2dNode<ObjectType>(
             left_subnode_objects, params, depth + 1));
@@ -95,6 +108,7 @@ class AABoxKDTree2dNode {
         right_subnode_.reset(new AABoxKDTree2dNode<ObjectType>(
             right_subnode_objects, params, depth + 1));
       }
+#endif
     } else {
       InitObjects(objects);
     }
@@ -415,11 +429,20 @@ class AABoxKDTree2dNode {
 
   std::unique_ptr<AABoxKDTree2dNode<ObjectType>> left_subnode_ = nullptr;
   std::unique_ptr<AABoxKDTree2dNode<ObjectType>> right_subnode_ = nullptr;
-
 #ifdef __aarch64__
   static TXPool<AABoxKDTree2dNode<ObjectType>, true, 128> AABoxKDTree2dNodePool;
-#endif 
+#endif
 };
+
+#ifdef __aarch64__
+template <class ObjectType>
+class AABoxKDTree2dPool {
+public:
+#ifdef __aarch64__
+  static TXPool<AABoxKDTree2dNode<ObjectType>, true, 128> AABoxKDTree2dNodePool;
+#endif
+};
+#endif
 
 /**
  * @class AABoxKDTree2d
@@ -443,7 +466,7 @@ class AABoxKDTree2d {
       }
 #ifdef __aarch64__
       int param2 = 0;
-      root_ = AABoxKDTree2dNode<ObjectType>::AABoxKDTree2dNodePool.Construct(object_ptrs, params, param2);
+      root_ = AABoxKDTree2dPool<ObjectType>::AABoxKDTree2dNodePool.Construct(object_ptrs, params, param2);
 #else
       root_.reset(new AABoxKDTree2dNode<ObjectType>(object_ptrs, params, 0));
 #endif
@@ -483,6 +506,10 @@ class AABoxKDTree2d {
 
  private:
   std::shared_ptr<AABoxKDTree2dNode<ObjectType>> root_ = nullptr;
+
+#ifdef __aarch64__
+  //TXPool<AABoxKDTree2dNode<ObjectType>, true, 128> AABoxKDTree2dNodePool;
+#endif 
 };
 
 }  // namespace math
