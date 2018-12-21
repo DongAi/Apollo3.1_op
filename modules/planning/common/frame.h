@@ -172,12 +172,16 @@ class Frame {
   ThreadSafeIndexedObstacles obstacles_;
   ChangeLaneDecider change_lane_decider_;
   ADCTrajectory trajectory_;  // last published trajectory
+#ifdef __aarch64__
+  LagPredictionPtr lag_predictor_;
+#else
   std::unique_ptr<LagPrediction> lag_predictor_;
+#endif
 #ifdef __aarch64__
   ReferenceLineProviderPtr reference_line_provider_ = nullptr;
 #else
   ReferenceLineProvider *reference_line_provider_ = nullptr;
- #endif
+#endif
   apollo::common::monitor::MonitorLogger monitor_logger_;
 };
 
