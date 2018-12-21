@@ -522,7 +522,7 @@ class AABoxKDTree2d {
     }
   }
 
-  ~AABoundingBox() {
+  ~AABoxKDTree2d() {
     root_ = nullptr;
   }
 
