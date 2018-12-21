@@ -112,7 +112,7 @@ class AABoxKDTree2dNode {
   }
 
 #ifdef __aarch64__
-  AABoxKDTree2dNode(): {
+  AABoxKDTree2dNode() {
     num_objects_ = 0;
     objects_sorted_by_min_.clear();
     objects_sorted_by_max_.clear();
