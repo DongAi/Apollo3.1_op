@@ -51,7 +51,21 @@ class Object {
   int id_ = 0;
 };
 
+#ifdef __aarch64__
+template <>
+class AABoxKDTree2dPool<Object> {
+public:
+  static TXPool<AABoxKDTree2dNode<Object>> AABoxKDTree2dNodePool;
+};
+#endif
+
 }  // namespace
+
+using namespace apollo::common::math;
+using namespace apollo::common::txpool;
+using namespace apollo::hdmap;
+TXPool<AABoxKDTree2dNode<Object>> AABoxKDTree2dPool<Object>::AABoxKDTree2dNodePool;
+
 
 TEST(AABoxKDTree2dNode, OverallTests) {
   const int kNumBoxes[4] = {1, 10, 50, 100};
@@ -63,25 +77,22 @@ TEST(AABoxKDTree2dNode, OverallTests) {
   kdtree_params[2].max_leaf_dimension = kSize / 4.0;
   kdtree_params[3].max_leaf_size = 20;
 
-  double size_m = kSize / 10.0;
   for (int num_boxes : kNumBoxes) {
     std::vector<Object> objects;
     for (int i = 0; i < num_boxes; ++i) {
       const double cx = RandomDouble(-kSize, kSize);
       const double cy = RandomDouble(-kSize, kSize);
-      const double dx = RandomDouble(-size_m, size_m);
-      const double dy = RandomDouble(-size_m, size_m);
+      const double dx = RandomDouble(-kSize / 10.0, kSize / 10.0);
+      const double dy = RandomDouble(-kSize / 10.0, kSize / 10.0);
       objects.emplace_back(cx - dx, cy - dy, cx + dx, cy + dy, i);
     }
     std::unique_ptr<AABoxKDTree2d<Object>> kdtrees[kNumTrees];
-    #pragma omp parallel for
     for (int i = 0; i < kNumTrees; ++i) {
       kdtrees[i].reset(new AABoxKDTree2d<Object>(objects, kdtree_params[i]));
     }
-    double size_m1 = kSize * 1.5;
     for (int i = 0; i < kNumQueries; ++i) {
-      const Vec2d point(RandomDouble(-size_m1, size_m1),
-                        RandomDouble(-size_m1, size_m1));
+      const Vec2d point(RandomDouble(-kSize * 1.5, kSize * 1.5),
+                        RandomDouble(-kSize * 1.5, kSize * 1.5));
       double expected_distance = std::numeric_limits<double>::infinity();
       for (const auto &object : objects) {
         expected_distance =
@@ -94,8 +105,8 @@ TEST(AABoxKDTree2dNode, OverallTests) {
       }
     }
     for (int i = 0; i < kNumQueries; ++i) {
-      const Vec2d point(RandomDouble(-size_m1, size_m1),
-                        RandomDouble(-size_m1, size_m1));
+      const Vec2d point(RandomDouble(-kSize * 1.5, kSize * 1.5),
+                        RandomDouble(-kSize * 1.5, kSize * 1.5));
       const double distance = RandomDouble(0, kSize * 2.0);
       for (int k = 0; k < kNumTrees; ++k) {
         std::vector<const Object *> result_objects =

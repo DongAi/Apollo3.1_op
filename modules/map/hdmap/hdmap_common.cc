@@ -25,6 +25,7 @@ limitations under the License.
 #include "modules/map/hdmap/hdmap_impl.h"
 #include "modules/map/hdmap/hdmap_util.h"
 
+#ifdef __aarch64__
 using namespace apollo::common::math;
 using namespace apollo::common::txpool;
 using namespace apollo::hdmap;
@@ -45,6 +46,7 @@ TXPool<AABoxKDTree2dNode<ObjectWithAABox<ClearAreaInfo, Polygon2d>>, true, 64> A
 TXPool<AABoxKDTree2dNode<ObjectWithAABox<SpeedBumpInfo, LineSegment2d>>, true, 64> AABoxKDTree2dPool<ObjectWithAABox<SpeedBumpInfo, LineSegment2d>>::AABoxKDTree2dNodePool;
 
 TXPool<AABoxKDTree2dNode<ObjectWithAABox<ParkingSpaceInfo, Polygon2d>>, true, 64> AABoxKDTree2dPool<ObjectWithAABox<ParkingSpaceInfo, Polygon2d>>::AABoxKDTree2dNodePool;
+#endif
 
 namespace apollo {
 namespace hdmap {
