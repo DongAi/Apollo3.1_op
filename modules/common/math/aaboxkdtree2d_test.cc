@@ -51,6 +51,8 @@ class Object {
   int id_ = 0;
 };
 
+}  // namespace
+
 #ifdef __aarch64__
 template <>
 class AABoxKDTree2dPool<Object> {
@@ -59,13 +61,11 @@ public:
 };
 #endif
 
-}  // namespace
-
+#ifdef __aarch64__
 using namespace apollo::common::math;
 using namespace apollo::common::txpool;
-using namespace apollo::hdmap;
 TXPool<AABoxKDTree2dNode<Object>> AABoxKDTree2dPool<Object>::AABoxKDTree2dNodePool;
-
+#endif
 
 TEST(AABoxKDTree2dNode, OverallTests) {
   const int kNumBoxes[4] = {1, 10, 50, 100};
