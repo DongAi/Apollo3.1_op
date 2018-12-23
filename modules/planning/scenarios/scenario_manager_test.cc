@@ -43,9 +43,14 @@ TEST_F(ScenarioManagerTest, Simple) {
   const double start_time = 123.45;
   common::VehicleState vehicle_state;
   ReferenceLineProvider reference_line_provider;
+#ifdef __aarch64__
+  ReferenceLineProviderPtr ptr(&reference_line_provider);
+  Frame frame(sequence_num, tp, start_time, vehicle_state,
+              ptr);
+#else
   Frame frame(sequence_num, tp, start_time, vehicle_state,
               &reference_line_provider);
-
+#endif
   scenario_manager_.Update(tp, frame);
 }
 

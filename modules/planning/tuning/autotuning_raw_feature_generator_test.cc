@@ -32,19 +32,17 @@ class AutotuningRawFeatureGeneratorTest : public ::testing::Test {
     common::TrajectoryPoint ego_pos;
     ReferenceLine reference_line;
     hdmap::RouteSegments segments;
-    static int new_c = 0;
-    static int index = 20;
     ref_line_info_.reset(
         new ReferenceLineInfo(ego_state, ego_pos, reference_line, segments));
     // pseudo empty frame info
+#ifdef __aarch64__
+    ReferenceLineProviderPtr ptr(nullptr);
+    frame_.reset(new Frame(0, ego_pos, 0, ego_state, ptr));
+#else
     frame_.reset(new Frame(0, ego_pos, 0, ego_state, nullptr));
+#endif
     std::vector<double> evaluate_time{1., 2., 3., 4., 5., 6., 7., 8.};
     generator_.reset(new AutotuningRawFeatureGenerator(evaluate_time));
-    new_c += 3;
-    if (new_c > index) {
-      AINFO << "new_c40" << new_c;
-      index += 100;
-    }
   }
 
   void TearDown() override {

@@ -156,8 +156,14 @@ TEST_F(NaviPathDeciderTest, KeepLane) {
   apollo::hdmap::RouteSegments route_segments;
   navi_path_decider.reference_line_info_ = new ReferenceLineInfo(
       vehicle_state, plan_start_point, ref_line, route_segments);
+#ifdef __aarch64__
+  ReferenceLineProviderPtr ptr(nullptr);
+  navi_path_decider.frame_ =
+      new Frame(1, plan_start_point, 0, vehicle_state, ptr);
+#else
   navi_path_decider.frame_ =
       new Frame(1, plan_start_point, 0, vehicle_state, nullptr);
+#endif
   DCHECK_NOTNULL(navi_path_decider.reference_line_info_);
   DCHECK_NOTNULL(navi_path_decider.frame_);
   GeneratePathData(kMaxS, 0.19, 0.03, &path_points);
