@@ -474,7 +474,7 @@ public:
 };
 template <>
 class AABoxKDTree2dPool<apollo::hdmap::ObjectWithAABox<apollo::hdmap::CrosswalkInfo, apollo::common::math::Polygon2d>> {
-public
+public:
   static TXPool<AABoxKDTree2dNode<apollo::hdmap::ObjectWithAABox<apollo::hdmap::CrosswalkInfo, apollo::common::math::Polygon2d>>, true, 64> AABoxKDTree2dNodePool;
 };
 template <>
